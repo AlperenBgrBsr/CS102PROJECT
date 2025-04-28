@@ -1,7 +1,7 @@
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.*;
 
 public class LoginScreen extends JFrame {
     private JLabel usernameLabel;
@@ -12,7 +12,8 @@ public class LoginScreen extends JFrame {
     private JLabel welcomeLabel;
     private JButton loginButton;
     public static Database database = new Database();
-    
+    private static User currentUser; //Added for now (Mete)
+
     public LoginScreen() {
         this.setTitle("Login");
         this.add(this.createLabelsAndFields());
@@ -68,9 +69,10 @@ public class LoginScreen extends JFrame {
                 for (User user : database.getUsers()) {
                     if ((user.getEmail().equals(usernameField.getText()) || user.getUsername().equals(usernameField.getText())) 
                          && user.getPassword().equals(passwordField.getText())) {
-                        MainSystemFrame mainframe = new MainSystemFrame();
-                        mainframe.setVisible(true);
-                        LoginScreen.this.setVisible(false);
+                        currentUser = user;
+                        HomeScreen homepageFrame = new HomeScreen();
+                        homepageFrame.setVisible(true);
+                        LoginScreen.this.dispose();
                         usernameField.setText("");
                         passwordField.setText("");
                         return;
@@ -94,6 +96,10 @@ public class LoginScreen extends JFrame {
 
     public boolean isEmail(String string) {
         return string.contains("@");
+    }
+
+    public static User getCurrentUser() {
+        return currentUser;
     }
     public static void main(String[] args) {
         new LoginScreen();
