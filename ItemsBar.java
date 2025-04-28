@@ -3,12 +3,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -18,12 +20,13 @@ import javax.swing.JTextField;
  * - 
  * Notes:
  * Currently the methods of the buttons setFocusPainted(false); is optional
+ * There is an important note at below about future implementation
  */
 
 public class ItemsBar extends JPanel implements ActionListener{
 
     ImageIcon bookMarkIcon = new ImageIcon("icons\\BookmarkIcon.png");
-    ImageIcon darkModeIcon = new ImageIcon("icons\\DarkModeIcon.png");
+    ImageIcon addAdvertIcon = new ImageIcon("icons\\AddAdvertIcon.png");
     ImageIcon HelpIcon = new ImageIcon("icons\\HelpIcon.png");
     ImageIcon MessageIcon = new ImageIcon("icons\\MessageIcon.png");
     ImageIcon UserIcon = new ImageIcon("icons\\UserIcon.png");
@@ -32,12 +35,12 @@ public class ItemsBar extends JPanel implements ActionListener{
     ImageIcon SearchIcon = new ImageIcon("icons\\SearchIcon.png");
     ImageIcon SearchBarImage = new ImageIcon("icons\\SearchBar.png");
 
-    JLabel bilMartLabel; 
+    JButton bilMartText; 
     JLabel bilMartLogo; 
 
     JButton messageButton;
     JButton bookmarkButton;
-    JButton darkModeButton;
+    JButton addButton;
     JButton helpButton;
     JButton profileButton;
     
@@ -48,18 +51,18 @@ public class ItemsBar extends JPanel implements ActionListener{
     JPanel middlePart; //Username search bar
     JPanel rightPart; // Buttons
 
-    private final int ICON_WIDTH = 31;
-    private final int ICON_HEIGHT = 35;
+    private final int ICON_WIDTH = 38;
+    private final int ICON_HEIGHT = 38;
     private final Color BLUE_COLOR = new Color(21,50,80);
-
-    public ItemsBar() {
-        this.setPreferredSize(new Dimension(1024, 90));
+ 
+    public ItemsBar(boolean hasSearchBar /*If true has a username searchbar*/ ) {
+        this.setPreferredSize(new Dimension(1024, 100));
         this.setBackground(BLUE_COLOR);
         this.setLayout(new BorderLayout());
-        
+
         leftPart = new JPanel();
         leftPart.setBackground(BLUE_COLOR);
-        leftPart.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 25));
+        leftPart.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 30));
 
         middlePart = new JPanel();
         middlePart.setBackground(BLUE_COLOR);
@@ -69,50 +72,24 @@ public class ItemsBar extends JPanel implements ActionListener{
         rightPart.setBackground(BLUE_COLOR);
   
         //BilMartWriting
-        bilMartLabel = new JLabel();
-        bilMartLabel.setIcon(resizeIcon(BilMartWriting, 138, 30));
-        leftPart.add(bilMartLabel);
+        bilMartText = new JButton();
+        bilMartText.setIcon(resizeIcon(BilMartWriting, 138, 30));
+        bilMartText.setContentAreaFilled(false);
+        bilMartText.setBorderPainted(false);
+        bilMartText.setFocusPainted(false);
+        bilMartText.addActionListener(this);
+        leftPart.add(bilMartText);
 
         //BilMartLogo
         bilMartLogo = new JLabel();
         bilMartLogo.setIcon(resizeIcon(BilMartIcon,ICON_WIDTH,ICON_HEIGHT));
         leftPart.add(bilMartLogo);
 
-        //---------------------
-        //------SearchBar------
-        //---------------------
-        final int yOffset = 30;
-        final int xOffset = 35;
+        //SearchBar
+        if (hasSearchBar) {
+            addSearchBar();
+        }
 
-        middlePart.setLayout(null); // For manual positioning
-
-        JLabel searchBarBackground = new JLabel();
-        searchBarBackground.setBounds(xOffset, yOffset - 5, 400, 40); // x, y, width, height
-        searchBarBackground.setIcon(resizeIcon(SearchBarImage, 350, 40));
-
-        // Text field setup
-        searchField = new JTextField("Enter username");
-        searchField.setBounds(xOffset + 15, yOffset, 250, 30); // Positioned inside the background
-        searchField.setFont(new Font("Arial", Font.PLAIN, 13));
-        searchField.setOpaque(false); // Transparent background
-        searchField.setCaretColor(Color.BLACK); // Optional: Black cursor
-        searchField.setBorder(BorderFactory.createEmptyBorder());
-
-        // Search icon button
-        searchButton = new JButton();
-        searchButton.setBounds(xOffset + 300, yOffset, 30, 30);
-        searchButton.setIcon(resizeIcon(SearchIcon, ICON_WIDTH - 7, ICON_HEIGHT - 7));
-        searchButton.setContentAreaFilled(false);
-        searchButton.setBorderPainted(false);
-        searchButton.setFocusPainted(false);
-        searchButton.addActionListener(this); // Optional
-
-        // Add in correct order
-        middlePart.add(searchButton);
-        middlePart.add(searchField);
-        middlePart.add(searchBarBackground);
-
-        //=============
         //messageButton
         messageButton = new JButton();
         messageButton.setContentAreaFilled(false);
@@ -132,13 +109,13 @@ public class ItemsBar extends JPanel implements ActionListener{
         rightPart.add(bookmarkButton);
         
         //darkModeButton
-        darkModeButton = new JButton();
-        darkModeButton.setIcon(resizeIcon(darkModeIcon, ICON_WIDTH, ICON_HEIGHT));
-        darkModeButton.setContentAreaFilled(false);
-        darkModeButton.setBorderPainted(false);
-        darkModeButton.setFocusPainted(false);
-        darkModeButton.addActionListener(this);
-        rightPart.add(darkModeButton);
+        addButton = new JButton();
+        addButton.setIcon(resizeIcon(addAdvertIcon, ICON_WIDTH, ICON_HEIGHT));
+        addButton.setContentAreaFilled(false);
+        addButton.setBorderPainted(false);
+        addButton.setFocusPainted(false);
+        addButton.addActionListener(this);
+        rightPart.add(addButton);
 
         //helpButton
         helpButton = new JButton();
@@ -164,17 +141,78 @@ public class ItemsBar extends JPanel implements ActionListener{
         add(rightPart, BorderLayout.EAST);
     }
 
+    private void addSearchBar() {
+        JPanel wrapperPanel = new JPanel(new GridBagLayout()); // centers contents
+        wrapperPanel.setPreferredSize(new Dimension(1024, 90));
+        wrapperPanel.setOpaque(false); // transparent to show background if needed
+    
+        // Background label as container
+        JLabel backgroundLabel = new JLabel();
+        backgroundLabel.setLayout(new BorderLayout());
+        backgroundLabel.setPreferredSize(new Dimension(330, 42));
+        backgroundLabel.setIcon(resizeIcon(SearchBarImage, 330, 42));
+    
+        // Transparent panel on top of background for field + button
+        JPanel overlayPanel = new JPanel(new BorderLayout());
+        overlayPanel.setOpaque(false);
+        overlayPanel.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 5));
+    
+        searchField = new JTextField("Enter username");
+        searchField.setFont(new Font("Arial", Font.PLAIN, 14));
+        searchField.setOpaque(false);
+        searchField.setCaretColor(Color.BLACK);
+        searchField.setBorder(BorderFactory.createEmptyBorder());
+    
+        searchButton = new JButton(resizeIcon(SearchIcon, 35, 35));
+        searchButton.setPreferredSize(new Dimension(45, 40));
+        searchButton.setContentAreaFilled(false);
+        searchButton.setBorderPainted(false);
+        searchButton.setFocusPainted(false);
+        searchButton.addActionListener(this);
+    
+        overlayPanel.add(searchField, BorderLayout.CENTER);
+        overlayPanel.add(searchButton, BorderLayout.EAST);
+    
+        backgroundLabel.add(overlayPanel);
+        wrapperPanel.add(backgroundLabel);
+
+        
+        middlePart.add(wrapperPanel);
+    }
+
     private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
         return new ImageIcon(icon.getImage().getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH));
     }
 
+    private void createHelpScreen() {
+        JFrame helpFrame = new JFrame();
+        helpFrame.setTitle("Help Screen");
+        helpFrame.pack();
+        helpFrame.setVisible(true);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-       if (e.getSource() == bookmarkButton) {
+        if (e.getSource() == bookmarkButton) {
             System.out.println("aaa");
-       }
-       if (e.getSource() == searchButton) {
+        }
+        if (e.getSource() == searchButton) {
             System.out.println("b");
-       }
+        }
+        if (e.getSource() == helpButton) {
+            createHelpScreen();
+        }
+        if (e.getSource() == profileButton) {
+            UserPage profilPage = new UserPage(LoginScreen.getCurrentUser());
+        }
+        if (e.getSource() == addButton) {
+            AddAdvertScene addScene =  new AddAdvertScene();
+        }
+        if (e.getSource() == bilMartText) {
+            //Add disposing the current homepage or if it exists avoid instantieanting a new homescreen using an if statement 
+            //or avoid multiple homescreen when we can track the current homescreen in a variable class like bilmart.java
+            //This must be handled on all frames 
+            HomeScreen homeScreen = new HomeScreen();
+        }
     }
 }
