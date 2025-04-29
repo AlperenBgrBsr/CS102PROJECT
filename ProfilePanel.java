@@ -6,8 +6,6 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
-import java.util.concurrent.Flow;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -35,18 +33,15 @@ public class ProfilePanel extends JPanel{
         this.setBackground(Color.white);
 
         try{
-            profilePicture = ImageIO.read(new File("profile-picture.png")); 
-            emptyStar = ImageIO.read(new File("emptystar.png")); 
-            oneQuarterStar = ImageIO.read(new File("onequarterstar.png")); 
-            halfStar = ImageIO.read(new File("halfstar.png"));
-            threeQuarterStar = ImageIO.read(new File("threequarterstar.png"));  
-            fullStar = ImageIO.read(new File("fullstar.png"));           
+            profilePicture = ImageIO.read(new File("icons\\profile-picture.png"));  //Alper bunları iconsdan bozma
+            emptyStar = ImageIO.read(new File("icons\\emptystar.png")); 
+            oneQuarterStar = ImageIO.read(new File("icons\\onequarterstar.png")); 
+            halfStar = ImageIO.read(new File("icons\\halfstar.png"));
+            threeQuarterStar = ImageIO.read(new File("icons\\threequarterstar.png"));  
+            fullStar = ImageIO.read(new File("icons\\fullstar.png"));           
         } catch (IOException e){
             JOptionPane.showMessageDialog(null, "Image is not loaded", "ERROR!",JOptionPane.ERROR_MESSAGE);
         }
-
-        
-        
 
         //Own Profile
         if ( username.equals(currentUser.getUsername())){
@@ -66,7 +61,7 @@ public class ProfilePanel extends JPanel{
 
             JToggleButton homeButton = new JToggleButton();
 
-            ImageIcon homeIcon = new ImageIcon("homeIcon.png");
+            ImageIcon homeIcon = new ImageIcon("icons\\homeIcon.png");
             Image homeIconImage = homeIcon.getImage();
             homeIconImage = homeIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newHomeIcon = new ImageIcon(homeIconImage);
@@ -83,7 +78,7 @@ public class ProfilePanel extends JPanel{
             homeButton.setBounds(700,180, 60,40);
 
             JToggleButton awayButton = new JToggleButton();
-            ImageIcon awayIcon = new ImageIcon("awayIcon.png");
+            ImageIcon awayIcon = new ImageIcon("icons\\awayIcon.png");
             Image awayIconImage = awayIcon.getImage();
             awayIconImage = awayIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newAwayIcon = new ImageIcon(awayIconImage);
@@ -138,7 +133,7 @@ public class ProfilePanel extends JPanel{
             reviewArea.setEditable(false);
             reviewArea.setFocusable(false);
             reviewArea.setFont(new Font("Arial",Font.PLAIN,15));
-            for (int i = 1; i <= 100; i++){
+            for (int i = 1; i <= 10; i++){
                 reviewArea.setText("\n" + " User" + i +": BLAH BLAH BLAH BLAH" + "\n" + reviewArea.getText());
             }
             
@@ -218,7 +213,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(Color.red);
+                    returnButton.setBackground(new Color(151,12,16));
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -237,16 +232,11 @@ public class ProfilePanel extends JPanel{
                     selectToDeleteAdvertsFrame.setResizable(false);
                     selectToDeleteAdvertsFrame.pack();
                     selectToDeleteAdvertsFrame.setVisible(true); 
-                    
-
-
                 }
-                
             });
 
 
             //Viewed Adverts 
-
             JButton viewedAdvertsButton = new JButton("Viewed Adverts");
             viewedAdvertsButton.setBorder(new LineBorder(Color.BLACK,1));
             viewedAdvertsButton.setBounds(650,350,250,40);
@@ -292,7 +282,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(Color.red);
+                    returnButton.setBackground(new Color(151,12,16));
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -325,7 +315,7 @@ public class ProfilePanel extends JPanel{
             logoutButton.setBounds(800,690,150,40);
             logoutButton.setFont(new Font("Arial", Font.BOLD, 20));
             logoutButton.setFocusable(false);  
-            logoutButton.setBackground(Color.red);
+            logoutButton.setBackground(new Color(151,12,16));
             logoutButton.setForeground(Color.white);
             logoutButton.addActionListener(new ActionListener() {
 
@@ -484,7 +474,7 @@ public class ProfilePanel extends JPanel{
                     JButton resetButton = new JButton("Reset");
                     resetButton.setFocusable(false);
                     resetButton.setBorder(new LineBorder(Color.black,1));
-                    resetButton.setBackground(Color.red);
+                    resetButton.setBackground(new Color(151,12,16));
                     resetButton.setForeground(Color.white);
                     resetButton.addActionListener(new ActionListener() {
 
@@ -501,7 +491,7 @@ public class ProfilePanel extends JPanel{
                     JButton sendRating = new JButton("Send Rating");
                     sendRating.setFocusable(false);
                     sendRating.setBorder(new LineBorder(Color.black,1));
-                    sendRating.setBackground(Color.red);
+                    sendRating.setBackground(new Color(151,12,16));
                     sendRating.setForeground(Color.white);
                     sendRating.addActionListener(new ActionListener() {
 
@@ -689,7 +679,7 @@ public class ProfilePanel extends JPanel{
 
         double rating = 0;
         int drawnStarAmount = 0;
-        if ( currentUser.getUsername().equals(username) ){
+        if (currentUser.getUsername().equals(username) ){
             
            rating = currentUser.getRating();   
         }   
@@ -713,6 +703,4 @@ public class ProfilePanel extends JPanel{
             g.drawImage(oneQuarterStar, 60 + 45*drawnStarAmount, 300, 45, 45, this);
         }
     }   
-
-
 }
