@@ -59,13 +59,14 @@ public class AddAdvertScene extends JFrame implements ActionListener{
         this.setIconImage(new ImageIcon("icons\\BilMartIcon.png").getImage());
         this.setVisible(true);
 
-        //---Adding-ItemsBar---
-        ItemsBar items = new ItemsBar(false);
-        JPanel topPanel = new JPanel(new BorderLayout());
+        JPanel topPanel = new JPanel(new GridBagLayout());
         topPanel.setPreferredSize(new Dimension(1024, 100));
-        topPanel.add(items, BorderLayout.CENTER);
+        topPanel.setBackground( new Color(21,50,80));
+        ImageIcon a = new ImageIcon("icons\\BilMart.png");
+        JLabel label = new JLabel();
+        label.setIcon(new ImageIcon(a.getImage().getScaledInstance(220, 40,Image.SCALE_SMOOTH)));
+        topPanel.add(label);
         this.add(topPanel, BorderLayout.NORTH);
-        //---------------------
 
         mainPanel = new JPanel();
         mainPanel.setPreferredSize(new Dimension(1024, 550));
@@ -245,7 +246,8 @@ public class AddAdvertScene extends JFrame implements ActionListener{
                     }
 
                     ImageIcon imageIcon = new ImageIcon(uploadedImage);
-                    imageIcon = new ImageIcon(imageIcon.getImage().getScaledInstance(72 + (uploadedImage.getWidth(null) / 15), 72 + (uploadedImage.getHeight(null) / 15), java.awt.Image.SCALE_SMOOTH));
+                    imageIcon = new ImageIcon(imageIcon.getImage().getScaledInstance(72 + (uploadedImage.getWidth(null) / 15),
+                     72 + (uploadedImage.getHeight(null) / 15), Image.SCALE_SMOOTH)); //For now might change scaling later (maybe strict scaling)
                     imageLabel.setIcon(imageIcon);
                     System.out.println("Image loaded successfully: " + imagePath);
 
