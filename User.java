@@ -2,6 +2,8 @@ public class User {
     private String username;
     private String email;
     private String password;
+    private boolean isAvailable = true;
+    private double rating = 2; //For now
 
     public User(String username, String email, String password) {
         this(username,password);
@@ -25,6 +27,14 @@ public class User {
         return this.username;
     }
 
+    public double getRating() {
+        return rating;
+    }
+
+    public boolean getIsAvailable() {
+        return isAvailable;
+    }
+
     public void setEmail(String anemail) {
         this.email = anemail;
     }
@@ -35,5 +45,8 @@ public class User {
 
     public void setPassword(String apassword) {
         this.password = apassword;
+    }
+    public void setIsAvailable(boolean b) {
+        this.isAvailable = b;
     }
 }
