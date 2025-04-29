@@ -17,7 +17,8 @@ import javax.swing.JTextField;
 public class HomeScreen extends JFrame implements ActionListener{
 
     //Panels
-    JPanel mainPanel;      // Holds everything
+    JPanel homePagePanel;      // Holds everything
+    JPanel currentPanel;
 
     //Search Bar Items
     JButton searchButton;
@@ -26,13 +27,13 @@ public class HomeScreen extends JFrame implements ActionListener{
     //Buttons
     JButton booksButton;
     JButton clothesButton;
-
+    public static HomeScreen hm;
     ItemsBar items;
 
     public HomeScreen() {
         this.setTitle("BilMart HomePage");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(1024,768);
+        this.setSize(1024,1080);
         this.setIconImage(new ImageIcon("icons\\BilMartIcon.png").getImage());
 
         //ItemsBar
@@ -42,15 +43,32 @@ public class HomeScreen extends JFrame implements ActionListener{
         topPanel.setSize(new Dimension(1024,100));
         topPanel.add(items, BorderLayout.CENTER);
         this.add(topPanel, BorderLayout.NORTH);
-
-        mainPanel = new JPanel();
-        mainPanel.setPreferredSize(new Dimension(1024,550));
-        mainPanel.add(searchBar());
-        mainPanel.add(categoriesText());
-        mainPanel.add(categories());
-        this.add(mainPanel);
-
+        
+        homePagePanel = new JPanel();
+        homePagePanel.setPreferredSize(new Dimension(1024,550));
+        homePagePanel.add(searchBar());
+        homePagePanel.add(categoriesText());
+        homePagePanel.add(categories());
+        currentPanel = homePagePanel;
+        this.add(currentPanel);
+        
         this.setVisible(true);
+    }
+
+    public void changePanel(JPanel panelToChange) {
+        this.remove(currentPanel);             
+        currentPanel = panelToChange;           
+        this.add(currentPanel);                 
+        this.revalidate();                      
+        this.repaint();                         
+    }
+
+    public void reloadHomeScreenPanel() {
+        this.remove(currentPanel);             
+        currentPanel = homePagePanel;           
+        this.add(currentPanel);                 
+        this.revalidate();                      
+        this.repaint();  
     }
     
     private JPanel searchBar() {
@@ -160,7 +178,7 @@ public class HomeScreen extends JFrame implements ActionListener{
     }
 
     public static void main(String[] args) {
-        new HomeScreen();
+        hm = new HomeScreen();
     }
 
     @Override
