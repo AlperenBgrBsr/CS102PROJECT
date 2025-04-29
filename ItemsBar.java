@@ -16,8 +16,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /*
- * To Do:
- * - 
  * Notes:
  * Currently the methods of the buttons setFocusPainted(false); is optional
  * There is an important note at below about future implementation
@@ -54,11 +52,15 @@ public class ItemsBar extends JPanel implements ActionListener{
     private final int ICON_WIDTH = 38;
     private final int ICON_HEIGHT = 38;
     private final Color BLUE_COLOR = new Color(21,50,80);
+
+    boolean hasSearchBar;
  
     public ItemsBar(boolean hasSearchBar /*If true has a username searchbar*/ ) {
         this.setPreferredSize(new Dimension(1024, 100));
         this.setBackground(BLUE_COLOR);
         this.setLayout(new BorderLayout());
+
+        this.hasSearchBar = hasSearchBar;
 
         leftPart = new JPanel();
         leftPart.setBackground(BLUE_COLOR);
@@ -141,7 +143,11 @@ public class ItemsBar extends JPanel implements ActionListener{
         add(rightPart, BorderLayout.EAST);
     }
 
-    private void addSearchBar() {
+    public void removeSearchBar() {
+        middlePart.removeAll();
+    }
+
+    public void addSearchBar() {
         JPanel wrapperPanel = new JPanel(new GridBagLayout()); // centers contents
         wrapperPanel.setPreferredSize(new Dimension(1024, 90));
         wrapperPanel.setOpaque(false); // transparent to show background if needed
@@ -203,16 +209,17 @@ public class ItemsBar extends JPanel implements ActionListener{
             createHelpScreen();
         }
         if (e.getSource() == profileButton) {
-            UserPage profilPage = new UserPage(LoginScreen.getCurrentUser());
+            //ProfilePanel profilePage = new ProfilePanel(LoginScreen.getCurrentUser().getUsername(), LoginScreen.getCurrentUser()); //if started by loginscreen main method
+            ProfilePanel profilePage = new ProfilePanel("mete", new User("mete", "m.a@ug.bilmart.edu.tr","e")); //if started by homescreen main method
+            HomeScreen.hm.items.addSearchBar();
+            HomeScreen.hm.changePanel(profilePage); //Will change these later
         }
         if (e.getSource() == addButton) {
             AddAdvertScene addScene =  new AddAdvertScene();
         }
         if (e.getSource() == bilMartText) {
-            //Add disposing the current homepage or if it exists avoid instantieanting a new homescreen using an if statement 
-            //or avoid multiple homescreen when we can track the current homescreen in a variable class like bilmart.java
-            //This must be handled on all frames 
-            HomeScreen homeScreen = new HomeScreen();
+            HomeScreen.hm.items.removeSearchBar();
+            HomeScreen.hm.reloadHomeScreenPanel();
         }
     }
 }
