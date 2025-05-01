@@ -13,17 +13,15 @@ public class Advert {
     String price;
     BufferedImage image;
     String detailedInformation;
-    String buyerUsername;
     String sellerUsername;
     boolean isAvailable;
     String type;
 
-    public Advert(BufferedImage image, String title, String price, String detailedInformation, String buyerUsername, String sellerUsername, boolean isAvailable, String type){
+    public Advert(BufferedImage image, String title, String price, String detailedInformation, String sellerUsername, boolean isAvailable, String type){
         this.image = image;
         this.title = title;
         this.price = price;
         this.detailedInformation = detailedInformation;
-        this.buyerUsername = buyerUsername;
         this.sellerUsername = sellerUsername;
         this.isAvailable = isAvailable; 
         this.type = type;
@@ -57,16 +55,6 @@ public class Advert {
         return detailedInformation;
     }
 
-
-
-
-    public String getBuyerUsername() {
-        return buyerUsername;
-    }
-
-
-
-
     public String getSellerUsername() {
         return sellerUsername;
     }
@@ -91,7 +79,7 @@ public class Advert {
     public void addToDatabase(){
         try {
 
-            PreparedStatement addToDatabaseStatement = Main.databaseConnection.prepareStatement("INSERT INTO adverts(advertPicture,advertTitle,advertDetails,availability,sellerUsername,buyerUsername,type,advertPrice) VALUES (?,?,?,?,?,?,?,?)" );
+            PreparedStatement addToDatabaseStatement = Main.databaseConnection.prepareStatement("INSERT INTO adverts(advertPicture,advertTitle,advertDetails,availability,sellerUsername,type,advertPrice) VALUES (?,?,?,?,?,?,?)" );
             ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
             ImageIO.write(image, "png", byteOutputStream);
             byte[] imageBytes = byteOutputStream.toByteArray();
@@ -100,9 +88,8 @@ public class Advert {
             addToDatabaseStatement.setString(3, detailedInformation);
             addToDatabaseStatement.setBoolean(4, isAvailable);
             addToDatabaseStatement.setString(5, sellerUsername);
-            addToDatabaseStatement.setString(6, buyerUsername);
-            addToDatabaseStatement.setString(7, type);
-            addToDatabaseStatement.setString(8, price);
+            addToDatabaseStatement.setString(6, type);
+            addToDatabaseStatement.setString(7, price);
             addToDatabaseStatement.executeUpdate();
 
         } catch (SQLException e) {
