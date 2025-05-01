@@ -61,7 +61,7 @@ public class User {
                         advertImage = ImageIO.read(byteInputStream); 
                     }
 
-                    viewedAdverts.add(new Advert(advertImage, advertsListRs.getString("advertTitle"), advertsListRs.getString("advertPrice"), advertsListRs.getString("advertDetails"), advertsListRs.getString("buyerUsername"), advertsListRs.getString("sellerUsername"), advertsListRs.getBoolean("availability"), advertsListRs.getString("type")));
+                    viewedAdverts.add(new Advert(advertImage, advertsListRs.getString("advertTitle"), advertsListRs.getString("advertPrice"), advertsListRs.getString("advertDetails"), advertsListRs.getString("sellerUsername"), advertsListRs.getBoolean("availability"), advertsListRs.getString("type")));
 
                     
                 }
@@ -96,7 +96,7 @@ public class User {
                         advertImage = ImageIO.read(byteInputStream); 
                     }
 
-                    bookmarkedAdverts.add(new Advert(advertImage, advertsListRs.getString("advertTitle"), advertsListRs.getString("advertPrice"), advertsListRs.getString("advertDetails"), advertsListRs.getString("buyerUsername"), advertsListRs.getString("sellerUsername"), advertsListRs.getBoolean("availability"), advertsListRs.getString("type")));
+                    bookmarkedAdverts.add(new Advert(advertImage, advertsListRs.getString("advertTitle"), advertsListRs.getString("advertPrice"), advertsListRs.getString("advertDetails"), advertsListRs.getString("sellerUsername"), advertsListRs.getBoolean("availability"), advertsListRs.getString("type")));
 
 
                 }
@@ -144,7 +144,7 @@ public class User {
                         e.printStackTrace();
                     } 
                 }
-                advertsList.add(new Advert(advertImage, advertsListRs.getString("advertTitle"), advertsListRs.getString("advertPrice"), advertsListRs.getString("advertDetails"), advertsListRs.getString("buyerUsername"), advertsListRs.getString("sellerUsername"), advertsListRs.getBoolean("availability"), advertsListRs.getString("type")));
+                advertsList.add(new Advert(advertImage, advertsListRs.getString("advertTitle"), advertsListRs.getString("advertPrice"), advertsListRs.getString("advertDetails"), advertsListRs.getString("sellerUsername"), advertsListRs.getBoolean("availability"), advertsListRs.getString("type")));
 
             }
 
