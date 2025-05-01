@@ -2,23 +2,26 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.text.NumberFormat;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -27,23 +30,26 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class AddAdvertScene extends JFrame implements ActionListener{
     JPanel mainPanel;
 
-    Image uploadedImage; 
+    Image uploadedImage = null; 
 
     JRadioButton lectureMaterial;
     JRadioButton cloth;
     JRadioButton other;
 
+    ButtonGroup selectedTypeGroup;
+
     JButton imageUploadButton;
     JButton addAdvertButton;
 
     JTextField titleField;
-    JFormattedTextField priceField;
+    JTextField priceField;
     JTextArea informationArea;
 
     JComboBox<Character> currencies;
@@ -79,6 +85,9 @@ public class AddAdvertScene extends JFrame implements ActionListener{
         addAdvertButton();
         mainPanel.add(addAdvertButton);    
         this.add(mainPanel);
+        SwingUtilities.invokeLater(() -> {
+            other.requestFocusInWindow();
+        });
     }
 
     private JPanel addNamePanel() {
@@ -91,6 +100,21 @@ public class AddAdvertScene extends JFrame implements ActionListener{
         titleField.setFont(new Font("Arial", Font.ITALIC, fontSize));
         titleField.setOpaque(true);
         titleField.setBorder(blackBorder);
+        titleField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (titleField.getText().equals("Enter the title of the advert")) {
+                    titleField.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (titleField.getText().trim().isEmpty()) {
+                    titleField.setText("Enter the title of the advert");
+                }
+            }
+        });
 
         wrapper.add(titleField);
         return wrapper;
@@ -110,14 +134,16 @@ public class AddAdvertScene extends JFrame implements ActionListener{
         lectureMaterial.setFont(new Font("Arial", Font.ITALIC, fontSize));
         cloth = new JRadioButton("Cloth");
         cloth.setFont(new Font("Arial", Font.ITALIC, fontSize));
-
         other = new JRadioButton("Other");
         other.setFont(new Font("Arial", Font.ITALIC, fontSize));
 
-        ButtonGroup buttonGroup = new ButtonGroup();
-        buttonGroup.add(lectureMaterial);
-        buttonGroup.add(cloth);
-        buttonGroup.add(other);
+        lectureMaterial.setActionCommand("Lecture Material");
+        cloth.setActionCommand("Cloth");
+        other.setActionCommand("Other");
+        selectedTypeGroup = new ButtonGroup();
+        selectedTypeGroup.add(lectureMaterial);
+        selectedTypeGroup.add(cloth);
+        selectedTypeGroup.add(other);
 
         wrapper.add(itemLabel, gbc);
         wrapper.add(lectureMaterial, gbc);
@@ -137,8 +163,7 @@ public class AddAdvertScene extends JFrame implements ActionListener{
         JLabel itemLabel = new JLabel("Enter the price of the advert:");
         itemLabel.setFont(new Font("Arial", Font.ITALIC, fontSize));
 
-        NumberFormat doubleFormat = NumberFormat.getNumberInstance();
-        priceField = new JFormattedTextField(doubleFormat);
+        priceField = new JTextField();
         priceField.setText("0");
         priceField.setColumns(7);
         priceField.setPreferredSize(new Dimension(350, 40));
@@ -170,7 +195,21 @@ public class AddAdvertScene extends JFrame implements ActionListener{
         informationArea.setOpaque(true);
         informationArea.setLineWrap(true);
         informationArea.setBorder(blackBorder);
+        informationArea.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (informationArea.getText().equals("Enter detailed information about the item")) {
+                    informationArea.setText("");
+                }
+            }
 
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (informationArea.getText().trim().isEmpty()) {
+                    informationArea.setText("Enter detailed information about the item");
+                }
+            }
+        });
         JScrollPane scroll = new JScrollPane(informationArea);
         scroll.setPreferredSize(new Dimension(600, 150));
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -218,8 +257,42 @@ public class AddAdvertScene extends JFrame implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == addAdvertButton) {
-            //Add advert (later)
+        if (e.getSource() == addAdvertButton) { //Add database checks later
+
+            if (uploadedImage == null) {
+                JOptionPane.showMessageDialog(null, "You must upload an image of your advert", "Invalid Image", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            double price;
+            try {
+                price = Double.parseDouble(priceField.getText());
+                if (price < 0) {
+                    throw new NumberFormatException("Negative value");
+                }
+            } catch (NumberFormatException exception) {
+                JOptionPane.showMessageDialog(null, "Entered price must be a non-negative number", "Invalid Price", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String selectedType;
+            ButtonModel selectedModel = selectedTypeGroup.getSelection();
+            if (selectedModel != null) {
+                selectedType = selectedModel.getActionCommand(); 
+            } else {
+                JOptionPane.showMessageDialog(null, "You must select a type for the advert", "No Type Selected", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (titleField.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Title cannot be empty", "Missing Title", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            Advert advert = new Advert(toBufferedImage(uploadedImage), titleField.getText(), price + " " + (Character) currencies.getSelectedItem(), informationArea.getText(), LoginScreen.getCurrentUser().getUsername(), LoginScreen.getCurrentUser().getIsAvailable(), selectedType); 
+            JOptionPane.showMessageDialog(null, "You have successfully added the advert", "", JOptionPane.INFORMATION_MESSAGE);
+            //advert.addToDatabase(); //Alper halledersin
+            this.dispose();
         }
         if (e.getSource() == imageUploadButton) {
             JFileChooser fileChooser = new JFileChooser();
@@ -258,4 +331,24 @@ public class AddAdvertScene extends JFrame implements ActionListener{
             }     
         }
     }
+
+    private BufferedImage toBufferedImage(Image img) {
+        if (img instanceof BufferedImage bufferedImage) {
+            return bufferedImage;
+        }
+
+        // Make sure the image is fully loaded
+        img = new ImageIcon(img).getImage();
+
+        // Create a buffered image with transparency
+        BufferedImage bimage = new BufferedImage(
+                img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+        // Draw the image on to the buffered image
+        Graphics2D bGr = bimage.createGraphics();
+        bGr.drawImage(img, 0, 0, null);
+        bGr.dispose();
+
+        return bimage;
+    }      
 }
