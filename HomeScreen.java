@@ -177,9 +177,6 @@ public class HomeScreen extends JFrame implements ActionListener{
         return new ImageIcon(icon.getImage().getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH));
     }
 
-    public static void main(String[] args) {
-        hm = new HomeScreen();
-    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
