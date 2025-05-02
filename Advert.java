@@ -1,21 +1,15 @@
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import javax.imageio.ImageIO;
 
 public class Advert {
 
-    String title;
-    String price;
-    BufferedImage image;
-    String detailedInformation;
-    String sellerUsername;
-    boolean isAvailable;
-    String type;
+    private String title;
+    private String price;
+    private BufferedImage image;
+    private String detailedInformation;
+    private String sellerUsername;
+    private boolean isAvailable;
+    private String type;
 
     public Advert(BufferedImage image, String title, String price, String detailedInformation, String sellerUsername, boolean isAvailable, String type){
         this.image = image;
@@ -55,6 +49,7 @@ public class Advert {
         return detailedInformation;
     }
 
+
     public String getSellerUsername() {
         return sellerUsername;
     }
@@ -62,7 +57,7 @@ public class Advert {
 
 
 
-    public boolean isAvailable() {
+    public boolean checkAvailability() {
         return isAvailable;
     }
 
@@ -72,31 +67,7 @@ public class Advert {
     public String getType() {
         return type;
     }
-
-
-
-
-    public void addToDatabase(){
-        try {
-
-            PreparedStatement addToDatabaseStatement = Main.databaseConnection.prepareStatement("INSERT INTO adverts(advertPicture,advertTitle,advertDetails,availability,sellerUsername,type,advertPrice) VALUES (?,?,?,?,?,?,?)" );
-            ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-            ImageIO.write(image, "png", byteOutputStream);
-            byte[] imageBytes = byteOutputStream.toByteArray();
-            addToDatabaseStatement.setBytes(1, imageBytes);
-            addToDatabaseStatement.setString(2, title);
-            addToDatabaseStatement.setString(3, detailedInformation);
-            addToDatabaseStatement.setBoolean(4, isAvailable);
-            addToDatabaseStatement.setString(5, sellerUsername);
-            addToDatabaseStatement.setString(6, type);
-            addToDatabaseStatement.setString(7, price);
-            addToDatabaseStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
+    public void updateAvailability(boolean isAvailable) {
+        this.isAvailable = isAvailable;
     }
 }
