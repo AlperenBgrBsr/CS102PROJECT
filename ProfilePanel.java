@@ -26,6 +26,7 @@ public class ProfilePanel extends JPanel{
     private User currentUser;
     private int ratingForAddRatingFrame;
     private static String otherProfileUsername;
+    private static Rating currentUsersRating;
 
   
 
@@ -38,7 +39,7 @@ public class ProfilePanel extends JPanel{
 
         //Refresh Button
         JButton refreshButton = new JButton();
-        ImageIcon refreshIcon = new ImageIcon("icons\\refreshIcon.png");
+        ImageIcon refreshIcon = new ImageIcon("refreshIcon.png");
         Image refreshIconImage = refreshIcon.getImage();
         refreshIconImage = refreshIconImage.getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
         ImageIcon newRefreshIcon = new ImageIcon(refreshIconImage);
@@ -63,12 +64,12 @@ public class ProfilePanel extends JPanel{
         });
 
         try{
-            profilePicture = ImageIO.read(new File("icons\\profile-picture.png")); 
-            emptyStar = ImageIO.read(new File("icons\\emptystar.png")); 
-            oneQuarterStar = ImageIO.read(new File("icons\\onequarterstar.png")); 
-            halfStar = ImageIO.read(new File("icons\\halfstar.png"));
-            threeQuarterStar = ImageIO.read(new File("icons\\threequarterstar.png"));  
-            fullStar = ImageIO.read(new File("icons\\fullstar.png"));           
+            profilePicture = ImageIO.read(new File("profile-picture.png")); 
+            emptyStar = ImageIO.read(new File("emptystar.png")); 
+            oneQuarterStar = ImageIO.read(new File("onequarterstar.png")); 
+            halfStar = ImageIO.read(new File("halfstar.png"));
+            threeQuarterStar = ImageIO.read(new File("threequarterstar.png"));  
+            fullStar = ImageIO.read(new File("fullstar.png"));           
         } catch (IOException e){
             JOptionPane.showMessageDialog(null, "Image is not loaded", "ERROR!",JOptionPane.ERROR_MESSAGE);
         }
@@ -94,7 +95,7 @@ public class ProfilePanel extends JPanel{
 
             JToggleButton homeButton = new JToggleButton();
 
-            ImageIcon homeIcon = new ImageIcon("icons\\homeIcon.png");
+            ImageIcon homeIcon = new ImageIcon("homeIcon.png");
             Image homeIconImage = homeIcon.getImage();
             homeIconImage = homeIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newHomeIcon = new ImageIcon(homeIconImage);
@@ -103,11 +104,11 @@ public class ProfilePanel extends JPanel{
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    currentUser.setIsAvailable(true);
+                    currentUser.updateAvailability(true);
                     //Changing availability in database 
                     //--------------------------------
                     try {
-                        PreparedStatement changeAvailability = Main.databaseConnection.prepareStatement("UPDATE users SET available = true WHERE username = ?");
+                        PreparedStatement changeAvailability = Database.databaseConnection.prepareStatement("UPDATE users SET available = true WHERE username = ?");
                         changeAvailability.setString(1, currentUser.getUsername());
                         changeAvailability.executeUpdate();
                     } catch (SQLException e1) {
@@ -122,7 +123,7 @@ public class ProfilePanel extends JPanel{
             homeButton.setBounds(700,180, 60,40);
 
             JToggleButton awayButton = new JToggleButton();
-            ImageIcon awayIcon = new ImageIcon("icons\\awayIcon.png");
+            ImageIcon awayIcon = new ImageIcon("awayIcon.png");
             Image awayIconImage = awayIcon.getImage();
             awayIconImage = awayIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newAwayIcon = new ImageIcon(awayIconImage);
@@ -131,11 +132,11 @@ public class ProfilePanel extends JPanel{
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    currentUser.setIsAvailable(false);
+                    currentUser.updateAvailability(false);
                     //Changing availability in database 
                     //--------------------------------
                     try {
-                        PreparedStatement changeAvailability = Main.databaseConnection.prepareStatement("UPDATE users SET available = false WHERE username = ?");
+                        PreparedStatement changeAvailability = Database.databaseConnection.prepareStatement("UPDATE users SET available = false WHERE username = ?");
                         changeAvailability.setString(1, currentUser.getUsername());
                         changeAvailability.executeUpdate();
                     } catch (SQLException e1) {
@@ -181,53 +182,38 @@ public class ProfilePanel extends JPanel{
                     JPanel ratingsPanel = new JPanel();
                     ratingsPanel.setLayout(new GridLayout(currentUser.getRatingAmount(),1));
                     ratingsPanel.setBackground(Color.white);
+                    ArrayList<Rating> ratingsList = currentUser.getRatingsList();
 
-                    PreparedStatement ratingStatement;
-                    try {
-                        ratingStatement = Main.databaseConnection.prepareStatement("SELECT * FROM ratings WHERE recieverId = (SELECT user_id FROM users WHERE username = ?)");
-                        ratingStatement.setString(1, username);
-                        ResultSet rs = ratingStatement.executeQuery();
-                        while (rs.next()){
-                            int rating = rs.getInt("rating");
-                            int sender_Id = rs.getInt("sender_Id");
-                            String senderUsername = "";
+                    for (int i = 0; i < ratingsList.size(); i++){
 
-                            PreparedStatement ratingSenderStatement = Main.databaseConnection.prepareStatement("SELECT username FROM users WHERE user_Id = ?");
-                            ratingSenderStatement.setInt(1, sender_Id);
-                            ResultSet rs_SenderUsername = ratingSenderStatement.executeQuery();
-                            while (rs_SenderUsername.next() ){
-                                senderUsername = rs_SenderUsername.getString("username");
-                            }
-                            
-                            JPanel sampleRatingPanel = new JPanel(){
+                        Rating currentRating = ratingsList.get(i);
+                        JPanel sampleRatingPanel = new JPanel(){
 
-                                protected void paintComponent(Graphics g2){
-                                    super.paintComponent(g2);
-                                    for (int i = 0; i < 5; i++){
-                                        g2.drawImage(emptyStar, 200 + 90*i, 60, 90, 90, this);
-                                    }
-                                    for (int i = 0; i < rating; i++){
-                                        g2.drawImage(fullStar, 200 + 90*i, 60, 90, 90, this);
-                                    }
-        
+                            protected void paintComponent(Graphics g2){
+                                super.paintComponent(g2);
+                                for (int i = 0; i < 5; i++){
+                                    g2.drawImage(emptyStar, 200 + 90*i, 60, 90, 90, this);
                                 }
+                                for (int i = 0; i < currentRating.getRating(); i++){
+                                    g2.drawImage(fullStar, 200 + 90*i, 60, 90, 90, this);
+                                }
+    
+                            }
 
 
-                            };
-                            sampleRatingPanel.setLayout(null);
-                            JLabel senderUsernameLabel = new JLabel(senderUsername);
-                            senderUsernameLabel.setFont(new Font("Arial", Font.BOLD, 20));
-                            senderUsernameLabel.setBounds(20,60,200,100);
-                            sampleRatingPanel.setPreferredSize(new Dimension(750,200));
-                            sampleRatingPanel.add(senderUsernameLabel);
-                            sampleRatingPanel.setBackground(Color.white);
-                            ratingsPanel.add(sampleRatingPanel);
+                        };
+                        sampleRatingPanel.setLayout(null);
+                        JLabel senderUsernameLabel = new JLabel(currentRating.getSenderUsername());
+                        senderUsernameLabel.setFont(new Font("Arial", Font.BOLD, 20));
+                        senderUsernameLabel.setBounds(20,60,200,100);
+                        sampleRatingPanel.setPreferredSize(new Dimension(750,200));
+                        sampleRatingPanel.add(senderUsernameLabel);
+                        sampleRatingPanel.setBackground(Color.white);
+                        ratingsPanel.add(sampleRatingPanel);
 
 
-                        }
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }     
+
+                    }
 
                     JScrollPane ratingAmountScrollPane = new JScrollPane(ratingsPanel);
                     ratingAmountScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -240,7 +226,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(new Color(151,12,16));
+                    returnButton.setBackground(Color.red);
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -277,7 +263,7 @@ public class ProfilePanel extends JPanel{
             ArrayList<Review> currentReviews = new ArrayList<>();
             currentReviews = currentUser.getReviewsList();
             for (int i = 0; i < currentReviews.size(); i++){
-                reviewArea.setText("\n" + currentReviews.get(i).getSenderUsername() + ": " + currentReviews.get(i).getReview() + "\n" + reviewArea.getText());
+                reviewArea.setText("\n" + currentReviews.get(i).getSenderUsername() + ": " + currentReviews.get(i).getReviewContent() + "\n" + reviewArea.getText());
             }
             
 
@@ -352,7 +338,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(new Color(151,12,16));
+                    returnButton.setBackground(Color.red);
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -418,7 +404,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(new Color(151,12,16));
+                    returnButton.setBackground(Color.red);
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -451,7 +437,7 @@ public class ProfilePanel extends JPanel{
             logoutButton.setBounds(800,690,150,40);
             logoutButton.setFont(new Font("Arial", Font.BOLD, 20));
             logoutButton.setFocusable(false);  
-            logoutButton.setBackground(new Color(151,12,16));
+            logoutButton.setBackground(Color.red);
             logoutButton.setForeground(Color.white);
             logoutButton.addActionListener(new ActionListener() {
 
@@ -488,7 +474,7 @@ public class ProfilePanel extends JPanel{
             //---------------------------------
             String email = "";
             try {   
-                PreparedStatement emailStatement = Main.databaseConnection.prepareStatement("SELECT user_email FROM users WHERE username = ?");
+                PreparedStatement emailStatement = Database.databaseConnection.prepareStatement("SELECT user_email FROM users WHERE username = ?");
                 emailStatement.setString(1, username);
                 ResultSet rs = emailStatement.executeQuery();
                 while ( rs.next() ){
@@ -527,7 +513,7 @@ public class ProfilePanel extends JPanel{
             //GETTING AVAILABILITY FROM THE DATABASE
             //-----------------------------------------------------
             try {
-                PreparedStatement availabilityStatement = Main.databaseConnection.prepareStatement("SELECT available FROM users WHERE username = ?");
+                PreparedStatement availabilityStatement = Database.databaseConnection.prepareStatement("SELECT available FROM users WHERE username = ?");
                 availabilityStatement.setString(1, username);
                 ResultSet rs = availabilityStatement.executeQuery();
                 while (rs.next()){
@@ -577,54 +563,97 @@ public class ProfilePanel extends JPanel{
                     JPanel ratingsPanel = new JPanel();
                     ratingsPanel.setLayout(new GridLayout(getTotalNumberOfRatingsForOtherProfile(),1));
                     ratingsPanel.setBackground(Color.white);
+                    ArrayList<Rating> ratingsList = getRatingsListForOtherProfile();
 
-                    PreparedStatement ratingStatement;
-                    try {
-                        ratingStatement = Main.databaseConnection.prepareStatement("SELECT * FROM ratings WHERE recieverId = (SELECT user_id FROM users WHERE username = ?)");
-                        ratingStatement.setString(1, username);
-                        ResultSet rs = ratingStatement.executeQuery();
-                        while (rs.next()){
-                            int rating = rs.getInt("rating");
-                            int sender_Id = rs.getInt("sender_Id");
-                            String senderUsername = "";
+                    boolean hasRated = false;
+                    currentUsersRating = null;
 
-                            PreparedStatement ratingSenderStatement = Main.databaseConnection.prepareStatement("SELECT username FROM users WHERE user_Id = ?");
-                            ratingSenderStatement.setInt(1, sender_Id);
-                            ResultSet rs_SenderUsername = ratingSenderStatement.executeQuery();
-                            while (rs_SenderUsername.next() ){
-                                senderUsername = rs_SenderUsername.getString("username");
+                    for (int i = 0; i < ratingsList.size() && !hasRated ; i++){
+                        if ( ratingsList.get(i).getSenderUsername().equals(currentUser.getUsername())){
+                            hasRated = true;
+                            currentUsersRating = ratingsList.get(i);
+                        }
+                    }
+
+                    if ( hasRated ){
+                        JPanel sampleRatingPanel = new JPanel(){
+
+                            protected void paintComponent(Graphics g2){
+                                super.paintComponent(g2);
+                                for (int i = 0; i < 5; i++){
+                                    g2.drawImage(emptyStar, 200 + 80*i, 60, 80, 80, this);
+                                }
+                                for (int i = 0; i < currentUsersRating.getRating(); i++){
+                                    g2.drawImage(fullStar, 200 + 80*i, 60, 80, 80, this);
+                                }
+    
                             }
-                            
+
+                        };
+
+                        sampleRatingPanel.setLayout(null);
+                        JLabel senderUsernameLabel = new JLabel(currentUsersRating.getSenderUsername());
+                        senderUsernameLabel.setFont(new Font("Arial", Font.BOLD, 20));
+                        senderUsernameLabel.setBounds(20,60,200,100);
+                        sampleRatingPanel.setPreferredSize(new Dimension(750,200));
+                        sampleRatingPanel.add(senderUsernameLabel);
+                        sampleRatingPanel.setBackground(Color.white);
+    
+                        JButton deleteRatingButton = new JButton("Delete Rating");
+                        deleteRatingButton.setBorder(new LineBorder(Color.BLACK,1));
+                        deleteRatingButton.setFont(new Font("Arial", Font.BOLD, 20));
+                        deleteRatingButton.setFocusable(false);  
+                        deleteRatingButton.setBackground(Color.red);
+                        deleteRatingButton.setForeground(Color.white);
+                        deleteRatingButton.setBounds(605,80,150,40);
+                        deleteRatingButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+
+                                Database.deleteFromDatabase(currentUsersRating);
+                                JOptionPane.showMessageDialog(null, "You have deleted your rating of " + currentUsersRating.getRating() + " from " + currentUsersRating.getRecieverUsername(),"Deleted Rating",JOptionPane.INFORMATION_MESSAGE);
+                                ratingAmountFrame.dispose();
+                                refreshButton.doClick();
+                                    
+                            }
+                                
+                        });
+                        sampleRatingPanel.add(deleteRatingButton);
+                        ratingsPanel.add(sampleRatingPanel);
+                    }
+
+                    for (int i = 0; i < ratingsList.size(); i++){
+                        
+                        Rating currentRating = ratingsList.get(i);
+                        if ( !(currentRating.getSenderUsername().equals(currentUser.getUsername()))){
                             JPanel sampleRatingPanel = new JPanel(){
 
                                 protected void paintComponent(Graphics g2){
                                     super.paintComponent(g2);
                                     for (int i = 0; i < 5; i++){
-                                        g2.drawImage(emptyStar, 200 + 90*i, 60, 90, 90, this);
+                                        g2.drawImage(emptyStar, 200 + 80*i, 60, 80, 80, this);
                                     }
-                                    for (int i = 0; i < rating; i++){
-                                        g2.drawImage(fullStar, 200 + 90*i, 60, 90, 90, this);
+                                    for (int i = 0; i < currentRating.getRating(); i++){
+                                        g2.drawImage(fullStar, 200 + 80*i, 60, 80, 80, this);
                                     }
         
                                 }
-
-
+    
+    
                             };
+    
                             sampleRatingPanel.setLayout(null);
-                            JLabel senderUsernameLabel = new JLabel(senderUsername);
+                            JLabel senderUsernameLabel = new JLabel(currentRating.getSenderUsername());
                             senderUsernameLabel.setFont(new Font("Arial", Font.BOLD, 20));
                             senderUsernameLabel.setBounds(20,60,200,100);
                             sampleRatingPanel.setPreferredSize(new Dimension(750,200));
                             sampleRatingPanel.add(senderUsernameLabel);
                             sampleRatingPanel.setBackground(Color.white);
                             ratingsPanel.add(sampleRatingPanel);
-
-
                         }
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }     
-
+                        
+                      
+                    }
                     JScrollPane ratingAmountScrollPane = new JScrollPane(ratingsPanel);
                     ratingAmountScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
                    
@@ -636,7 +665,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(new Color(151,12,16));
+                    returnButton.setBackground(Color.red);
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -670,136 +699,146 @@ public class ProfilePanel extends JPanel{
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    
-                    ratingForAddRatingFrame = 0;
-                    JFrame addRatingFrame = new JFrame("Add Rating");
-                    JPanel addRatingPanel = new JPanel(){
-                        
-                        protected void paintComponent(Graphics g2){
-                            super.paintComponent(g2);
-                            for (int i = 0; i < 5; i++){
-                                g2.drawImage(emptyStar, 10 + 90*i, 60, 90, 90, this);
-                            }
-                            for (int i = 0; i < ratingForAddRatingFrame; i++){
-                                g2.drawImage(fullStar, 10 + 90*i, 60, 90, 90, this);
-                            }
-
+                    try {
+                        PreparedStatement currentUserIdStatement = Database.databaseConnection.prepareStatement("SELECT user_id FROM users WHERE username = ?");
+                        currentUserIdStatement.setString(1, currentUser.getUsername());
+                        ResultSet currentUserIdRs = currentUserIdStatement.executeQuery();
+                        int currentUserId = 0;
+                        if (currentUserIdRs.next()){
+                            currentUserId = currentUserIdRs.getInt("user_id");
                         }
 
-                    };
-                    
-                    addRatingPanel.addMouseListener(new MouseListener() {
-
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-            
-                            if ( e.getY() <= 150 && e.getY() >= 60 ){
-                                if ( e.getX() >= 0 && e.getX() <= 100 ){
-                                    ratingForAddRatingFrame = 1;
-
-                                }
-                                else if ( e.getX() <= 190 ){
-                                    ratingForAddRatingFrame = 2;
-                                }
-                                else if ( e.getX() <= 280 ){
-                                    ratingForAddRatingFrame = 3;
-                                }
-                                else if ( e.getX() <= 370 ){
-                                    ratingForAddRatingFrame = 4;
-                                }
-                                else if ( e.getX() <= 460 ){
-                                    ratingForAddRatingFrame = 5;
-                                }
-                                addRatingPanel.repaint();
-                            }
+                        PreparedStatement checkAddRatingStatement = Database.databaseConnection.prepareStatement("SELECT sender_Id FROM ratings WHERE recieverId = (SELECT user_id from users WHERE username = ?)");
+                        checkAddRatingStatement.setString(1, username);
+                        ResultSet checkAddRatingRs = checkAddRatingStatement.executeQuery();
+                        ArrayList<Integer> allRatingSendersId = new ArrayList<>();
+                        while (checkAddRatingRs.next()){
                             
+                            allRatingSendersId.add(checkAddRatingRs.getInt("sender_Id"));
+
                         }
-                        @Override
-                        public void mousePressed(MouseEvent e) {}
-                        @Override
-                        public void mouseReleased(MouseEvent e) {}
-                        @Override
-                        public void mouseEntered(MouseEvent e) {}
-                        @Override
-                        public void mouseExited(MouseEvent e) {}
-                        
-                    });
+                        if ( allRatingSendersId.indexOf(currentUserId) < 0){
 
-                    JButton resetButton = new JButton("Reset");
-                    resetButton.setFocusable(false);
-                    resetButton.setBorder(new LineBorder(Color.black,1));
-                    resetButton.setBackground(new Color(151,12,16));
-                    resetButton.setForeground(Color.white);
-                    resetButton.addActionListener(new ActionListener() {
-
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
                             ratingForAddRatingFrame = 0;
-                            addRatingPanel.repaint();
-                        }
-                        
-                    });
-                    resetButton.setBounds(60,180,150,50);
-                    resetButton.setFont(new Font("Arial", Font.BOLD, 20));
+                            JFrame addRatingFrame = new JFrame("Add Rating");
+                            JPanel addRatingPanel = new JPanel(){
+                                
+                                protected void paintComponent(Graphics g2){
+                                    super.paintComponent(g2);
+                                    for (int i = 0; i < 5; i++){
+                                        g2.drawImage(emptyStar, 10 + 90*i, 60, 90, 90, this);
+                                    }
+                                    for (int i = 0; i < ratingForAddRatingFrame; i++){
+                                        g2.drawImage(fullStar, 10 + 90*i, 60, 90, 90, this);
+                                    }
 
-                    JButton sendRating = new JButton("Send Rating");
-                    sendRating.setFocusable(false);
-                    sendRating.setBorder(new LineBorder(Color.black,1));
-                    sendRating.setBackground(new Color(151,12,16));
-                    sendRating.setForeground(Color.white);
-                    sendRating.addActionListener(new ActionListener() {
-
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            ImageIcon fullstarIcon = new ImageIcon(fullStar);
-                            addRatingFrame.dispose();
-                            JOptionPane.showMessageDialog(null, "You have rated " + username + " " + ratingForAddRatingFrame + " stars!", "USER RATING", JOptionPane.INFORMATION_MESSAGE, fullstarIcon);
-                            try {
-                                int senderId = 0; 
-                                int recieverId = 0;
-                                PreparedStatement senderIdStatement = Main.databaseConnection.prepareStatement("SELECT user_id FROM users WHERE username = ?");
-                                senderIdStatement.setString(1, currentUser.getUsername());
-                                ResultSet senderRs = senderIdStatement.executeQuery();
-                                while (senderRs.next()){
-                                    senderId = senderRs.getInt("user_Id");
                                 }
-                                PreparedStatement recieverIdStatement = Main.databaseConnection.prepareStatement("SELECT user_id FROM users WHERE username = ?");
-                                recieverIdStatement.setString(1, username);
-                                ResultSet recieverRs = recieverIdStatement.executeQuery();
-                                while (recieverRs.next()){
-                                    recieverId = recieverRs.getInt("user_Id");
+
+                            };
+                            
+                            addRatingPanel.addMouseListener(new MouseListener() {
+
+                                @Override
+                                public void mouseClicked(MouseEvent e) {
+                    
+                                    if ( e.getY() <= 150 && e.getY() >= 60 ){
+                                        if ( e.getX() >= 0 && e.getX() <= 100 ){
+                                            ratingForAddRatingFrame = 1;
+
+                                        }
+                                        else if ( e.getX() <= 190 ){
+                                            ratingForAddRatingFrame = 2;
+                                        }
+                                        else if ( e.getX() <= 280 ){
+                                            ratingForAddRatingFrame = 3;
+                                        }
+                                        else if ( e.getX() <= 370 ){
+                                            ratingForAddRatingFrame = 4;
+                                        }
+                                        else if ( e.getX() <= 460 ){
+                                            ratingForAddRatingFrame = 5;
+                                        }
+                                        addRatingPanel.repaint();
+                                    }
+                                    
                                 }
-                                PreparedStatement addRatingStatement = Main.databaseConnection.prepareStatement("INSERT INTO ratings VALUES(?,?,?)");
-                                addRatingStatement.setInt(1, senderId);
-                                addRatingStatement.setInt(2, recieverId);
-                                addRatingStatement.setInt(3, ratingForAddRatingFrame);
-                                addRatingStatement.executeUpdate();
-                                refreshButton.doClick();
+                                @Override
+                                public void mousePressed(MouseEvent e) {}
+                                @Override
+                                public void mouseReleased(MouseEvent e) {}
+                                @Override
+                                public void mouseEntered(MouseEvent e) {}
+                                @Override
+                                public void mouseExited(MouseEvent e) {}
+                                
+                            });
 
-                            } catch (SQLException e1) {
-                                e1.printStackTrace();
-                            }
+                            JButton resetButton = new JButton("Reset");
+                            resetButton.setFocusable(false);
+                            resetButton.setBorder(new LineBorder(Color.black,1));
+                            resetButton.setBackground(Color.red);
+                            resetButton.setForeground(Color.white);
+                            resetButton.addActionListener(new ActionListener() {
+
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    ratingForAddRatingFrame = 0;
+                                    addRatingPanel.repaint();
+                                }
+                                
+                            });
+                            resetButton.setBounds(60,180,150,50);
+                            resetButton.setFont(new Font("Arial", Font.BOLD, 20));
+
+                            JButton sendRating = new JButton("Send Rating");
+                            sendRating.setFocusable(false);
+                            sendRating.setBorder(new LineBorder(Color.black,1));
+                            sendRating.setBackground(Color.red);
+                            sendRating.setForeground(Color.white);
+                            sendRating.addActionListener(new ActionListener() {
+
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+
+                                    Rating addedRating = new Rating(currentUser.getUsername(), username, ratingForAddRatingFrame);
+                                    Database.addToDatabase(addedRating);
+                                    ImageIcon fullstarIcon = new ImageIcon(fullStar);
+                                    addRatingFrame.dispose();
+                                    JOptionPane.showMessageDialog(null, "You have rated " + username + " " + ratingForAddRatingFrame + " stars!", "USER RATING", JOptionPane.INFORMATION_MESSAGE, fullstarIcon);
+                                    refreshButton.doClick();
+
+                                }
+                                
+                            });
+                            sendRating.setBounds(250,180,150,50);
+                            sendRating.setFont(new Font("Arial", Font.BOLD, 20));
+
+                            JLabel label = new JLabel("SELECT RATING FOR " + username.toUpperCase(Locale.ENGLISH ));
+                            label.setFont(new Font("Arial", Font.BOLD + Font.ITALIC, 20));
+                            label.setBounds(30,10,480,40);
+
+                            addRatingPanel.add(label);
+                            addRatingPanel.add(sendRating);
+                            addRatingPanel.add(resetButton);
+                            addRatingPanel.setLayout(null);
+                            addRatingPanel.setBackground(Color.white);
+                            addRatingPanel.setPreferredSize(new Dimension(480,250));
+                            addRatingFrame.add(addRatingPanel);
+                            addRatingFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            addRatingFrame.setResizable(false);
+                            addRatingFrame.pack();
+                            addRatingFrame.setVisible(true);
+
                         }
-                        
-                    });
-                    sendRating.setBounds(250,180,150,50);
-                    sendRating.setFont(new Font("Arial", Font.BOLD, 20));
+                        else{
+                            JOptionPane.showMessageDialog(null, "You cannot rate one user more than once!", "ERROR",JOptionPane.ERROR_MESSAGE);
+                        }
 
-                    JLabel label = new JLabel("SELECT RATING FOR " + username.toUpperCase(Locale.ENGLISH ));
-                    label.setFont(new Font("Arial", Font.BOLD + Font.ITALIC, 20));
-                    label.setBounds(30,10,480,40);
 
-                    addRatingPanel.add(label);
-                    addRatingPanel.add(sendRating);
-                    addRatingPanel.add(resetButton);
-                    addRatingPanel.setLayout(null);
-                    addRatingPanel.setBackground(Color.white);
-                    addRatingPanel.setPreferredSize(new Dimension(480,250));
-                    addRatingFrame.add(addRatingPanel);
-                    addRatingFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    addRatingFrame.setResizable(false);
-                    addRatingFrame.pack();
-                    addRatingFrame.setVisible(true);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                    
                 }
                 
             });
@@ -814,7 +853,7 @@ public class ProfilePanel extends JPanel{
             reviewArea.setFont(new Font("Arial",Font.PLAIN,15));
             ArrayList<Review> currentReviews = getReviewsListForOtherProfile();
             for (int i = 0; i < currentReviews.size(); i++){
-                reviewArea.setText("\n" + " " + currentReviews.get(i).getSenderUsername() +": " + currentReviews.get(i).getReview() + "\n" + reviewArea.getText());
+                reviewArea.setText("\n" + " " + currentReviews.get(i).getSenderUsername() +": " + currentReviews.get(i).getReviewContent() + "\n" + reviewArea.getText());
             }
             reviewArea.setCaretPosition(0);
 
@@ -863,7 +902,7 @@ public class ProfilePanel extends JPanel{
                 public void actionPerformed(ActionEvent e) {
                     String review = reviewTextField.getText();
                     Review newReview = new Review(currentUser.getUsername(), username, review);
-                    newReview.addToDatabase();
+                    Database.addToDatabase(newReview);
                     reviewTextField.setText(" Add Review");
                     refreshButton.doClick();
                     
@@ -998,7 +1037,7 @@ public class ProfilePanel extends JPanel{
         try {
             double rating = 0;
             int totalNumberOfRatings = 0;
-            PreparedStatement ratingStatement = Main.databaseConnection.prepareStatement("SELECT rating FROM ratings WHERE recieverId = (SELECT user_id FROM users WHERE username = ?)");
+            PreparedStatement ratingStatement = Database.databaseConnection.prepareStatement("SELECT rating FROM ratings WHERE recieverId = (SELECT user_id FROM users WHERE username = ?)");
             ratingStatement.setString(1, otherProfileUsername);
             ResultSet rs = ratingStatement.executeQuery();
             while (rs.next()){
@@ -1017,7 +1056,7 @@ public class ProfilePanel extends JPanel{
         int totalNumberOfRatings = 0;
         try {
             
-            PreparedStatement ratingStatement = Main.databaseConnection.prepareStatement("SELECT rating FROM ratings WHERE recieverId = (SELECT user_id FROM users WHERE username = ?)");
+            PreparedStatement ratingStatement = Database.databaseConnection.prepareStatement("SELECT rating FROM ratings WHERE recieverId = (SELECT user_id FROM users WHERE username = ?)");
             ratingStatement.setString(1, otherProfileUsername);
             ResultSet rs = ratingStatement.executeQuery();
             while (rs.next()){
@@ -1034,7 +1073,7 @@ public class ProfilePanel extends JPanel{
         ArrayList<Review> reviewsList = new ArrayList<>();
         try {
             
-            PreparedStatement getReviewsStatement = Main.databaseConnection.prepareStatement("SELECT * FROM reviews WHERE recieverId = (SELECT user_Id FROM users WHERE username = ?)");
+            PreparedStatement getReviewsStatement = Database.databaseConnection.prepareStatement("SELECT * FROM reviews WHERE recieverId = (SELECT user_Id FROM users WHERE username = ?)");
             getReviewsStatement.setString(1, otherProfileUsername);
             ResultSet reviewsRs = getReviewsStatement.executeQuery();
             while (reviewsRs.next()){
@@ -1044,7 +1083,7 @@ public class ProfilePanel extends JPanel{
                 String reviewContent = reviewsRs.getString("review");
                 
                 String senderUsername = "";
-                PreparedStatement senderUsernameStatement = Main.databaseConnection.prepareStatement("SELECT username FROM users WHERE user_id = ?");
+                PreparedStatement senderUsernameStatement = Database.databaseConnection.prepareStatement("SELECT username FROM users WHERE user_id = ?");
                 senderUsernameStatement.setInt(1, senderId);
                 ResultSet senderRs = senderUsernameStatement.executeQuery();
                 while (senderRs.next()){
@@ -1052,7 +1091,7 @@ public class ProfilePanel extends JPanel{
                 }
  
                 String recieverUsername = "";
-                PreparedStatement recieverUsernameStatement = Main.databaseConnection.prepareStatement("SELECT username FROM users WHERE user_id = ?");
+                PreparedStatement recieverUsernameStatement = Database.databaseConnection.prepareStatement("SELECT username FROM users WHERE user_id = ?");
                 recieverUsernameStatement.setInt(1, recieverId);
                 ResultSet recieverRs = recieverUsernameStatement.executeQuery();
                 while (recieverRs.next()){
@@ -1072,7 +1111,7 @@ public class ProfilePanel extends JPanel{
     public static int getAdvertsCountForOtherProfile(){
         int advertsCount = 0;
         try {
-            PreparedStatement getAdvertsListStatement = Main.databaseConnection.prepareStatement("SELECT * FROM adverts WHERE sellerUsername = ?");
+            PreparedStatement getAdvertsListStatement = Database.databaseConnection.prepareStatement("SELECT * FROM adverts WHERE sellerUsername = ?");
             getAdvertsListStatement.setString(1, otherProfileUsername);
             ResultSet advertsListRs = getAdvertsListStatement.executeQuery();
             while ( advertsListRs.next() ){
@@ -1084,6 +1123,36 @@ public class ProfilePanel extends JPanel{
             e.printStackTrace();
         } 
         return advertsCount;
+    }
+
+    public static ArrayList<Rating> getRatingsListForOtherProfile (){
+        ArrayList<Rating> ratingsList = new ArrayList<>();
+
+        try {
+            PreparedStatement ratingStatement = Database.databaseConnection.prepareStatement("SELECT * FROM ratings WHERE recieverId = (SELECT user_id FROM users WHERE username = ?)");
+            ratingStatement.setString(1, otherProfileUsername);
+            ResultSet rs = ratingStatement.executeQuery();
+            while (rs.next()){
+               
+               
+                int currentRating = rs.getInt("rating");   
+                int sender_Id = rs.getInt("sender_Id");
+                String senderUsername = "";
+
+                PreparedStatement ratingSenderStatement = Database.databaseConnection.prepareStatement("SELECT username FROM users WHERE user_Id = ?");
+                ratingSenderStatement.setInt(1, sender_Id);
+                ResultSet rs_SenderUsername = ratingSenderStatement.executeQuery();
+                while (rs_SenderUsername.next() ){
+                    senderUsername = rs_SenderUsername.getString("username");
+                }
+
+                ratingsList.add(new Rating(senderUsername, otherProfileUsername, currentRating));
+                
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ratingsList;
     }
     
 
