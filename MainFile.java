@@ -3,7 +3,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class MainFile {
-    public static Connection databaseConnection;
+
     public static HomeScreen hm;
     public static void main(String[] args) {
         Database.createConnection();
