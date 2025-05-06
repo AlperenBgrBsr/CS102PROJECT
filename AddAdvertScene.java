@@ -288,6 +288,22 @@ public class AddAdvertScene extends JFrame implements ActionListener{
                 JOptionPane.showMessageDialog(null, "Title cannot be empty", "Missing Title", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            
+            //checks for duplicate titles  
+            ArrayList<String> advertTitlesList = new ArrayList<>();
+            try {
+                PreparedStatement advertTitlesStatement = Database.databaseConnection.prepareStatement("SELECT advertTitle FROM adverts");
+                ResultSet advertTitlesRs = advertTitlesStatement.executeQuery();
+                while ( advertTitlesRs.next() ){
+                    advertTitlesList.add(advertTitlesRs.getString("advertTitle"));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            if ( advertTitlesList.indexOf(titleField.getText()) >= 0){
+                JOptionPane.showMessageDialog(null, "Cannot create another advert with the same title", "Same Title", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             Advert advert = new Advert(toBufferedImage(uploadedImage), titleField.getText(), price + " " + (Character) currencies.getSelectedItem(), informationArea.getText(), LoginScreen.getCurrentUser().getUsername(), true , selectedType); 
             JOptionPane.showMessageDialog(null, "You have successfully added the advert", "", JOptionPane.INFORMATION_MESSAGE);
