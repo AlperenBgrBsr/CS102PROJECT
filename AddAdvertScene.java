@@ -289,7 +289,7 @@ public class AddAdvertScene extends JFrame implements ActionListener{
                 return;
             }
 
-            Advert advert = new Advert(toBufferedImage(uploadedImage), titleField.getText(), price + " " + (Character) currencies.getSelectedItem(), informationArea.getText(), LoginScreen.getCurrentUser().getUsername(), LoginScreen.getCurrentUser().getIsAvailable(), selectedType); 
+            Advert advert = new Advert(toBufferedImage(uploadedImage), titleField.getText(), price + " " + (Character) currencies.getSelectedItem(), informationArea.getText(), LoginScreen.getCurrentUser().getUsername(), true , selectedType); 
             JOptionPane.showMessageDialog(null, "You have successfully added the advert", "", JOptionPane.INFORMATION_MESSAGE);
             Database.addToDatabase(advert);
             this.dispose();
