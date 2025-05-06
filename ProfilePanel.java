@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
@@ -11,6 +12,7 @@ import java.util.Locale;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+
 
 
 
@@ -27,6 +29,9 @@ public class ProfilePanel extends JPanel{
     private int ratingForAddRatingFrame;
     private static String otherProfileUsername;
     private static Rating currentUsersRating;
+    private static JButton homeButtonForAdvert;
+    private static JButton awayButtonForAdvert;
+    
 
   
 
@@ -39,7 +44,7 @@ public class ProfilePanel extends JPanel{
 
         //Refresh Button
         JButton refreshButton = new JButton();
-        ImageIcon refreshIcon = new ImageIcon("icons\\refreshIcon.png");
+        ImageIcon refreshIcon = new ImageIcon("refreshIcon.png");
         Image refreshIconImage = refreshIcon.getImage();
         refreshIconImage = refreshIconImage.getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
         ImageIcon newRefreshIcon = new ImageIcon(refreshIconImage);
@@ -53,18 +58,23 @@ public class ProfilePanel extends JPanel{
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                MainFile.hm.changePanel(new ProfilePanel(username, currentUser));
+                //Main.frame and Main.currentPanel will change (the names)!!
+                Main.frame.getContentPane().remove(Main.currentPanel);
+                Main.currentPanel = new ProfilePanel(username, currentUser);
+                Main.frame.getContentPane().add(Main.currentPanel);
+                Main.frame.revalidate();
+                Main.frame.repaint();
             }
             
         });
 
         try{
-            profilePicture = ImageIO.read(new File("icons\\profile-picture.png")); 
-            emptyStar = ImageIO.read(new File("icons\\emptystar.png")); 
-            oneQuarterStar = ImageIO.read(new File("icons\\onequarterstar.png")); 
-            halfStar = ImageIO.read(new File("icons\\halfstar.png"));
-            threeQuarterStar = ImageIO.read(new File("icons\\threequarterstar.png"));  
-            fullStar = ImageIO.read(new File("icons\\fullstar.png"));           
+            profilePicture = ImageIO.read(new File("profile-picture.png")); 
+            emptyStar = ImageIO.read(new File("emptystar.png")); 
+            oneQuarterStar = ImageIO.read(new File("onequarterstar.png")); 
+            halfStar = ImageIO.read(new File("halfstar.png"));
+            threeQuarterStar = ImageIO.read(new File("threequarterstar.png"));  
+            fullStar = ImageIO.read(new File("fullstar.png"));           
         } catch (IOException e){
             JOptionPane.showMessageDialog(null, "Image is not loaded", "ERROR!",JOptionPane.ERROR_MESSAGE);
         }
@@ -90,7 +100,7 @@ public class ProfilePanel extends JPanel{
 
             JToggleButton homeButton = new JToggleButton();
 
-            ImageIcon homeIcon = new ImageIcon("icons\\homeIcon.png");
+            ImageIcon homeIcon = new ImageIcon("homeIcon.png");
             Image homeIconImage = homeIcon.getImage();
             homeIconImage = homeIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newHomeIcon = new ImageIcon(homeIconImage);
@@ -109,6 +119,7 @@ public class ProfilePanel extends JPanel{
                     } catch (SQLException e1) {
                         e1.printStackTrace();
                     }
+                    refreshButton.doClick();
                     //--------------------------------
 
                     JOptionPane.showMessageDialog(null, "You have set yourself as available", "Availability", JOptionPane.INFORMATION_MESSAGE,newHomeIcon);
@@ -118,7 +129,7 @@ public class ProfilePanel extends JPanel{
             homeButton.setBounds(700,180, 60,40);
 
             JToggleButton awayButton = new JToggleButton();
-            ImageIcon awayIcon = new ImageIcon("icons\\awayIcon.png");
+            ImageIcon awayIcon = new ImageIcon("awayIcon.png");
             Image awayIconImage = awayIcon.getImage();
             awayIconImage = awayIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newAwayIcon = new ImageIcon(awayIconImage);
@@ -137,6 +148,7 @@ public class ProfilePanel extends JPanel{
                     } catch (SQLException e1) {
                         e1.printStackTrace();
                     }
+                    refreshButton.doClick();
                     //--------------------------------
                     JOptionPane.showMessageDialog(null, "You have set yourself as unavailable", "Availability", JOptionPane.INFORMATION_MESSAGE,newAwayIcon);
                 }
@@ -150,6 +162,22 @@ public class ProfilePanel extends JPanel{
             selectStatusLabel.setBounds(700,150,200,30);
             selectStatusLabel.setFont(new Font("Arial",Font.BOLD,20));
 
+            JLabel statusPicture = new JLabel();
+
+            if ( currentUser.checkAvailability() ){ 
+                statusPicture = new JLabel(newHomeIcon);
+            }
+            else{
+                statusPicture = new JLabel(newAwayIcon);
+            }
+            statusPicture.setOpaque(true);
+            
+            
+            
+            statusPicture.setBounds(320,120, 60,40);
+            statusPicture.setFocusable(false);
+            this.add(statusPicture);
+
             //Rating
 
 
@@ -161,7 +189,7 @@ public class ProfilePanel extends JPanel{
 
             JButton ratingCountButton = new JButton(currentUser.getRatingAmount() + " Ratings");
             ratingCountButton.setBorder(new LineBorder(Color.BLACK,1));
-            ratingCountButton.setBounds(160,370,120,40);
+            ratingCountButton.setBounds(170,370,130,40);
             ratingCountButton.setFont(new Font("Arial", Font.BOLD, 20));
             ratingCountButton.setFocusable(false);  
             ratingCountButton.setBackground(Color.white);
@@ -221,7 +249,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(new Color(151,12,16));
+                    returnButton.setBackground(Color.red);
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -260,7 +288,7 @@ public class ProfilePanel extends JPanel{
             for (int i = 0; i < currentReviews.size(); i++){
                 reviewArea.setText("\n" + currentReviews.get(i).getSenderUsername() + ": " + currentReviews.get(i).getReviewContent() + "\n" + reviewArea.getText());
             }
-            
+            reviewArea.setCaretPosition(0);
 
             JScrollPane scrollPaneForReviewArea = new JScrollPane(reviewArea);
             scrollPaneForReviewArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -270,7 +298,7 @@ public class ProfilePanel extends JPanel{
             
             JLabel reviewLabel = new JLabel("  " + currentUser.getReviewsCount() +" Reviews");
             reviewLabel.setBorder(new LineBorder(Color.BLACK,1));
-            reviewLabel.setBounds(30,370,120,40);
+            reviewLabel.setBounds(30,370,130,40);
             reviewLabel.setFont(new Font("Arial", Font.BOLD, 20));
             
             //Adverts Found
@@ -293,13 +321,188 @@ public class ProfilePanel extends JPanel{
             advertsFoundButton.setBorder(new LineBorder(Color.BLACK,1));
             advertsFoundButton.setBackground(Color.white);
             advertsFoundButton.setFont(new Font("Arial",Font.BOLD,20));
-            advertsFoundButton.setBounds(290,370,200,40);
+            advertsFoundButton.setBounds(310,370,200,40);
+
+            //Select to Edit Advert
+
+            JButton selectToEditAdvertButton = new JButton("Select to Edit Adverts");
+            selectToEditAdvertButton.setBorder(new LineBorder(Color.BLACK,1));
+            selectToEditAdvertButton.setBounds(650,290,250,40);
+            selectToEditAdvertButton.setFont(new Font("Arial", Font.BOLD, 20));
+            selectToEditAdvertButton.setFocusable(false);  
+            selectToEditAdvertButton.setBackground(Color.white);
+            selectToEditAdvertButton.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    
+                    JFrame selectToEditAdvertsFrame = new JFrame("Select To Edit Adverts");
+                    selectToEditAdvertsFrame.setLayout(new BorderLayout());
+                    selectToEditAdvertsFrame.setPreferredSize(new Dimension(800,600));
+                    selectToEditAdvertsFrame.setBackground(Color.white);
+
+                    ArrayList<Advert> currentSelectToEditAdverts = currentUser.getAdvertsList();
+
+                    
+                    JPanel advertsPanel = new JPanel();
+                    advertsPanel.setLayout(new GridLayout(currentSelectToEditAdverts.size(),1));
+                    for (int i = 0; i < currentSelectToEditAdverts.size() ; i++){
+
+                        Advert currentAdvert = currentSelectToEditAdverts.get(i);
+                       
+
+                        JPanel sampleAdvertPanel = new JPanel(){
+                            protected void paintComponent(Graphics g) {
+                                g.drawImage(currentAdvert.getImage(), 20, 20, 80,80,null );
+                            };
+                        };
+                   
+                        sampleAdvertPanel.setLayout(null);
+                        sampleAdvertPanel.setBackground(Color.white);
+                        JLabel titleLabel = new JLabel(currentAdvert.getTitle());
+                        titleLabel.setBorder(new LineBorder(Color.black,1));
+                        titleLabel.setBounds(120,20,400,80);
+                        titleLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+
+                        JLabel priceLabel = new JLabel(currentAdvert.getPrice());
+                        priceLabel.setFont(new Font("Arial", Font.BOLD, 15));
+                        priceLabel.setBounds(540,20,100,80);
+
+            
+                        
+                        homeButtonForAdvert = new JButton();
+                        ImageIcon homeIcon = new ImageIcon("homeIcon.png");
+                        Image homeIconImage = homeIcon.getImage();
+                        homeIconImage = homeIconImage.getScaledInstance(50, 40, java.awt.Image.SCALE_SMOOTH);
+                        ImageIcon newHomeIcon = new ImageIcon(homeIconImage);
+                        homeButtonForAdvert.setIcon(newHomeIcon);
+                        homeButtonForAdvert.addActionListener(new ActionListener() {
+
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                currentUser.updateAvailability(true);
+                                //Changing availability in database 
+                                //--------------------------------
+                                try {
+                                    currentAdvert.updateAvailability(false);
+                                    PreparedStatement changeAvailability = Database.databaseConnection.prepareStatement("UPDATE adverts SET availability = false WHERE advertTitle = ? AND sellerUsername = ?");
+                                    changeAvailability.setString(1, currentAdvert.getTitle());
+                                    changeAvailability.setString(2, currentUser.getUsername());
+                                    changeAvailability.executeUpdate();
+                                    homeButtonForAdvert.setVisible(false);
+                                    awayButtonForAdvert.setVisible(true);
+                                } catch (SQLException e1) {
+                                    e1.printStackTrace();
+                                }
+                                
+                                //--------------------------------
+
+                                JOptionPane.showMessageDialog(null, "You have set this advert as available", "Availability", JOptionPane.INFORMATION_MESSAGE,newHomeIcon);
+                            }
+                            
+                        });
+                        homeButtonForAdvert.setBounds(680,50,50,40);
+                        
+
+                        awayButtonForAdvert = new JButton();
+                        ImageIcon awayIcon = new ImageIcon("awayIcon.png");
+                        Image awayIconImage = awayIcon.getImage();
+                        awayIconImage = awayIconImage.getScaledInstance(50, 40, java.awt.Image.SCALE_SMOOTH);
+                        ImageIcon newAwayIcon = new ImageIcon(awayIconImage);
+                        awayButtonForAdvert.setIcon(newAwayIcon);
+                        awayButtonForAdvert.addActionListener(new ActionListener() {
+
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                currentUser.updateAvailability(false);
+                                //Changing availability in database 
+                                //--------------------------------
+                                try {
+                                    currentAdvert.updateAvailability(true);
+                                    PreparedStatement changeAvailability = Database.databaseConnection.prepareStatement("UPDATE adverts SET availability = true WHERE advertTitle = ? AND sellerUsername = ?");
+                                    changeAvailability.setString(1, currentAdvert.getTitle());
+                                    changeAvailability.setString(2, currentUser.getUsername());
+                                    changeAvailability.executeUpdate();
+                                    homeButtonForAdvert.setVisible(true);
+                                    awayButtonForAdvert.setVisible(false);
+                                } catch (SQLException e1) {
+                                    e1.printStackTrace();
+                                }
+                                
+                                //--------------------------------
+                                
+                            }
+                            
+                        });
+                        awayButtonForAdvert.setBounds(680,50,50,40);
+
+                        if (currentAdvert.checkAvailability()){
+                            homeButtonForAdvert.setVisible(true);
+                            awayButtonForAdvert.setVisible(false);
+                        }
+                        else{
+                            homeButtonForAdvert.setVisible(false);
+                            awayButtonForAdvert.setVisible(true);
+                        }
+                      
+
+                        JLabel statusLabel = new JLabel("STATUS");
+                        statusLabel.setFont(new Font("Arial", Font.BOLD, 12));
+                        statusLabel.setBounds(680,10,50,40);
+                        
+                        sampleAdvertPanel.add(statusLabel);
+                        sampleAdvertPanel.add(titleLabel);
+                        sampleAdvertPanel.add(priceLabel);
+                        sampleAdvertPanel.setBorder(new LineBorder(Color.black, 1));
+                        sampleAdvertPanel.setPreferredSize(new Dimension(750,120));
+                        advertsPanel.add(sampleAdvertPanel);
+                        
+                    }
+                    advertsPanel.setBackground(Color.white);
+                    JScrollPane selectToEditAdvertScrollPane = new JScrollPane(advertsPanel);
+                    selectToEditAdvertScrollPane.setBackground(Color.white);
+                    selectToEditAdvertScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+                   
+                    JPanel returnButtonPanel = new JPanel();
+                    returnButtonPanel.setPreferredSize(new Dimension(800,100));
+                    returnButtonPanel.setLayout(null);
+
+                    JButton returnButton = new JButton("RETURN");
+                    returnButton.setBorder(new LineBorder(Color.BLACK,1));
+                    returnButton.setFont(new Font("Arial", Font.BOLD, 20));
+                    returnButton.setFocusable(false);  
+                    returnButton.setBackground(Color.red);
+                    returnButton.setForeground(Color.white);
+                    returnButton.addActionListener(new ActionListener() {
+        
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            selectToEditAdvertsFrame.dispose();
+                        }
+                        
+                    });
+                    returnButton.setBounds(300,25,200,50);
+                    returnButtonPanel.add(returnButton);
+                    
+                   
+                    selectToEditAdvertsFrame.add(selectToEditAdvertScrollPane, BorderLayout.CENTER);
+                    selectToEditAdvertsFrame.add(returnButtonPanel,BorderLayout.SOUTH);
+                    selectToEditAdvertsFrame.setResizable(false);
+                    selectToEditAdvertsFrame.pack();
+                    selectToEditAdvertsFrame.setVisible(true); 
+                    
+
+
+                }
+                
+            });
+
 
             //Select to Delete Advert
 
             JButton selectToDeleteAdvertButton = new JButton("Select to Delete Adverts");
             selectToDeleteAdvertButton.setBorder(new LineBorder(Color.BLACK,1));
-            selectToDeleteAdvertButton.setBounds(650,290,250,40);
+            selectToDeleteAdvertButton.setBounds(650,350,250,40);
             selectToDeleteAdvertButton.setFont(new Font("Arial", Font.BOLD, 20));
             selectToDeleteAdvertButton.setFocusable(false);  
             selectToDeleteAdvertButton.setBackground(Color.white);
@@ -316,13 +519,67 @@ public class ProfilePanel extends JPanel{
                     
                     JPanel advertsPanel = new JPanel();
                     advertsPanel.setLayout(new GridLayout(currentSelectToDeleteAdverts.size(),1));
-                    for (int i = 0; i < currentSelectToDeleteAdverts.size(); i++){
+                    for (int i = 0; i < currentSelectToDeleteAdverts.size() ; i++){
 
-                        //CREATING AN ADVERT PANEL WITH DELETE BUTTON 
+                        String currentTitle = currentSelectToDeleteAdverts.get(i).getTitle();
+                        BufferedImage currentAdvertImage = currentSelectToDeleteAdverts.get(i).getImage();
+                        String currentPrice = currentSelectToDeleteAdverts.get(i).getPrice();
+
+                        JPanel sampleAdvertPanel = new JPanel(){
+                            protected void paintComponent(Graphics g) {
+                                g.drawImage(currentAdvertImage, 20, 20, 80,80,null );
+                            };
+                        };
+                   
+                        sampleAdvertPanel.setLayout(null);
+                        sampleAdvertPanel.setBackground(Color.white);
+                        JLabel titleLabel = new JLabel(currentTitle);
+                        titleLabel.setBorder(new LineBorder(Color.black,1));
+                        titleLabel.setBounds(120,20,400,80);
+                        titleLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+
+                        JLabel priceLabel = new JLabel(currentPrice);
+                        priceLabel.setFont(new Font("Arial", Font.BOLD, 15));
+                        priceLabel.setBounds(540,20,100,80);
+
+                        JButton deleteAdvertButton = new JButton("Delete Advert");
+                        deleteAdvertButton.setBorder(new LineBorder(Color.black,1));
+                        deleteAdvertButton.setBounds(640,40,100,40);
+                        deleteAdvertButton.setFocusable(false);
+                        deleteAdvertButton.setBackground(Color.red);
+                        deleteAdvertButton.setForeground(Color.white);
+                        deleteAdvertButton.addActionListener(new ActionListener() {
+
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                try {
+                                    PreparedStatement deleteAdvertStatement  = Database.databaseConnection.prepareStatement("DELETE FROM adverts WHERE advertTitle = ? AND sellerUsername = ?");
+                                    deleteAdvertStatement.setString(1, currentTitle);
+                                    deleteAdvertStatement.setString(2, currentUser.getUsername());
+                                    deleteAdvertStatement.executeUpdate();
+                                    JOptionPane.showMessageDialog(null, "Advert has been deleted from the application!", "Advert Deleted", JOptionPane.INFORMATION_MESSAGE);
+                                    refreshButton.doClick();
+                                    selectToDeleteAdvertsFrame.dispose();
+                                } catch (SQLException e1) {
+                                    e1.printStackTrace();
+                                }
+                                
+                            }
+                            
+                        });
+                        
+
+                        sampleAdvertPanel.add(deleteAdvertButton);
+                        sampleAdvertPanel.add(titleLabel);
+                        sampleAdvertPanel.add(priceLabel);
+                        sampleAdvertPanel.setBorder(new LineBorder(Color.black, 1));
+                        sampleAdvertPanel.setPreferredSize(new Dimension(750,120));
+                        advertsPanel.add(sampleAdvertPanel);
                         
                     }
-
+                    advertsPanel.setBackground(Color.white);
                     JScrollPane selectToDeleteAdvertScrollPane = new JScrollPane(advertsPanel);
+                    selectToDeleteAdvertScrollPane.setBackground(Color.WHITE);
                     selectToDeleteAdvertScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
                    
                     JPanel returnButtonPanel = new JPanel();
@@ -333,7 +590,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(new Color(151,12,16));
+                    returnButton.setBackground(Color.red);
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -364,7 +621,7 @@ public class ProfilePanel extends JPanel{
 
             JButton viewedAdvertsButton = new JButton("Viewed Adverts");
             viewedAdvertsButton.setBorder(new LineBorder(Color.BLACK,1));
-            viewedAdvertsButton.setBounds(650,350,250,40);
+            viewedAdvertsButton.setBounds(650,410,250,40);
             viewedAdvertsButton.setFont(new Font("Arial", Font.BOLD, 20));
             viewedAdvertsButton.setFocusable(false);  
             viewedAdvertsButton.setBackground(Color.white);
@@ -384,11 +641,68 @@ public class ProfilePanel extends JPanel{
                     advertsPanel.setLayout(new GridLayout(currentViewedAdverts.size(),1));
                     for (int i = 0; i < currentViewedAdverts.size(); i++){
 
-                        //CREATING AN ADVERT PANEL WITH DELETE BUTTON 
+                        
+                        String currentTitle = currentViewedAdverts.get(i).getTitle();
+                        BufferedImage currentAdvertImage = currentViewedAdverts.get(i).getImage();
+                        String currentPrice = currentViewedAdverts.get(i).getPrice();
+
+                        JPanel sampleAdvertPanel = new JPanel(){
+                            protected void paintComponent(Graphics g) {
+                                g.drawImage(currentAdvertImage, 20, 20, 80,80,null );
+                            };
+                        };
+                   
+                        sampleAdvertPanel.setLayout(null);
+                        sampleAdvertPanel.setBackground(Color.white);
+                        JLabel titleLabel = new JLabel(currentTitle);
+                        titleLabel.setBorder(new LineBorder(Color.black,1));
+                        titleLabel.setBounds(120,20,400,80);
+                        titleLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+
+                        JLabel priceLabel = new JLabel(currentPrice);
+                        priceLabel.setFont(new Font("Arial", Font.BOLD, 15));
+                        priceLabel.setBounds(540,20,100,80);
+
+                        JButton deleteAdvertButton = new JButton("Delete Advert");
+                        deleteAdvertButton.setBorder(new LineBorder(Color.black,1));
+                        deleteAdvertButton.setBounds(640,40,100,40);
+                        deleteAdvertButton.setFocusable(false);
+                        deleteAdvertButton.setBackground(Color.red);
+                        deleteAdvertButton.setForeground(Color.white);
+                        deleteAdvertButton.addActionListener(new ActionListener() {
+
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                try {
+                                    PreparedStatement deleteAdvertStatement  = Database.databaseConnection.prepareStatement("DELETE FROM viewedadverts WHERE advertId = (SELECT advertId FROM adverts WHERE advertTitle = ?) AND viewerUsername = ?");
+                                    deleteAdvertStatement.setString(1, currentTitle);
+                                    deleteAdvertStatement.setString(2, currentUser.getUsername());
+                                    deleteAdvertStatement.executeUpdate();
+                                    JOptionPane.showMessageDialog(null, "Advert has been deleted from viewed adverts!", "Advert Deleted", JOptionPane.INFORMATION_MESSAGE);
+                                    refreshButton.doClick();
+                                    viewedAdvertsFrame.dispose();
+                                } catch (SQLException e1) {
+                                    e1.printStackTrace();
+                                }
+                                
+                            }
+                            
+                        });
+                        
+
+                        sampleAdvertPanel.add(deleteAdvertButton);
+                        sampleAdvertPanel.add(titleLabel);
+                        sampleAdvertPanel.add(priceLabel);
+                        sampleAdvertPanel.setBorder(new LineBorder(Color.black, 1));
+                        sampleAdvertPanel.setPreferredSize(new Dimension(750,120));
+                        advertsPanel.add(sampleAdvertPanel);
+
+
 
                     }
 
                     JScrollPane viewedAdvertsScrollPane = new JScrollPane(advertsPanel);
+                    viewedAdvertsScrollPane.setBackground(Color.white);
                     viewedAdvertsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
                    
                     JPanel returnButtonPanel = new JPanel();
@@ -399,7 +713,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(new Color(151,12,16));
+                    returnButton.setBackground(Color.red);
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -432,7 +746,7 @@ public class ProfilePanel extends JPanel{
             logoutButton.setBounds(800,690,150,40);
             logoutButton.setFont(new Font("Arial", Font.BOLD, 20));
             logoutButton.setFocusable(false);  
-            logoutButton.setBackground(new Color(151,12,16));
+            logoutButton.setBackground(Color.red);
             logoutButton.setForeground(Color.white);
             logoutButton.addActionListener(new ActionListener() {
 
@@ -445,7 +759,7 @@ public class ProfilePanel extends JPanel{
 
 
 
-
+            this.add(selectToEditAdvertButton);
             this.add(logoutButton);
             this.add(viewedAdvertsButton);
             this.add(selectToDeleteAdvertButton);
@@ -542,7 +856,7 @@ public class ProfilePanel extends JPanel{
 
             JButton ratingCountButton = new JButton( getTotalNumberOfRatingsForOtherProfile() + " Ratings"); 
             ratingCountButton.setBorder(new LineBorder(Color.BLACK,1));
-            ratingCountButton.setBounds(160,370,120,40);
+            ratingCountButton.setBounds(170,370,130,40);
             ratingCountButton.setFont(new Font("Arial", Font.BOLD, 20));
             ratingCountButton.setFocusable(false);  
             ratingCountButton.setBackground(Color.white);
@@ -598,7 +912,7 @@ public class ProfilePanel extends JPanel{
                         deleteRatingButton.setBorder(new LineBorder(Color.BLACK,1));
                         deleteRatingButton.setFont(new Font("Arial", Font.BOLD, 20));
                         deleteRatingButton.setFocusable(false);  
-                        deleteRatingButton.setBackground(new Color(151,12,16));
+                        deleteRatingButton.setBackground(Color.red);
                         deleteRatingButton.setForeground(Color.white);
                         deleteRatingButton.setBounds(605,80,150,40);
                         deleteRatingButton.addActionListener(new ActionListener() {
@@ -660,7 +974,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(new Color(151,12,16));
+                    returnButton.setBackground(Color.red);
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -686,7 +1000,7 @@ public class ProfilePanel extends JPanel{
 
             JButton addRatingButton = new JButton("Add Rating");
             addRatingButton.setBorder(new LineBorder(Color.BLACK,1));
-            addRatingButton.setBounds(290,370,120,40);
+            addRatingButton.setBounds(310,370,120,40);
             addRatingButton.setFont(new Font("Arial", Font.BOLD, 20));
             addRatingButton.setFocusable(false);  
             addRatingButton.setBackground(Color.white);
@@ -771,7 +1085,7 @@ public class ProfilePanel extends JPanel{
                             JButton resetButton = new JButton("Reset");
                             resetButton.setFocusable(false);
                             resetButton.setBorder(new LineBorder(Color.black,1));
-                            resetButton.setBackground(new Color(151,12,16));
+                            resetButton.setBackground(Color.red);
                             resetButton.setForeground(Color.white);
                             resetButton.addActionListener(new ActionListener() {
 
@@ -788,7 +1102,7 @@ public class ProfilePanel extends JPanel{
                             JButton sendRating = new JButton("Send Rating");
                             sendRating.setFocusable(false);
                             sendRating.setBorder(new LineBorder(Color.black,1));
-                            sendRating.setBackground(new Color(151,12,16));
+                            sendRating.setBackground(Color.red);
                             sendRating.setForeground(Color.white);
                             sendRating.addActionListener(new ActionListener() {
 
@@ -907,7 +1221,7 @@ public class ProfilePanel extends JPanel{
 
             JLabel reviewLabel = new JLabel("  " + currentReviews.size()  +" Reviews");
             reviewLabel.setBorder(new LineBorder(Color.BLACK,1));
-            reviewLabel.setBounds(30,370,120,40);
+            reviewLabel.setBounds(30,370,130,40);
             reviewLabel.setFont(new Font("Arial", Font.BOLD, 20));
 
             //Adverts Found
@@ -939,7 +1253,38 @@ public class ProfilePanel extends JPanel{
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    JOptionPane.showMessageDialog(null, "Directing...", "Title", JOptionPane.INFORMATION_MESSAGE);
+                    boolean isAlreadyContacts = false;
+                    try {
+                        PreparedStatement alreadyContactsCheckStatement = Database.databaseConnection.prepareStatement("SELECT * FROM contacts");
+                        ResultSet checkContactsRs = alreadyContactsCheckStatement.executeQuery();
+                        while (checkContactsRs.next()){
+
+                            String username1 = checkContactsRs.getString("username1");
+                            String username2 = checkContactsRs.getString("username2");
+                            if ( (username1.equals(username) && username2.equals(currentUser.getUsername())) || (username1.equals(currentUser.getUsername()) && username2.equals(username))){
+                                isAlreadyContacts = true;
+                            }
+
+                        }
+
+                        if (isAlreadyContacts){
+                            JOptionPane.showMessageDialog(null, username + " is already in your contacts list!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                        }
+                        else{
+                            PreparedStatement addToContactsStatement = Database.databaseConnection.prepareStatement("INSERT INTO contacts VALUES (?,?)");
+                            addToContactsStatement.setString(1, currentUser.getUsername());
+                            addToContactsStatement.setString(2, username);
+                            addToContactsStatement.executeUpdate();
+                            JOptionPane.showMessageDialog(null, username + " has been added to your contacts list!", "Added To Contacts", JOptionPane.INFORMATION_MESSAGE);
+                            refreshButton.doClick();
+                        }   
+
+
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+
+                    
                 }
                 
             });
@@ -957,7 +1302,41 @@ public class ProfilePanel extends JPanel{
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    JOptionPane.showMessageDialog(null, "Directing...", "Title", JOptionPane.INFORMATION_MESSAGE);
+                   
+                    boolean isAlreadyContacts = false;
+                    try {
+                        PreparedStatement alreadyContactsCheckStatement = Database.databaseConnection.prepareStatement("SELECT * FROM contacts");
+                        ResultSet checkContactsRs = alreadyContactsCheckStatement.executeQuery();
+                        while (checkContactsRs.next()){
+
+                            String username1 = checkContactsRs.getString("username1");
+                            String username2 = checkContactsRs.getString("username2");
+                            if ( (username1.equals(username) && username2.equals(currentUser.getUsername())) || (username1.equals(currentUser.getUsername()) && username2.equals(username))){
+                                isAlreadyContacts = true;
+                            }
+
+                        }
+
+                        if (isAlreadyContacts){
+                            PreparedStatement removeFromContactsStatement = Database.databaseConnection.prepareStatement("DELETE FROM contacts WHERE (username1 = ? and username2 = ?) OR (username1 = ? and username2 = ?)");
+                            removeFromContactsStatement.setString(1, currentUser.getUsername());
+                            removeFromContactsStatement.setString(2, username);
+                            removeFromContactsStatement.setString(3, username);
+                            removeFromContactsStatement.setString(4, currentUser.getUsername());
+                            removeFromContactsStatement.executeUpdate();
+                            JOptionPane.showMessageDialog(null, username + " has been removed from contacts list!", "Successfully Removed",JOptionPane.INFORMATION_MESSAGE);
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(null, username + " is not in your contacts!","ERROR",JOptionPane.ERROR_MESSAGE );
+                        }   
+
+
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+
+
+
                 }
                 
             });
