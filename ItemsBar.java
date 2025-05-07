@@ -7,6 +7,8 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -14,12 +16,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-/*
- * Notes:
- * Currently the methods of the buttons setFocusPainted(false); is optional
- * There is an important note at below about future implementation
- */
 
 public class ItemsBar extends JPanel implements ActionListener{
 
@@ -163,11 +159,26 @@ public class ItemsBar extends JPanel implements ActionListener{
         overlayPanel.setOpaque(false);
         overlayPanel.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 5));
     
-        searchField = new JTextField("Enter username");
+        searchField = new JTextField("Enter Username");
         searchField.setFont(new Font("Arial", Font.PLAIN, 14));
         searchField.setOpaque(false);
         searchField.setCaretColor(Color.BLACK);
         searchField.setBorder(BorderFactory.createEmptyBorder());
+        searchField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (searchField.getText().equals("Enter Username")) {
+                    searchField.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (searchField.getText().trim().isEmpty()) {
+                    searchField.setText("Enter Username");
+                }
+            }
+        });
     
         searchButton = new JButton(resizeIcon(SearchIcon, 35, 35));
         searchButton.setPreferredSize(new Dimension(45, 40));
