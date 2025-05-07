@@ -43,7 +43,7 @@ public class ProfilePanel extends JPanel{
 
         //Refresh Button
         JButton refreshButton = new JButton();
-        ImageIcon refreshIcon = new ImageIcon("refreshIcon.png");
+        ImageIcon refreshIcon = new ImageIcon("icons\\refreshIcon.png");
         Image refreshIconImage = refreshIcon.getImage();
         refreshIconImage = refreshIconImage.getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
         ImageIcon newRefreshIcon = new ImageIcon(refreshIconImage);
@@ -63,12 +63,12 @@ public class ProfilePanel extends JPanel{
         });
 
         try{
-            profilePicture = ImageIO.read(new File("profile-picture.png")); 
-            emptyStar = ImageIO.read(new File("emptystar.png")); 
-            oneQuarterStar = ImageIO.read(new File("onequarterstar.png")); 
-            halfStar = ImageIO.read(new File("halfstar.png"));
-            threeQuarterStar = ImageIO.read(new File("threequarterstar.png"));  
-            fullStar = ImageIO.read(new File("fullstar.png"));           
+            profilePicture = ImageIO.read(new File("icons\\profile-picture.png")); 
+            emptyStar = ImageIO.read(new File("icons\\emptystar.png")); 
+            oneQuarterStar = ImageIO.read(new File("icons\\onequarterstar.png")); 
+            halfStar = ImageIO.read(new File("icons\\halfstar.png"));
+            threeQuarterStar = ImageIO.read(new File("icons\\threequarterstar.png"));  
+            fullStar = ImageIO.read(new File("icons\\fullstar.png"));           
         } catch (IOException e){
             JOptionPane.showMessageDialog(null, "Image is not loaded", "ERROR!",JOptionPane.ERROR_MESSAGE);
         }
@@ -93,7 +93,7 @@ public class ProfilePanel extends JPanel{
             ButtonGroup buttonGroup = new ButtonGroup();
             JToggleButton homeButton = new JToggleButton();
 
-            ImageIcon homeIcon = new ImageIcon("homeIcon.png");
+            ImageIcon homeIcon = new ImageIcon("icons\\homeIcon.png");
             Image homeIconImage = homeIcon.getImage();
             homeIconImage = homeIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newHomeIcon = new ImageIcon(homeIconImage);
@@ -122,7 +122,7 @@ public class ProfilePanel extends JPanel{
             homeButton.setBounds(700,140, 60,40);
 
             JToggleButton awayButton = new JToggleButton();
-            ImageIcon awayIcon = new ImageIcon("awayIcon.png");
+            ImageIcon awayIcon = new ImageIcon("icons\\awayIcon.png");
             Image awayIconImage = awayIcon.getImage();
             awayIconImage = awayIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newAwayIcon = new ImageIcon(awayIconImage);
@@ -253,7 +253,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(Color.red);
+                    returnButton.setBackground(new Color(151,12,16));
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -377,7 +377,7 @@ public class ProfilePanel extends JPanel{
                         JButton homeButtonForAdvert = new JButton();
                         JButton awayButtonForAdvert = new JButton();
                         
-                        ImageIcon homeIcon = new ImageIcon("homeIcon.png");
+                        ImageIcon homeIcon = new ImageIcon("icons\\homeIcon.png");
                         Image homeIconImage = homeIcon.getImage();
                         homeIconImage = homeIconImage.getScaledInstance(50, 40, java.awt.Image.SCALE_SMOOTH);
                         ImageIcon newHomeIcon = new ImageIcon(homeIconImage);
@@ -411,7 +411,7 @@ public class ProfilePanel extends JPanel{
                         
 
                         
-                        ImageIcon awayIcon = new ImageIcon("awayIcon.png");
+                        ImageIcon awayIcon = new ImageIcon("icons\\awayIcon.png");
                         Image awayIconImage = awayIcon.getImage();
                         awayIconImage = awayIconImage.getScaledInstance(50, 40, java.awt.Image.SCALE_SMOOTH);
                         ImageIcon newAwayIcon = new ImageIcon(awayIconImage);
@@ -479,7 +479,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(Color.red);
+                    returnButton.setBackground(new Color(151,12,16));
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -554,7 +554,7 @@ public class ProfilePanel extends JPanel{
                         deleteAdvertButton.setBorder(new LineBorder(Color.black,1));
                         deleteAdvertButton.setBounds(640,40,100,40);
                         deleteAdvertButton.setFocusable(false);
-                        deleteAdvertButton.setBackground(Color.red);
+                        deleteAdvertButton.setBackground(new Color(151,12,16));
                         deleteAdvertButton.setForeground(Color.white);
                         deleteAdvertButton.addActionListener(new ActionListener() {
 
@@ -598,7 +598,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(Color.red);
+                    returnButton.setBackground(new Color(151,12,16));
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -675,7 +675,7 @@ public class ProfilePanel extends JPanel{
                         deleteAdvertButton.setBorder(new LineBorder(Color.black,1));
                         deleteAdvertButton.setBounds(640,40,100,40);
                         deleteAdvertButton.setFocusable(false);
-                        deleteAdvertButton.setBackground(Color.red);
+                        deleteAdvertButton.setBackground(new Color(151,12,16));
                         deleteAdvertButton.setForeground(Color.white);
                         deleteAdvertButton.addActionListener(new ActionListener() {
 
@@ -721,7 +721,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(Color.red);
+                    returnButton.setBackground(new Color(151,12,16));
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -754,7 +754,7 @@ public class ProfilePanel extends JPanel{
             logoutButton.setBounds(800,650,150,40);
             logoutButton.setFont(new Font("Arial", Font.BOLD, 20));
             logoutButton.setFocusable(false);  
-            logoutButton.setBackground(Color.red);
+            logoutButton.setBackground(new Color(151,12,16));
             logoutButton.setForeground(Color.white);
             logoutButton.addActionListener(new ActionListener() {
 
@@ -814,12 +814,12 @@ public class ProfilePanel extends JPanel{
 
             //Status Pic
 
-            ImageIcon homeIcon = new ImageIcon("homeIcon.png");
+            ImageIcon homeIcon = new ImageIcon("icons\\homeIcon.png");
             Image homeIconImage = homeIcon.getImage();
             homeIconImage = homeIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newHomeIcon = new ImageIcon(homeIconImage);
 
-            ImageIcon awayIcon = new ImageIcon("awayIcon.png");
+            ImageIcon awayIcon = new ImageIcon("icons\\awayIcon.png");
             Image awayIconImage = awayIcon.getImage();
             awayIconImage = awayIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newAwayIcon = new ImageIcon(awayIconImage);
@@ -920,7 +920,7 @@ public class ProfilePanel extends JPanel{
                         deleteRatingButton.setBorder(new LineBorder(Color.BLACK,1));
                         deleteRatingButton.setFont(new Font("Arial", Font.BOLD, 20));
                         deleteRatingButton.setFocusable(false);  
-                        deleteRatingButton.setBackground(Color.red);
+                        deleteRatingButton.setBackground(new Color(151,12,16));
                         deleteRatingButton.setForeground(Color.white);
                         deleteRatingButton.setBounds(605,80,150,40);
                         deleteRatingButton.addActionListener(new ActionListener() {
@@ -982,7 +982,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(Color.red);
+                    returnButton.setBackground(new Color(151,12,16));
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -1093,7 +1093,7 @@ public class ProfilePanel extends JPanel{
                             JButton resetButton = new JButton("Reset");
                             resetButton.setFocusable(false);
                             resetButton.setBorder(new LineBorder(Color.black,1));
-                            resetButton.setBackground(Color.red);
+                            resetButton.setBackground(new Color(151,12,16));
                             resetButton.setForeground(Color.white);
                             resetButton.addActionListener(new ActionListener() {
 
@@ -1110,7 +1110,7 @@ public class ProfilePanel extends JPanel{
                             JButton sendRating = new JButton("Send Rating");
                             sendRating.setFocusable(false);
                             sendRating.setBorder(new LineBorder(Color.black,1));
-                            sendRating.setBackground(Color.red);
+                            sendRating.setBackground(new Color(151,12,16));
                             sendRating.setForeground(Color.white);
                             sendRating.addActionListener(new ActionListener() {
 
