@@ -57,12 +57,7 @@ public class ProfilePanel extends JPanel{
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Main.frame and Main.currentPanel will change (the names)!!
-                Main.frame.getContentPane().remove(Main.currentPanel);
-                Main.currentPanel = new ProfilePanel(username, currentUser);
-                Main.frame.getContentPane().add(Main.currentPanel);
-                Main.frame.revalidate();
-                Main.frame.repaint();
+                HomeScreen.hm.changePanel(new ProfilePanel(username, currentUser));
             }
             
         });
@@ -321,13 +316,7 @@ public class ProfilePanel extends JPanel{
                         JOptionPane.showMessageDialog(null, "No Adverts Found", "ERROR", JOptionPane.ERROR_MESSAGE);
                     }
                     else{
-                        
-                        Main.frame.getContentPane().remove(Main.currentPanel);
-                        Main.currentPanel = new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", currentUser.getUsername(), currentUser); // from my sample, may change
-                        Main.frame.getContentPane().add(Main.currentPanel);
-                        Main.frame.revalidate();
-                        Main.frame.repaint();
-
+                        HomeScreen.hm.changePanel(new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", currentUser.getUsername(), currentUser)); // from my sample, may change
                     }
                 }
                 
@@ -1254,13 +1243,7 @@ public class ProfilePanel extends JPanel{
                         JOptionPane.showMessageDialog(null, "No Adverts Found", "ERROR", JOptionPane.ERROR_MESSAGE);
                     }
                     else{
-                        
-                        Main.frame.getContentPane().remove(Main.currentPanel);
-                        Main.currentPanel = new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", username, currentUser); // From my sample, may change
-                        Main.frame.getContentPane().add(Main.currentPanel);
-                        Main.frame.revalidate();
-                        Main.frame.repaint();
-                        
+                        HomeScreen.hm.changePanel(new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", username, currentUser)); // from my sample, may change 
                     }
                 }
                 
