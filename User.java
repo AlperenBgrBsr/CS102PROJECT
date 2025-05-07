@@ -1,12 +1,15 @@
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 
 
@@ -24,6 +27,7 @@ public class User {
     private ArrayList<Advert> advertsList;
     private ArrayList<Advert> bookmarkedAdverts;
     private ArrayList<Advert> viewedAdverts;
+    private BufferedImage profilePicture;
     
     public User(String username, String email, String password, boolean isAvailable) {
         this(username,password);
@@ -39,7 +43,13 @@ public class User {
         viewedAdverts = new ArrayList<>();
         bookmarkedAdverts = new ArrayList<>();
         ratingsList = new ArrayList<>();
-        
+
+        try { //When first instantited automically default profile picture
+            if (profilePicture == null)
+            profilePicture = toBufferedImage(ImageIO.read(new File("icons\\profile-picture.png")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public User(String username, String email, String password) {
@@ -56,7 +66,13 @@ public class User {
         viewedAdverts = new ArrayList<>();
         bookmarkedAdverts = new ArrayList<>();
         ratingsList = new ArrayList<>();
-        
+
+        try { //When first instantited automically default profile picture
+            if (profilePicture == null)
+            profilePicture = toBufferedImage(ImageIO.read(new File("icons\\profile-picture.png")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public ArrayList<Advert> getViewedAdverts() {
@@ -230,6 +246,14 @@ public class User {
         this.password = password;
     }
 
+    public void setProfilePictrue(Image image) {
+        profilePicture = toBufferedImage(image);
+    }
+
+    public BufferedImage getProfilePicture() {
+        return profilePicture;
+    }
+
     public String getEmail() {
         return this.email;
     }
@@ -319,5 +343,23 @@ public class User {
     public void updateAvailability(boolean isAvailable){
         this.isAvailable = isAvailable;
     }
+    private BufferedImage toBufferedImage(Image img) {
+        if (img instanceof BufferedImage bufferedImage) {
+            return bufferedImage;
+        }
 
+        // Make sure the image is fully loaded
+        img = new ImageIcon(img).getImage();
+
+        // Create a buffered image with transparency
+        BufferedImage bimage = new BufferedImage(
+                img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+        // Draw the image on to the buffered image
+        Graphics2D bGr = bimage.createGraphics();
+        bGr.drawImage(img, 0, 0, null);
+        bGr.dispose();
+
+        return bimage;
+    }     
 }
