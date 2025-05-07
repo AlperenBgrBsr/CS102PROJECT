@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.QuadCurve2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +13,7 @@ import java.util.Locale;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 
@@ -30,9 +31,6 @@ public class ProfilePanel extends JPanel{
     private static String otherProfileUsername;
     private static Rating currentUsersRating;
     
-    
-
-  
 
     public ProfilePanel(String username, User currentUser){ // These parameters are to see if the user is looking at their own profile or other's profile.
         this.username = username;
@@ -62,8 +60,7 @@ public class ProfilePanel extends JPanel{
             
         });
 
-        try{
-            profilePicture = ImageIO.read(new File("icons\\profile-picture.png")); 
+        try{ 
             emptyStar = ImageIO.read(new File("icons\\emptystar.png")); 
             oneQuarterStar = ImageIO.read(new File("icons\\onequarterstar.png")); 
             halfStar = ImageIO.read(new File("icons\\halfstar.png"));
@@ -624,7 +621,78 @@ public class ProfilePanel extends JPanel{
                 
             });
 
+            JButton editProfilePictureButton = new JButton("Edit Profile Picture");
+            editProfilePictureButton.setBorder(new LineBorder(Color.BLACK,1));
+            editProfilePictureButton.setBounds(650,430,250,40);
+            editProfilePictureButton.setFont(new Font("Arial", Font.BOLD, 20));
+            editProfilePictureButton.setFocusable(false);  
+            editProfilePictureButton.setBackground(Color.white);
+            editProfilePictureButton.addActionListener(new ActionListener() {
 
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String[] options = {"Add a new profile picture", "Reset profile picture to default"};
+
+                    // Show the option dialog
+                    int choice = JOptionPane.showOptionDialog(
+                            null,
+                            "",
+                            "Profile Picture Selection",
+                            JOptionPane.DEFAULT_OPTION,
+                            JOptionPane.QUESTION_MESSAGE,
+                            null,     // No custom icon
+                            options,  // The two custom buttons
+                            options[0] // Default selected option
+                    );
+
+                    if (choice == 0) {
+                        JFileChooser fileChooser = new JFileChooser();
+                    fileChooser.setDialogTitle("Select an Image");
+
+                    // Only allow image files
+                    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                        "Image Files", "jpg", "png", "jpeg", "bmp"
+                    );
+                    fileChooser.setFileFilter(filter);
+
+                    int userSelection = fileChooser.showOpenDialog(null);
+
+                    if (userSelection == JFileChooser.APPROVE_OPTION) {
+                        File selectedFile = fileChooser.getSelectedFile();
+                        String imagePath = selectedFile.getAbsolutePath();
+
+                        try {
+                            Image uploadedImage = ImageIO.read(selectedFile);
+                            if (uploadedImage == null) {
+                                // ImageIO.read returns null if the file is not a known image type
+                                JOptionPane.showMessageDialog(null, "The selected file is not a valid image.", "Invalid File", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
+
+                            currentUser.setProfilePictrue(uploadedImage);
+                            refreshButton.doClick();
+                            System.out.println("Image loaded successfully: " + imagePath);
+
+                        } 
+                        catch (IOException ex) {
+                            JOptionPane.showMessageDialog(null, "An error occurred while loading the image: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                            ex.printStackTrace();
+                        }
+                    }     
+                    } 
+                    else if (choice == 1) {
+                        try {
+                            currentUser.setProfilePictrue(ImageIO.read(new File("icons\\profile-picture.png")));
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                            JOptionPane.showMessageDialog(null, "Error Happened", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                        refreshButton.doClick();
+                    }
+                    
+                }
+            });
+            this.add(editProfilePictureButton);            
             //Viewed Adverts 
 
             JButton viewedAdvertsButton = new JButton("Viewed Adverts");
@@ -809,7 +877,7 @@ public class ProfilePanel extends JPanel{
 
             //Username Label
             JLabel usernameLabel = new JLabel(username);
-            usernameLabel.setBounds(150,210,300,30);
+            usernameLabel.setBounds(130,210,250,30);
             usernameLabel.setFont(new Font("Arias", Font.BOLD, 18));
 
             //Status Pic
@@ -1243,7 +1311,7 @@ public class ProfilePanel extends JPanel{
                         JOptionPane.showMessageDialog(null, "No Adverts Found", "ERROR", JOptionPane.ERROR_MESSAGE);
                     }
                     else{
-                        HomeScreen.hm.changePanel(new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", username, currentUser)); // from my sample, may change 
+                        //HomeScreen.hm.changePanel(new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", username, currentUser)); // from my sample, may change 
                     }
                 }
                 
@@ -1382,7 +1450,7 @@ public class ProfilePanel extends JPanel{
 
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
-        g.drawImage(profilePicture, 120, 50, 150,150, this);
+        g.drawImage(currentUser.getProfilePicture(), 120, 50, 150,150, this);
         for (int i = 0; i < 5; i++){
             g.drawImage(emptyStar, 60 + 45*i, 260, 45, 45, this);
         }
@@ -1536,6 +1604,4 @@ public class ProfilePanel extends JPanel{
         }
         return ratingsList;
     }
-    
-
 }
