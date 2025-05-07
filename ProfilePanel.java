@@ -29,8 +29,7 @@ public class ProfilePanel extends JPanel{
     private int ratingForAddRatingFrame;
     private static String otherProfileUsername;
     private static Rating currentUsersRating;
-    private static JButton homeButtonForAdvert;
-    private static JButton awayButtonForAdvert;
+    
     
 
   
@@ -44,13 +43,13 @@ public class ProfilePanel extends JPanel{
 
         //Refresh Button
         JButton refreshButton = new JButton();
-        ImageIcon refreshIcon = new ImageIcon("icons\\refreshIcon.png");
+        ImageIcon refreshIcon = new ImageIcon("refreshIcon.png");
         Image refreshIconImage = refreshIcon.getImage();
         refreshIconImage = refreshIconImage.getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
         ImageIcon newRefreshIcon = new ImageIcon(refreshIconImage);
         refreshButton.setIcon(newRefreshIcon);
         refreshButton.setFocusable(false);
-        refreshButton.setBounds(10,50,50,50);//CHANGE THIS PLACE LATER!
+        refreshButton.setBounds(10,10,50,50);//CHANGE THIS PLACE LATER!
         refreshButton.setContentAreaFilled(false);
         refreshButton.setBorderPainted(false);
         refreshButton.setFocusPainted(false);
@@ -69,12 +68,12 @@ public class ProfilePanel extends JPanel{
         });
 
         try{
-            profilePicture = ImageIO.read(new File("icons\\profile-picture.png")); 
-            emptyStar = ImageIO.read(new File("icons\\emptystar.png")); 
-            oneQuarterStar = ImageIO.read(new File("icons\\onequarterstar.png")); 
-            halfStar = ImageIO.read(new File("icons\\halfstar.png"));
-            threeQuarterStar = ImageIO.read(new File("icons\\threequarterstar.png"));  
-            fullStar = ImageIO.read(new File("icons\\fullstar.png"));           
+            profilePicture = ImageIO.read(new File("profile-picture.png")); 
+            emptyStar = ImageIO.read(new File("emptystar.png")); 
+            oneQuarterStar = ImageIO.read(new File("onequarterstar.png")); 
+            halfStar = ImageIO.read(new File("halfstar.png"));
+            threeQuarterStar = ImageIO.read(new File("threequarterstar.png"));  
+            fullStar = ImageIO.read(new File("fullstar.png"));           
         } catch (IOException e){
             JOptionPane.showMessageDialog(null, "Image is not loaded", "ERROR!",JOptionPane.ERROR_MESSAGE);
         }
@@ -87,20 +86,19 @@ public class ProfilePanel extends JPanel{
 
             //Email Label
             JLabel emailLabel = new JLabel(currentUser.getEmail());
-            emailLabel.setBounds(280,165,200+currentUser.getEmail().length()*5,20);
+            emailLabel.setBounds(280,125,400,20);
             emailLabel.setFont(new Font("Arias", Font.BOLD, 15));
 
             //Username Label
             JLabel usernameLabel = new JLabel(currentUser.getUsername());
-            usernameLabel.setBounds(160 - currentUser.getUsername().length()*2,250,100+currentUser.getUsername().length()*5,30);
+            usernameLabel.setBounds(150,210,300,30);
             usernameLabel.setFont(new Font("Arias", Font.BOLD, 18));
 
             //Select Status
             ButtonGroup buttonGroup = new ButtonGroup();
-
             JToggleButton homeButton = new JToggleButton();
 
-            ImageIcon homeIcon = new ImageIcon("icons\\homeIcon.png");
+            ImageIcon homeIcon = new ImageIcon("homeIcon.png");
             Image homeIconImage = homeIcon.getImage();
             homeIconImage = homeIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newHomeIcon = new ImageIcon(homeIconImage);
@@ -126,10 +124,10 @@ public class ProfilePanel extends JPanel{
                 }
                 
             });
-            homeButton.setBounds(700,180, 60,40);
+            homeButton.setBounds(700,140, 60,40);
 
             JToggleButton awayButton = new JToggleButton();
-            ImageIcon awayIcon = new ImageIcon("icons\\awayIcon.png");
+            ImageIcon awayIcon = new ImageIcon("awayIcon.png");
             Image awayIconImage = awayIcon.getImage();
             awayIconImage = awayIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newAwayIcon = new ImageIcon(awayIconImage);
@@ -154,17 +152,28 @@ public class ProfilePanel extends JPanel{
                 }
                 
             });
-            awayButton.setBounds(760,180, 60,40);
+            awayButton.setBounds(760,140, 60,40);
             buttonGroup.add(homeButton);
             buttonGroup.add(awayButton);
 
             JLabel selectStatusLabel = new JLabel("Select Status");
-            selectStatusLabel.setBounds(700,150,200,30);
+            selectStatusLabel.setBounds(700,110,200,30);
             selectStatusLabel.setFont(new Font("Arial",Font.BOLD,20));
 
             JLabel statusPicture = new JLabel();
+            boolean currentUserAvailability = false;
+            try {
+                PreparedStatement checkAvailabilityStatement = Database.databaseConnection.prepareStatement("SELECT available FROM users WHERE username = ?");
+                checkAvailabilityStatement.setString(1, currentUser.getUsername());
+                ResultSet checkAvailabilityRs = checkAvailabilityStatement.executeQuery();
+                if (checkAvailabilityRs.next()){
+                    currentUserAvailability = checkAvailabilityRs.getBoolean("available");
+                }
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
 
-            if ( currentUser.checkAvailability() ){ 
+            if ( currentUserAvailability ){ 
                 statusPicture = new JLabel(newHomeIcon);
             }
             else{
@@ -174,7 +183,7 @@ public class ProfilePanel extends JPanel{
             
             
             
-            statusPicture.setBounds(320,120, 60,40);
+            statusPicture.setBounds(320,80, 60,40);
             statusPicture.setFocusable(false);
             this.add(statusPicture);
 
@@ -185,11 +194,11 @@ public class ProfilePanel extends JPanel{
             String formattedRating = String.format("%.2f",currentUser.getRating());
             ratingLabel.setText(formattedRating);
             ratingLabel.setFont(new Font("Arial Black",Font.BOLD, 35));
-            ratingLabel.setBounds(300,272,100,100);
+            ratingLabel.setBounds(300,232,100,100);
 
             JButton ratingCountButton = new JButton(currentUser.getRatingAmount() + " Ratings");
             ratingCountButton.setBorder(new LineBorder(Color.BLACK,1));
-            ratingCountButton.setBounds(170,370,130,40);
+            ratingCountButton.setBounds(170,330,130,40);
             ratingCountButton.setFont(new Font("Arial", Font.BOLD, 20));
             ratingCountButton.setFocusable(false);  
             ratingCountButton.setBackground(Color.white);
@@ -249,7 +258,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(new Color(151,12,16));
+                    returnButton.setBackground(Color.red);
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -293,12 +302,12 @@ public class ProfilePanel extends JPanel{
             JScrollPane scrollPaneForReviewArea = new JScrollPane(reviewArea);
             scrollPaneForReviewArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
             scrollPaneForReviewArea.setBorder(new LineBorder(Color.BLACK,1));
-            scrollPaneForReviewArea.setBounds(30,430,500,300);
+            scrollPaneForReviewArea.setBounds(30,390,500,300);
             scrollPaneForReviewArea.setBackground(Color.white);
             
             JLabel reviewLabel = new JLabel("  " + currentUser.getReviewsCount() +" Reviews");
             reviewLabel.setBorder(new LineBorder(Color.BLACK,1));
-            reviewLabel.setBounds(30,370,130,40);
+            reviewLabel.setBounds(30,330,130,40);
             reviewLabel.setFont(new Font("Arial", Font.BOLD, 20));
             
             //Adverts Found
@@ -312,7 +321,13 @@ public class ProfilePanel extends JPanel{
                         JOptionPane.showMessageDialog(null, "No Adverts Found", "ERROR", JOptionPane.ERROR_MESSAGE);
                     }
                     else{
-                        JOptionPane.showMessageDialog(null, "Directing...", "Title", JOptionPane.INFORMATION_MESSAGE);
+                        
+                        Main.frame.getContentPane().remove(Main.currentPanel);
+                        Main.currentPanel = new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", currentUser.getUsername(), currentUser); // from my sample, may change
+                        Main.frame.getContentPane().add(Main.currentPanel);
+                        Main.frame.revalidate();
+                        Main.frame.repaint();
+
                     }
                 }
                 
@@ -321,13 +336,13 @@ public class ProfilePanel extends JPanel{
             advertsFoundButton.setBorder(new LineBorder(Color.BLACK,1));
             advertsFoundButton.setBackground(Color.white);
             advertsFoundButton.setFont(new Font("Arial",Font.BOLD,20));
-            advertsFoundButton.setBounds(310,370,200,40);
+            advertsFoundButton.setBounds(310,330,200,40);
 
             //Select to Edit Advert
 
             JButton selectToEditAdvertButton = new JButton("Select to Edit Adverts");
             selectToEditAdvertButton.setBorder(new LineBorder(Color.BLACK,1));
-            selectToEditAdvertButton.setBounds(650,290,250,40);
+            selectToEditAdvertButton.setBounds(650,250,250,40);
             selectToEditAdvertButton.setFont(new Font("Arial", Font.BOLD, 20));
             selectToEditAdvertButton.setFocusable(false);  
             selectToEditAdvertButton.setBackground(Color.white);
@@ -346,6 +361,7 @@ public class ProfilePanel extends JPanel{
                     
                     JPanel advertsPanel = new JPanel();
                     advertsPanel.setLayout(new GridLayout(currentSelectToEditAdverts.size(),1));
+
                     for (int i = 0; i < currentSelectToEditAdverts.size() ; i++){
 
                         Advert currentAdvert = currentSelectToEditAdverts.get(i);
@@ -359,19 +375,20 @@ public class ProfilePanel extends JPanel{
                    
                         sampleAdvertPanel.setLayout(null);
                         sampleAdvertPanel.setBackground(Color.white);
-                        JLabel titleLabel = new JLabel(currentAdvert.getTitle());
+                        JLabel titleLabel = new JLabel(" " + currentAdvert.getTitle());
                         titleLabel.setBorder(new LineBorder(Color.black,1));
                         titleLabel.setBounds(120,20,400,80);
                         titleLabel.setFont(new Font("Arial", Font.PLAIN, 15));
 
-                        JLabel priceLabel = new JLabel(currentAdvert.getPrice());
+                        JLabel priceLabel = new JLabel(currentAdvert.getPrice()+" ₺");
                         priceLabel.setFont(new Font("Arial", Font.BOLD, 15));
                         priceLabel.setBounds(540,20,100,80);
 
             
+                        JButton homeButtonForAdvert = new JButton();
+                        JButton awayButtonForAdvert = new JButton();
                         
-                        homeButtonForAdvert = new JButton();
-                        ImageIcon homeIcon = new ImageIcon("icons\\homeIcon.png");
+                        ImageIcon homeIcon = new ImageIcon("homeIcon.png");
                         Image homeIconImage = homeIcon.getImage();
                         homeIconImage = homeIconImage.getScaledInstance(50, 40, java.awt.Image.SCALE_SMOOTH);
                         ImageIcon newHomeIcon = new ImageIcon(homeIconImage);
@@ -397,15 +414,15 @@ public class ProfilePanel extends JPanel{
                                 
                                 //--------------------------------
 
-                                JOptionPane.showMessageDialog(null, "You have set this advert as available", "Availability", JOptionPane.INFORMATION_MESSAGE,newHomeIcon);
+                                JOptionPane.showMessageDialog(null, "You have set this advert as unavailable", "Availability", JOptionPane.INFORMATION_MESSAGE,newAwayIcon);
                             }
                             
                         });
                         homeButtonForAdvert.setBounds(680,50,50,40);
                         
 
-                        awayButtonForAdvert = new JButton();
-                        ImageIcon awayIcon = new ImageIcon("icons\\awayIcon.png");
+                        
+                        ImageIcon awayIcon = new ImageIcon("awayIcon.png");
                         Image awayIconImage = awayIcon.getImage();
                         awayIconImage = awayIconImage.getScaledInstance(50, 40, java.awt.Image.SCALE_SMOOTH);
                         ImageIcon newAwayIcon = new ImageIcon(awayIconImage);
@@ -430,7 +447,7 @@ public class ProfilePanel extends JPanel{
                                 }
                                 
                                 //--------------------------------
-                                
+                                JOptionPane.showMessageDialog(null, "You have set this advert as available", "Availability", JOptionPane.INFORMATION_MESSAGE,newHomeIcon);
                             }
                             
                         });
@@ -450,6 +467,8 @@ public class ProfilePanel extends JPanel{
                         statusLabel.setFont(new Font("Arial", Font.BOLD, 12));
                         statusLabel.setBounds(680,10,50,40);
                         
+                        sampleAdvertPanel.add(homeButtonForAdvert);
+                        sampleAdvertPanel.add(awayButtonForAdvert);
                         sampleAdvertPanel.add(statusLabel);
                         sampleAdvertPanel.add(titleLabel);
                         sampleAdvertPanel.add(priceLabel);
@@ -471,7 +490,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(new Color(151,12,16));
+                    returnButton.setBackground(Color.red);
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -502,7 +521,7 @@ public class ProfilePanel extends JPanel{
 
             JButton selectToDeleteAdvertButton = new JButton("Select to Delete Adverts");
             selectToDeleteAdvertButton.setBorder(new LineBorder(Color.BLACK,1));
-            selectToDeleteAdvertButton.setBounds(650,350,250,40);
+            selectToDeleteAdvertButton.setBounds(650,310,250,40);
             selectToDeleteAdvertButton.setFont(new Font("Arial", Font.BOLD, 20));
             selectToDeleteAdvertButton.setFocusable(false);  
             selectToDeleteAdvertButton.setBackground(Color.white);
@@ -523,7 +542,7 @@ public class ProfilePanel extends JPanel{
 
                         String currentTitle = currentSelectToDeleteAdverts.get(i).getTitle();
                         BufferedImage currentAdvertImage = currentSelectToDeleteAdverts.get(i).getImage();
-                        String currentPrice = currentSelectToDeleteAdverts.get(i).getPrice();
+                        int currentPrice = currentSelectToDeleteAdverts.get(i).getPrice();
 
                         JPanel sampleAdvertPanel = new JPanel(){
                             protected void paintComponent(Graphics g) {
@@ -533,12 +552,12 @@ public class ProfilePanel extends JPanel{
                    
                         sampleAdvertPanel.setLayout(null);
                         sampleAdvertPanel.setBackground(Color.white);
-                        JLabel titleLabel = new JLabel(currentTitle);
+                        JLabel titleLabel = new JLabel(" " + currentTitle);
                         titleLabel.setBorder(new LineBorder(Color.black,1));
                         titleLabel.setBounds(120,20,400,80);
                         titleLabel.setFont(new Font("Arial", Font.PLAIN, 15));
 
-                        JLabel priceLabel = new JLabel(currentPrice);
+                        JLabel priceLabel = new JLabel(currentPrice+" ₺");
                         priceLabel.setFont(new Font("Arial", Font.BOLD, 15));
                         priceLabel.setBounds(540,20,100,80);
 
@@ -546,7 +565,7 @@ public class ProfilePanel extends JPanel{
                         deleteAdvertButton.setBorder(new LineBorder(Color.black,1));
                         deleteAdvertButton.setBounds(640,40,100,40);
                         deleteAdvertButton.setFocusable(false);
-                        deleteAdvertButton.setBackground(new Color(151,12,16));
+                        deleteAdvertButton.setBackground(Color.red);
                         deleteAdvertButton.setForeground(Color.white);
                         deleteAdvertButton.addActionListener(new ActionListener() {
 
@@ -590,7 +609,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(new Color(151,12,16));
+                    returnButton.setBackground(Color.red);
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -621,7 +640,7 @@ public class ProfilePanel extends JPanel{
 
             JButton viewedAdvertsButton = new JButton("Viewed Adverts");
             viewedAdvertsButton.setBorder(new LineBorder(Color.BLACK,1));
-            viewedAdvertsButton.setBounds(650,410,250,40);
+            viewedAdvertsButton.setBounds(650,370,250,40);
             viewedAdvertsButton.setFont(new Font("Arial", Font.BOLD, 20));
             viewedAdvertsButton.setFocusable(false);  
             viewedAdvertsButton.setBackground(Color.white);
@@ -644,7 +663,7 @@ public class ProfilePanel extends JPanel{
                         
                         String currentTitle = currentViewedAdverts.get(i).getTitle();
                         BufferedImage currentAdvertImage = currentViewedAdverts.get(i).getImage();
-                        String currentPrice = currentViewedAdverts.get(i).getPrice();
+                        int currentPrice = currentViewedAdverts.get(i).getPrice();
 
                         JPanel sampleAdvertPanel = new JPanel(){
                             protected void paintComponent(Graphics g) {
@@ -654,12 +673,12 @@ public class ProfilePanel extends JPanel{
                    
                         sampleAdvertPanel.setLayout(null);
                         sampleAdvertPanel.setBackground(Color.white);
-                        JLabel titleLabel = new JLabel(currentTitle);
+                        JLabel titleLabel = new JLabel(" " + currentTitle);
                         titleLabel.setBorder(new LineBorder(Color.black,1));
                         titleLabel.setBounds(120,20,400,80);
                         titleLabel.setFont(new Font("Arial", Font.PLAIN, 15));
 
-                        JLabel priceLabel = new JLabel(currentPrice);
+                        JLabel priceLabel = new JLabel(currentPrice+" ₺");
                         priceLabel.setFont(new Font("Arial", Font.BOLD, 15));
                         priceLabel.setBounds(540,20,100,80);
 
@@ -667,7 +686,7 @@ public class ProfilePanel extends JPanel{
                         deleteAdvertButton.setBorder(new LineBorder(Color.black,1));
                         deleteAdvertButton.setBounds(640,40,100,40);
                         deleteAdvertButton.setFocusable(false);
-                        deleteAdvertButton.setBackground(new Color(151,12,16));
+                        deleteAdvertButton.setBackground(Color.red);
                         deleteAdvertButton.setForeground(Color.white);
                         deleteAdvertButton.addActionListener(new ActionListener() {
 
@@ -713,7 +732,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(new Color(151,12,16));
+                    returnButton.setBackground(Color.red);
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -743,10 +762,10 @@ public class ProfilePanel extends JPanel{
 
             JButton logoutButton = new JButton("LOGOUT");
             logoutButton.setBorder(new LineBorder(Color.BLACK,1));
-            logoutButton.setBounds(800,690,150,40);
+            logoutButton.setBounds(800,650,150,40);
             logoutButton.setFont(new Font("Arial", Font.BOLD, 20));
             logoutButton.setFocusable(false);  
-            logoutButton.setBackground(new Color(151,12,16));
+            logoutButton.setBackground(Color.red);
             logoutButton.setForeground(Color.white);
             logoutButton.addActionListener(new ActionListener() {
 
@@ -796,22 +815,22 @@ public class ProfilePanel extends JPanel{
             //---------------------------------
             
             JLabel emailLabel = new JLabel(email); 
-            emailLabel.setBounds(280,165,200+email.length()*5,20);
+            emailLabel.setBounds(280,125,300,20);
             emailLabel.setFont(new Font("Arias", Font.BOLD, 15));
 
             //Username Label
             JLabel usernameLabel = new JLabel(username);
-            usernameLabel.setBounds(160 - username.length()*2,250,100+username.length()*5,30);
+            usernameLabel.setBounds(150,210,300,30);
             usernameLabel.setFont(new Font("Arias", Font.BOLD, 18));
 
             //Status Pic
 
-            ImageIcon homeIcon = new ImageIcon("icons\\homeIcon.png");
+            ImageIcon homeIcon = new ImageIcon("homeIcon.png");
             Image homeIconImage = homeIcon.getImage();
             homeIconImage = homeIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newHomeIcon = new ImageIcon(homeIconImage);
 
-            ImageIcon awayIcon = new ImageIcon("icons\\awayIcon.png");
+            ImageIcon awayIcon = new ImageIcon("awayIcon.png");
             Image awayIconImage = awayIcon.getImage();
             awayIconImage = awayIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newAwayIcon = new ImageIcon(awayIconImage);
@@ -843,7 +862,7 @@ public class ProfilePanel extends JPanel{
             
             
             
-            statusPicture.setBounds(320,120, 60,40);
+            statusPicture.setBounds(320,80, 60,40);
             statusPicture.setFocusable(false);
 
             //Rating
@@ -852,11 +871,11 @@ public class ProfilePanel extends JPanel{
             String formattedRating = String.format("%.2f",getRatingsForOtherProfile());
             ratingLabel.setText(formattedRating);
             ratingLabel.setFont(new Font("Arial Black",Font.BOLD, 35));
-            ratingLabel.setBounds(300,272,100,100);
+            ratingLabel.setBounds(300,232,100,100);
 
             JButton ratingCountButton = new JButton( getTotalNumberOfRatingsForOtherProfile() + " Ratings"); 
             ratingCountButton.setBorder(new LineBorder(Color.BLACK,1));
-            ratingCountButton.setBounds(170,370,130,40);
+            ratingCountButton.setBounds(170,330,130,40);
             ratingCountButton.setFont(new Font("Arial", Font.BOLD, 20));
             ratingCountButton.setFocusable(false);  
             ratingCountButton.setBackground(Color.white);
@@ -912,7 +931,7 @@ public class ProfilePanel extends JPanel{
                         deleteRatingButton.setBorder(new LineBorder(Color.BLACK,1));
                         deleteRatingButton.setFont(new Font("Arial", Font.BOLD, 20));
                         deleteRatingButton.setFocusable(false);  
-                        deleteRatingButton.setBackground(new Color(151,12,16));
+                        deleteRatingButton.setBackground(Color.red);
                         deleteRatingButton.setForeground(Color.white);
                         deleteRatingButton.setBounds(605,80,150,40);
                         deleteRatingButton.addActionListener(new ActionListener() {
@@ -974,7 +993,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(new Color(151,12,16));
+                    returnButton.setBackground(Color.red);
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -1000,7 +1019,7 @@ public class ProfilePanel extends JPanel{
 
             JButton addRatingButton = new JButton("Add Rating");
             addRatingButton.setBorder(new LineBorder(Color.BLACK,1));
-            addRatingButton.setBounds(310,370,120,40);
+            addRatingButton.setBounds(310,330,120,40);
             addRatingButton.setFont(new Font("Arial", Font.BOLD, 20));
             addRatingButton.setFocusable(false);  
             addRatingButton.setBackground(Color.white);
@@ -1085,7 +1104,7 @@ public class ProfilePanel extends JPanel{
                             JButton resetButton = new JButton("Reset");
                             resetButton.setFocusable(false);
                             resetButton.setBorder(new LineBorder(Color.black,1));
-                            resetButton.setBackground(new Color(151,12,16));
+                            resetButton.setBackground(Color.red);
                             resetButton.setForeground(Color.white);
                             resetButton.addActionListener(new ActionListener() {
 
@@ -1102,7 +1121,7 @@ public class ProfilePanel extends JPanel{
                             JButton sendRating = new JButton("Send Rating");
                             sendRating.setFocusable(false);
                             sendRating.setBorder(new LineBorder(Color.black,1));
-                            sendRating.setBackground(new Color(151,12,16));
+                            sendRating.setBackground(Color.red);
                             sendRating.setForeground(Color.white);
                             sendRating.addActionListener(new ActionListener() {
 
@@ -1169,7 +1188,7 @@ public class ProfilePanel extends JPanel{
             JScrollPane scrollPaneForReviewArea = new JScrollPane(reviewArea);
             scrollPaneForReviewArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
             scrollPaneForReviewArea.setBorder(new LineBorder(Color.BLACK,1));
-            scrollPaneForReviewArea.setBounds(30,420,500,300);
+            scrollPaneForReviewArea.setBounds(30,380,500,300);
             scrollPaneForReviewArea.setBackground(Color.white);
             
 
@@ -1177,7 +1196,7 @@ public class ProfilePanel extends JPanel{
             JTextField reviewTextField = new JTextField(" Add Review");
             reviewTextField.setFont(new Font("Arial",Font.ITALIC,15));
             reviewTextField.setBorder(new LineBorder(Color.BLACK,1));
-            reviewTextField.setBounds(30,720,440,30);
+            reviewTextField.setBounds(30,680,440,30);
             reviewTextField.setPreferredSize(new Dimension(440,30));
             reviewTextField.setBackground(Color.white);
             reviewTextField.addMouseListener(new MouseListener() { //To Empty The Text Field
@@ -1201,7 +1220,7 @@ public class ProfilePanel extends JPanel{
             JButton reviewSendButton = new JButton("Send");
             reviewSendButton.setFont(new Font("Arial",Font.ITALIC + Font.BOLD,15));
             reviewSendButton.setBorder(new LineBorder(Color.BLACK,1));
-            reviewSendButton.setBounds(470,720,60,30);
+            reviewSendButton.setBounds(470,680,60,30);
             reviewSendButton.setPreferredSize(new Dimension(60,30));
             reviewSendButton.setBackground(Color.white);
             reviewSendButton.setFocusable(false);
@@ -1221,7 +1240,7 @@ public class ProfilePanel extends JPanel{
 
             JLabel reviewLabel = new JLabel("  " + currentReviews.size()  +" Reviews");
             reviewLabel.setBorder(new LineBorder(Color.BLACK,1));
-            reviewLabel.setBounds(30,370,130,40);
+            reviewLabel.setBounds(30,330,130,40);
             reviewLabel.setFont(new Font("Arial", Font.BOLD, 20));
 
             //Adverts Found
@@ -1235,7 +1254,13 @@ public class ProfilePanel extends JPanel{
                         JOptionPane.showMessageDialog(null, "No Adverts Found", "ERROR", JOptionPane.ERROR_MESSAGE);
                     }
                     else{
-                        JOptionPane.showMessageDialog(null, "Directing...", "Title", JOptionPane.INFORMATION_MESSAGE);
+                        
+                        Main.frame.getContentPane().remove(Main.currentPanel);
+                        Main.currentPanel = new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", username, currentUser); // From my sample, may change
+                        Main.frame.getContentPane().add(Main.currentPanel);
+                        Main.frame.revalidate();
+                        Main.frame.repaint();
+                        
                     }
                 }
                 
@@ -1244,7 +1269,7 @@ public class ProfilePanel extends JPanel{
             advertsFoundButton.setBorder(new LineBorder(Color.BLACK,1));
             advertsFoundButton.setBackground(Color.white);
             advertsFoundButton.setFont(new Font("Arial",Font.BOLD,20));
-            advertsFoundButton.setBounds(700,230,200,40);
+            advertsFoundButton.setBounds(700,190,200,40);
 
             //Add to Contact Button
 
@@ -1292,7 +1317,7 @@ public class ProfilePanel extends JPanel{
             addToContactButton.setBorder(new LineBorder(Color.BLACK,1));
             addToContactButton.setBackground(Color.white);
             addToContactButton.setFont(new Font("Arial",Font.BOLD,20));
-            addToContactButton.setBounds(700,500,200,40);
+            addToContactButton.setBounds(700,460,200,40);
 
 
             //Remove Contact Button
@@ -1344,7 +1369,7 @@ public class ProfilePanel extends JPanel{
             removeContactButton.setBorder(new LineBorder(Color.BLACK,1));
             removeContactButton.setBackground(Color.white);
             removeContactButton.setFont(new Font("Arial",Font.BOLD,20));
-            removeContactButton.setBounds(700,560,200,40);
+            removeContactButton.setBounds(700,520,200,40);
             
 
 
@@ -1374,9 +1399,9 @@ public class ProfilePanel extends JPanel{
 
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
-        g.drawImage(profilePicture, 120, 90, 150,150, this);
+        g.drawImage(profilePicture, 120, 50, 150,150, this);
         for (int i = 0; i < 5; i++){
-            g.drawImage(emptyStar, 60 + 45*i, 300, 45, 45, this);
+            g.drawImage(emptyStar, 60 + 45*i, 260, 45, 45, this);
         }
 
         double rating = 0;
@@ -1391,18 +1416,18 @@ public class ProfilePanel extends JPanel{
 
         while ( rating >= 1 ){
 
-            g.drawImage(fullStar, 60 + 45*drawnStarAmount, 300, 45, 45, this);
+            g.drawImage(fullStar, 60 + 45*drawnStarAmount, 260, 45, 45, this);
             rating--;
             drawnStarAmount++;
         }
         if ( rating >= 0.75 && rating < 1){
-            g.drawImage(threeQuarterStar, 60 + 45*drawnStarAmount, 300, 45, 45, this);
+            g.drawImage(threeQuarterStar, 60 + 45*drawnStarAmount, 260, 45, 45, this);
         }
         else if (rating >= 0.5){
-            g.drawImage(halfStar, 60 + 45*drawnStarAmount, 300, 45, 45, this);
+            g.drawImage(halfStar, 60 + 45*drawnStarAmount, 260, 45, 45, this);
         }
         else if ( rating >= 0.25 ){
-            g.drawImage(oneQuarterStar, 60 + 45*drawnStarAmount, 300, 45, 45, this);
+            g.drawImage(oneQuarterStar, 60 + 45*drawnStarAmount, 260, 45, 45, this);
         }
     }   
 
