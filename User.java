@@ -24,6 +24,23 @@ public class User {
     private ArrayList<Advert> advertsList;
     private ArrayList<Advert> bookmarkedAdverts;
     private ArrayList<Advert> viewedAdverts;
+    
+    public User(String username, String email, String password, boolean isAvailable) {
+        this(username,password);
+        this.email = email;
+        this.rating = 0;
+        this.isAvailable = isAvailable;
+        this.ratingAmount = 0;
+        reviewsList = new ArrayList<>();
+        reviewsCount = 0;
+        advertsCount = 0;
+        advertsCount = 0;
+        advertsList = new ArrayList<>();
+        viewedAdverts = new ArrayList<>();
+        bookmarkedAdverts = new ArrayList<>();
+        ratingsList = new ArrayList<>();
+        
+    }
 
     public User(String username, String email, String password) {
         this(username,password);
