@@ -27,12 +27,8 @@ public class BookmarksPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Main.frame and Main.currentPanel will change (the names)!!
-                Main.frame.getContentPane().remove(Main.currentPanel);
-                Main.currentPanel = new BookmarksPanel(currentUser);
-                Main.frame.getContentPane().add(Main.currentPanel);
-                Main.frame.revalidate();
-                Main.frame.repaint();
+                HomeScreen.hm.changePanel(new BookmarksPanel(currentUser));
+                
             }
             
         });
@@ -217,7 +213,7 @@ public class BookmarksPanel extends JPanel {
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(Color.red);
+                    returnButton.setBackground(new Color(151,12,16));
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -258,7 +254,7 @@ public class BookmarksPanel extends JPanel {
 
             JButton deleteBookmarkButton = new JButton("Delete Bookmark");
             deleteBookmarkButton.setFocusable(false);
-            deleteBookmarkButton.setBackground(Color.red);
+            deleteBookmarkButton.setBackground(new Color(151,12,16));
             deleteBookmarkButton.setForeground(Color.white);
             deleteBookmarkButton.setFont(new Font("Arial",Font.BOLD,15));
             deleteBookmarkButton.setBounds(780,50,180,60);
