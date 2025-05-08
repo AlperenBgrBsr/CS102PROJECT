@@ -11,16 +11,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -51,8 +56,6 @@ public class AddAdvertScene extends JFrame implements ActionListener{
     JTextField titleField;
     JTextField priceField;
     JTextArea informationArea;
-
-    JComboBox<Character> currencies;
 
     JLabel imageLabel;
 
@@ -87,6 +90,11 @@ public class AddAdvertScene extends JFrame implements ActionListener{
         this.add(mainPanel);
         SwingUtilities.invokeLater(() -> {
             other.requestFocusInWindow();
+        });
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                HomeScreen.hm.items.setIsOnlyAddScene(true);
+            }
         });
     }
 
@@ -172,8 +180,7 @@ public class AddAdvertScene extends JFrame implements ActionListener{
         priceField.setOpaque(true);
         priceField.setBorder(blackBorder);
 
-        Character[] currenciesString = { '₺', '$', '€' };
-        currencies = new JComboBox<>(currenciesString);
+        JLabel currencies = new JLabel("₺");
         currencies.setFont(new Font("Arial", Font.BOLD, fontSize));
         currencies.setOpaque(true);
         currencies.setBackground(Color.white);
@@ -297,15 +304,16 @@ public class AddAdvertScene extends JFrame implements ActionListener{
                 while ( advertTitlesRs.next() ){
                     advertTitlesList.add(advertTitlesRs.getString("advertTitle"));
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (SQLException exception) {
+                exception.printStackTrace();
             }
             if ( advertTitlesList.indexOf(titleField.getText()) >= 0){
                 JOptionPane.showMessageDialog(null, "Cannot create another advert with the same title", "Same Title", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            Advert advert = new Advert(toBufferedImage(uploadedImage), titleField.getText(), price + " " + (Character) currencies.getSelectedItem(), informationArea.getText(), LoginScreen.getCurrentUser().getUsername(), true , selectedType); 
+            //Price is integer instead of double 
+            Advert advert = new Advert(toBufferedImage(uploadedImage), titleField.getText(), (int) price, informationArea.getText(), LoginScreen.getCurrentUser().getUsername(), true , selectedType); 
             JOptionPane.showMessageDialog(null, "You have successfully added the advert", "", JOptionPane.INFORMATION_MESSAGE);
             Database.addToDatabase(advert);
             this.dispose();
