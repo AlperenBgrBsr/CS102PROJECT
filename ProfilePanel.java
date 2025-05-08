@@ -1467,7 +1467,7 @@ public class ProfilePanel extends JPanel{
 
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
-        g.drawImage(profilePicture, 120, 50, 150,150, this);
+        g.drawImage(getCurrentProfilePicture(otherProfileUsername, currentUser), 120, 50, 150,150, this);
         for (int i = 0; i < 5; i++){
             g.drawImage(emptyStar, 60 + 45*i, 260, 45, 45, this);
         }
@@ -1636,6 +1636,39 @@ public class ProfilePanel extends JPanel{
             e.printStackTrace();
         }
         return ratingsList;
+    }
+    public static BufferedImage getCurrentProfilePicture(String username, User currentUser){
+        if ( currentUser.getUsername().equals(username)){
+            return currentUser.getProfilePicture();
+        }
+        else{
+            BufferedImage profilePicture = null;
+            try {
+                PreparedStatement getProfilePictureStatement = Database.databaseConnection.prepareStatement("SELECT profilePicture FROM users WHERE username = ?");
+                getProfilePictureStatement.setString(1, username);
+                ResultSet getProfilePictureRs = getProfilePictureStatement.executeQuery();
+                
+                if ( getProfilePictureRs.next()){
+                    
+                    byte[] imageBytes = getProfilePictureRs.getBytes("advertPicture");
+                    if (imageBytes != null) {
+                        ByteArrayInputStream byteInputStream = new ByteArrayInputStream(imageBytes);
+                        try {
+                            profilePicture = ImageIO.read(byteInputStream);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } 
+                    }
+                }
+
+               
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            return profilePicture;
+            
+        }
     }
     
 
