@@ -682,6 +682,7 @@ public class ProfilePanel extends JPanel{
                             }
 
                             currentUser.setProfilePictrue(uploadedImage);
+                            Database.setProfilePictureInDatabase(uploadedImage, currentUser.getUsername());
                             refreshButton.doClick();
                             System.out.println("Image loaded successfully: " + imagePath);
 
@@ -695,6 +696,7 @@ public class ProfilePanel extends JPanel{
                     else if (choice == 1) {
                         try {
                             currentUser.setProfilePictrue(ImageIO.read(new File("icons\\profile-picture.png")));
+                            Database.setProfilePictureInDatabase(uploadedImage, currentUser.getUsername());
                         } catch (IOException e1) {
                             e1.printStackTrace();
                             JOptionPane.showMessageDialog(null, "Error Happened", "Error", JOptionPane.ERROR_MESSAGE);
