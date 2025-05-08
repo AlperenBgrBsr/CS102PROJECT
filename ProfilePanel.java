@@ -1650,7 +1650,7 @@ public class ProfilePanel extends JPanel{
                 
                 if ( getProfilePictureRs.next()){
                     
-                    byte[] imageBytes = getProfilePictureRs.getBytes("advertPicture");
+                    byte[] imageBytes = getProfilePictureRs.getBytes("profilePicture");
                     if (imageBytes != null) {
                         ByteArrayInputStream byteInputStream = new ByteArrayInputStream(imageBytes);
                         try {
