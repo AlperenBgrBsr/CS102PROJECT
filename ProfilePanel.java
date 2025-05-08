@@ -16,7 +16,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 
-
 public class ProfilePanel extends JPanel{
 
     private Image profilePicture;
@@ -83,7 +82,7 @@ public class ProfilePanel extends JPanel{
 
             //Username Label
             JLabel usernameLabel = new JLabel(currentUser.getUsername());
-            usernameLabel.setBounds(150,210,300,30);
+            usernameLabel.setBounds(136,195,300,30);
             usernameLabel.setFont(new Font("Arias", Font.BOLD, 18));
 
             //Select Status
@@ -495,13 +494,8 @@ public class ProfilePanel extends JPanel{
                     selectToEditAdvertsFrame.setResizable(false);
                     selectToEditAdvertsFrame.pack();
                     selectToEditAdvertsFrame.setVisible(true); 
-                    
-
-
                 }
-                
             });
-
 
             //Select to Delete Advert
 
@@ -808,11 +802,7 @@ public class ProfilePanel extends JPanel{
                     viewedAdvertsFrame.setResizable(false);
                     viewedAdvertsFrame.pack();
                     viewedAdvertsFrame.setVisible(true);
-
-
-
                 }
-                
             });
 
             //Logout Button
@@ -872,12 +862,12 @@ public class ProfilePanel extends JPanel{
             //---------------------------------
             
             JLabel emailLabel = new JLabel(email); 
-            emailLabel.setBounds(280,125,300,20);
+            emailLabel.setBounds(280,125,10,20);
             emailLabel.setFont(new Font("Arias", Font.BOLD, 15));
 
             //Username Label
             JLabel usernameLabel = new JLabel(username);
-            usernameLabel.setBounds(130,210,250,30);
+            usernameLabel.setBounds(135,195,250,30);
             usernameLabel.setFont(new Font("Arias", Font.BOLD, 18));
 
             //Status Pic
@@ -1604,4 +1594,6 @@ public class ProfilePanel extends JPanel{
         }
         return ratingsList;
     }
+    
+
 }
