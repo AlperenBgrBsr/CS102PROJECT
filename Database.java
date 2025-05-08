@@ -1,3 +1,6 @@
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -7,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 public class Database {
 
@@ -131,6 +135,45 @@ public class Database {
             e.printStackTrace();
         }
         
+    }
+
+    public static void setProfilePictureInDatabase(Image img, String username){
+
+        BufferedImage bimage = null;
+
+        if (!(img instanceof BufferedImage)) {
+            img = new ImageIcon(img).getImage();
+
+        
+            bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+            
+            Graphics2D bGr = bimage.createGraphics();
+            bGr.drawImage(img, 0, 0, null);
+            bGr.dispose();
+        }
+
+        ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(bimage, "png", byteOutputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        byte[] imageBytes = byteOutputStream.toByteArray();
+        
+
+        try {
+            PreparedStatement setProfilePictureInDatabaseStatement = databaseConnection.prepareStatement("UPDATE users SET profilePicture = ? WHERE username = ?");
+            setProfilePictureInDatabaseStatement.setBytes(1, imageBytes);
+            setProfilePictureInDatabaseStatement.setString(2, username);
+            setProfilePictureInDatabaseStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+
+        
+
     }
 
 
