@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.time.chrono.IsoChronology;
+
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -50,12 +52,13 @@ public class ItemsBar extends JPanel implements ActionListener{
     private final Color BLUE_COLOR = new Color(21,50,80);
 
     boolean hasSearchBar;
+    boolean isOnlyAddScreen;
  
     public ItemsBar(boolean hasSearchBar /*If true has a username searchbar*/ ) {
         this.setPreferredSize(new Dimension(1024, 100));
         this.setBackground(BLUE_COLOR);
         this.setLayout(new BorderLayout());
-
+        this.isOnlyAddScreen = true;
         this.hasSearchBar = hasSearchBar;
 
         leftPart = new JPanel();
@@ -127,7 +130,7 @@ public class ItemsBar extends JPanel implements ActionListener{
         
         //profileButton
         profileButton = new JButton();
-        profileButton.setIcon(resizeIcon(UserIcon, ICON_WIDTH, ICON_HEIGHT));
+        profileButton.setIcon(resizeIcon(new ImageIcon(MainFile.currentUserForAll.getProfilePicture()), ICON_WIDTH, ICON_HEIGHT));
         profileButton.setContentAreaFilled(false);
         profileButton.setBorderPainted(false);
         profileButton.setFocusPainted(false);
@@ -137,6 +140,10 @@ public class ItemsBar extends JPanel implements ActionListener{
         add(leftPart, BorderLayout.WEST);
         add(middlePart);
         add(rightPart, BorderLayout.EAST);
+    }
+
+    public void refreshProfilePicture() {
+        profileButton.setIcon(resizeIcon(new ImageIcon(MainFile.currentUserForAll.getProfilePicture()), ICON_WIDTH, ICON_HEIGHT));
     }
 
     public void removeSearchBar() {
@@ -208,6 +215,10 @@ public class ItemsBar extends JPanel implements ActionListener{
         helpFrame.setVisible(true);
     }
 
+    public void setIsOnlyAddScene(boolean a) {
+        isOnlyAddScreen = a;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bookmarkButton) {
@@ -221,12 +232,16 @@ public class ItemsBar extends JPanel implements ActionListener{
         }
         if (e.getSource() == profileButton) {
             //ProfilePanel profilePage = new ProfilePanel(LoginScreen.getCurrentUser().getUsername(), LoginScreen.getCurrentUser()); //if started by loginscreen main method
-            ProfilePanel profilePage = new ProfilePanel("Hyper10nBtw", MainFile.currentUserForAll); //if started by homescreen main method. Can modify and change it 
+            ProfilePanel profilePage = new ProfilePanel("Hyper10nBtw", MainFile.currentUserForAll); //if started by homescreen main method
             HomeScreen.hm.items.addSearchBar();
             HomeScreen.hm.changePanel(profilePage); //Will change these later
         }
         if (e.getSource() == addButton) {
-            AddAdvertScene addScene =  new AddAdvertScene();
+            if (isOnlyAddScreen) {
+                AddAdvertScene addScene =  new AddAdvertScene();
+                isOnlyAddScreen = false;
+            }
+            
         }
         if (e.getSource() == bilMartText) {
             HomeScreen.hm.items.removeSearchBar();
