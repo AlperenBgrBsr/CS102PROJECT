@@ -88,9 +88,9 @@ public class ProfilePanel extends JPanel{
             emailLabel.setFont(new Font("Arias", Font.BOLD, 15));
 
             //Username Label
-            JLabel usernameLabel = new JLabel(currentUser.getUsername());
-            usernameLabel.setBounds(136,195,300,30);
-            usernameLabel.setFont(new Font("Arias", Font.BOLD, 18));
+            JLabel  = new JLabel(currentUser.getUsername());
+            .setBounds(136,195,300,30);
+            .setFont(new Font("Arias", Font.BOLD, 18));
 
             //Select Status
             ButtonGroup buttonGroup = new ButtonGroup();
@@ -233,11 +233,11 @@ public class ProfilePanel extends JPanel{
 
                         };
                         sampleRatingPanel.setLayout(null);
-                        JLabel senderUsernameLabel = new JLabel(currentRating.getSenderUsername());
-                        senderUsernameLabel.setFont(new Font("Arial", Font.BOLD, 20));
-                        senderUsernameLabel.setBounds(20,60,200,100);
+                        JLabel sender = new JLabel(currentRating.getSenderUsername());
+                        sender.setFont(new Font("Arial", Font.BOLD, 20));
+                        sender.setBounds(20,60,200,100);
                         sampleRatingPanel.setPreferredSize(new Dimension(750,200));
-                        sampleRatingPanel.add(senderUsernameLabel);
+                        sampleRatingPanel.add(sender);
                         sampleRatingPanel.setBackground(Color.white);
                         ratingsPanel.add(sampleRatingPanel);
 
@@ -857,7 +857,7 @@ public class ProfilePanel extends JPanel{
             this.add(scrollPaneForReviewArea);
             this.add(selectStatusLabel);
             this.add(emailLabel);
-            this.add(usernameLabel);
+            this.add();
             this.add(homeButton);
             this.add(awayButton);
             this.add(ratingLabel);
@@ -889,8 +889,8 @@ public class ProfilePanel extends JPanel{
             emailLabel.setFont(new Font("Arias", Font.BOLD, 15));
 
             //Username Label
-            JLabel usernameLabel = new JLabel(username);
-            usernameLabel.setBounds(150,210,300,30);
+            JLabel  = new JLabel(username);
+            usernameLabel.setBounds(136,195,300,30);
             usernameLabel.setFont(new Font("Arias", Font.BOLD, 18));
 
             //Status Pic
