@@ -64,13 +64,20 @@ public class Database {
     public static void addToDatabase(User user){
         PreparedStatement addToDatabaseStatement;
         try {
-            addToDatabaseStatement = databaseConnection.prepareStatement("INSERT INTO USERS (user_email,user_password,available,username) VALUES (?,?,?,?)");
+            ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(user.getProfilePicture(), "png", byteOutputStream);
+            byte[] imageBytes = byteOutputStream.toByteArray();
+            addToDatabaseStatement = databaseConnection.prepareStatement("INSERT INTO USERS (user_email,user_password,available,username,profilePicture) VALUES (?,?,?,?,?)");
             addToDatabaseStatement.setString(1, user.getEmail());
             addToDatabaseStatement.setString(2, user.getPassword());
             addToDatabaseStatement.setBoolean(3, user.checkAvailability());
             addToDatabaseStatement.setString(4, user.getUsername());
+            addToDatabaseStatement.setBytes(5, imageBytes);
             addToDatabaseStatement.executeUpdate();
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            
             e.printStackTrace();
         }
     }
@@ -115,7 +122,7 @@ public class Database {
             addToDatabaseStatement.setBoolean(4, advert.checkAvailability());
             addToDatabaseStatement.setString(5, advert.getSellerUsername());
             addToDatabaseStatement.setString(6, advert.getType());
-            addToDatabaseStatement.setString(7, advert.getPrice());
+            addToDatabaseStatement.setInt(7, advert.getPrice());
             addToDatabaseStatement.executeUpdate();
 
         } catch (SQLException e) {
