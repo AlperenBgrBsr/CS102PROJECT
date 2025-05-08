@@ -3,7 +3,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.geom.QuadCurve2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +12,8 @@ import java.util.Locale;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
+
+
 
 
 public class ProfilePanel extends JPanel{
@@ -30,6 +30,9 @@ public class ProfilePanel extends JPanel{
     private static String otherProfileUsername;
     private static Rating currentUsersRating;
     
+    
+
+  
 
     public ProfilePanel(String username, User currentUser){ // These parameters are to see if the user is looking at their own profile or other's profile.
         this.username = username;
@@ -40,7 +43,7 @@ public class ProfilePanel extends JPanel{
 
         //Refresh Button
         JButton refreshButton = new JButton();
-        ImageIcon refreshIcon = new ImageIcon("icons\\refreshIcon.png");
+        ImageIcon refreshIcon = new ImageIcon("refreshIcon.png");
         Image refreshIconImage = refreshIcon.getImage();
         refreshIconImage = refreshIconImage.getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
         ImageIcon newRefreshIcon = new ImageIcon(refreshIconImage);
@@ -54,21 +57,27 @@ public class ProfilePanel extends JPanel{
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                HomeScreen.hm.changePanel(new ProfilePanel(username, currentUser));
-                HomeScreen.hm.items.refreshProfilePicture();
+                //Main.frame and Main.currentPanel will change (the names)!!
+                Main.frame.getContentPane().remove(Main.currentPanel);
+                Main.currentPanel = new ProfilePanel(username, currentUser);
+                Main.frame.getContentPane().add(Main.currentPanel);
+                Main.frame.revalidate();
+                Main.frame.repaint();
             }
             
         });
 
-        try{ 
-            emptyStar = ImageIO.read(new File("icons\\emptystar.png")); 
-            oneQuarterStar = ImageIO.read(new File("icons\\onequarterstar.png")); 
-            halfStar = ImageIO.read(new File("icons\\halfstar.png"));
-            threeQuarterStar = ImageIO.read(new File("icons\\threequarterstar.png"));  
-            fullStar = ImageIO.read(new File("icons\\fullstar.png"));           
+        try{
+            profilePicture = ImageIO.read(new File("profile-picture.png")); 
+            emptyStar = ImageIO.read(new File("emptystar.png")); 
+            oneQuarterStar = ImageIO.read(new File("onequarterstar.png")); 
+            halfStar = ImageIO.read(new File("halfstar.png"));
+            threeQuarterStar = ImageIO.read(new File("threequarterstar.png"));  
+            fullStar = ImageIO.read(new File("fullstar.png"));           
         } catch (IOException e){
             JOptionPane.showMessageDialog(null, "Image is not loaded", "ERROR!",JOptionPane.ERROR_MESSAGE);
         }
+
         
         
 
@@ -82,14 +91,14 @@ public class ProfilePanel extends JPanel{
 
             //Username Label
             JLabel usernameLabel = new JLabel(currentUser.getUsername());
-            usernameLabel.setBounds(136,195,300,30);
+            usernameLabel.setBounds(150,210,300,30);
             usernameLabel.setFont(new Font("Arias", Font.BOLD, 18));
 
             //Select Status
             ButtonGroup buttonGroup = new ButtonGroup();
             JToggleButton homeButton = new JToggleButton();
 
-            ImageIcon homeIcon = new ImageIcon("icons\\homeIcon.png");
+            ImageIcon homeIcon = new ImageIcon("homeIcon.png");
             Image homeIconImage = homeIcon.getImage();
             homeIconImage = homeIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newHomeIcon = new ImageIcon(homeIconImage);
@@ -118,7 +127,7 @@ public class ProfilePanel extends JPanel{
             homeButton.setBounds(700,140, 60,40);
 
             JToggleButton awayButton = new JToggleButton();
-            ImageIcon awayIcon = new ImageIcon("icons\\awayIcon.png");
+            ImageIcon awayIcon = new ImageIcon("awayIcon.png");
             Image awayIconImage = awayIcon.getImage();
             awayIconImage = awayIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newAwayIcon = new ImageIcon(awayIconImage);
@@ -239,7 +248,7 @@ public class ProfilePanel extends JPanel{
                     }
 
                     JScrollPane ratingAmountScrollPane = new JScrollPane(ratingsPanel);
-                    ratingAmountScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+                    ratingAmountScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
                    
                     JPanel returnButtonPanel = new JPanel();
                     returnButtonPanel.setPreferredSize(new Dimension(800,100));
@@ -249,7 +258,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(new Color(151,12,16));
+                    returnButton.setBackground(Color.red);
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -291,7 +300,7 @@ public class ProfilePanel extends JPanel{
             reviewArea.setCaretPosition(0);
 
             JScrollPane scrollPaneForReviewArea = new JScrollPane(reviewArea);
-            scrollPaneForReviewArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            scrollPaneForReviewArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
             scrollPaneForReviewArea.setBorder(new LineBorder(Color.BLACK,1));
             scrollPaneForReviewArea.setBounds(30,390,500,300);
             scrollPaneForReviewArea.setBackground(Color.white);
@@ -303,25 +312,30 @@ public class ProfilePanel extends JPanel{
             
             //Adverts Found
 
-            JButton advertsFoundButton = new JButton(currentUser.getAdvertsCount() + " Adverts Found");
+            
+            JButton advertsFoundButton = new JButton( "Own Available Adverts");
             advertsFoundButton.addActionListener(new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if ( currentUser.getAdvertsCount() == 0){
-                        JOptionPane.showMessageDialog(null, "No Adverts Found", "ERROR", JOptionPane.ERROR_MESSAGE);
-                    }
-                    else{
-                        HomeScreen.hm.changePanel(new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", currentUser.getUsername(), currentUser)); // from my sample, may change
-                    }
+                  
+                        
+                    Main.frame.getContentPane().remove(Main.currentPanel);
+                    Main.currentPanel = new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", currentUser.getUsername(), currentUser); // from my sample, may change
+                    Main.frame.getContentPane().add(Main.currentPanel);
+                    Main.frame.revalidate();
+                    Main.frame.repaint();
+
+                    
                 }
                 
             });
+
             advertsFoundButton.setFocusable(false);
             advertsFoundButton.setBorder(new LineBorder(Color.BLACK,1));
             advertsFoundButton.setBackground(Color.white);
-            advertsFoundButton.setFont(new Font("Arial",Font.BOLD,20));
-            advertsFoundButton.setBounds(310,330,200,40);
+            advertsFoundButton.setFont(new Font("Arial",Font.BOLD,17));
+            advertsFoundButton.setBounds(310,330,220,40);
 
             //Select to Edit Advert
 
@@ -373,7 +387,7 @@ public class ProfilePanel extends JPanel{
                         JButton homeButtonForAdvert = new JButton();
                         JButton awayButtonForAdvert = new JButton();
                         
-                        ImageIcon homeIcon = new ImageIcon("icons\\homeIcon.png");
+                        ImageIcon homeIcon = new ImageIcon("homeIcon.png");
                         Image homeIconImage = homeIcon.getImage();
                         homeIconImage = homeIconImage.getScaledInstance(50, 40, java.awt.Image.SCALE_SMOOTH);
                         ImageIcon newHomeIcon = new ImageIcon(homeIconImage);
@@ -407,7 +421,7 @@ public class ProfilePanel extends JPanel{
                         
 
                         
-                        ImageIcon awayIcon = new ImageIcon("icons\\awayIcon.png");
+                        ImageIcon awayIcon = new ImageIcon("awayIcon.png");
                         Image awayIconImage = awayIcon.getImage();
                         awayIconImage = awayIconImage.getScaledInstance(50, 40, java.awt.Image.SCALE_SMOOTH);
                         ImageIcon newAwayIcon = new ImageIcon(awayIconImage);
@@ -462,10 +476,11 @@ public class ProfilePanel extends JPanel{
                         advertsPanel.add(sampleAdvertPanel);
                         
                     }
+
                     advertsPanel.setBackground(Color.white);
                     JScrollPane selectToEditAdvertScrollPane = new JScrollPane(advertsPanel);
                     selectToEditAdvertScrollPane.setBackground(Color.white);
-                    selectToEditAdvertScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+                    selectToEditAdvertScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
                    
                     JPanel returnButtonPanel = new JPanel();
                     returnButtonPanel.setPreferredSize(new Dimension(800,100));
@@ -475,13 +490,16 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(new Color(151,12,16));
+                    returnButton.setBackground(Color.red);
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
                         @Override
                         public void actionPerformed(ActionEvent e) {
+                            
                             selectToEditAdvertsFrame.dispose();
+                            refreshButton.doClick();
+                            
                         }
                         
                     });
@@ -494,8 +512,13 @@ public class ProfilePanel extends JPanel{
                     selectToEditAdvertsFrame.setResizable(false);
                     selectToEditAdvertsFrame.pack();
                     selectToEditAdvertsFrame.setVisible(true); 
+                    
+
+
                 }
+                
             });
+
 
             //Select to Delete Advert
 
@@ -545,7 +568,7 @@ public class ProfilePanel extends JPanel{
                         deleteAdvertButton.setBorder(new LineBorder(Color.black,1));
                         deleteAdvertButton.setBounds(640,40,100,40);
                         deleteAdvertButton.setFocusable(false);
-                        deleteAdvertButton.setBackground(new Color(151,12,16));
+                        deleteAdvertButton.setBackground(Color.red);
                         deleteAdvertButton.setForeground(Color.white);
                         deleteAdvertButton.addActionListener(new ActionListener() {
 
@@ -579,7 +602,7 @@ public class ProfilePanel extends JPanel{
                     advertsPanel.setBackground(Color.white);
                     JScrollPane selectToDeleteAdvertScrollPane = new JScrollPane(advertsPanel);
                     selectToDeleteAdvertScrollPane.setBackground(Color.WHITE);
-                    selectToDeleteAdvertScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+                    selectToDeleteAdvertScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
                    
                     JPanel returnButtonPanel = new JPanel();
                     returnButtonPanel.setPreferredSize(new Dimension(800,100));
@@ -589,7 +612,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(new Color(151,12,16));
+                    returnButton.setBackground(Color.red);
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -608,84 +631,14 @@ public class ProfilePanel extends JPanel{
                     selectToDeleteAdvertsFrame.setResizable(false);
                     selectToDeleteAdvertsFrame.pack();
                     selectToDeleteAdvertsFrame.setVisible(true); 
+                    
 
 
                 }
                 
             });
 
-            JButton editProfilePictureButton = new JButton("Edit Profile Picture");
-            editProfilePictureButton.setBorder(new LineBorder(Color.BLACK,1));
-            editProfilePictureButton.setBounds(650,430,250,40);
-            editProfilePictureButton.setFont(new Font("Arial", Font.BOLD, 20));
-            editProfilePictureButton.setFocusable(false);  
-            editProfilePictureButton.setBackground(Color.white);
-            editProfilePictureButton.addActionListener(new ActionListener() {
 
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    String[] options = {"Add a new profile picture", "Reset profile picture to default"};
-
-                    // Show the option dialog
-                    int choice = JOptionPane.showOptionDialog(
-                            null,
-                            "",
-                            "Profile Picture Selection",
-                            JOptionPane.DEFAULT_OPTION,
-                            JOptionPane.QUESTION_MESSAGE,
-                            null,     // No custom icon
-                            options,  // The two custom buttons
-                            options[0] // Default selected option
-                    );
-
-                    if (choice == 0) {
-                        JFileChooser fileChooser = new JFileChooser();
-                    fileChooser.setDialogTitle("Select an Image");
-
-                    // Only allow image files
-                    FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                        "Image Files", "jpg", "png", "jpeg", "bmp"
-                    );
-                    fileChooser.setFileFilter(filter);
-
-                    int userSelection = fileChooser.showOpenDialog(null);
-
-                    if (userSelection == JFileChooser.APPROVE_OPTION) {
-                        File selectedFile = fileChooser.getSelectedFile();
-                        String imagePath = selectedFile.getAbsolutePath();
-
-                        try {
-                            Image uploadedImage = ImageIO.read(selectedFile);
-                            if (uploadedImage == null) {
-                                // ImageIO.read returns null if the file is not a known image type
-                                JOptionPane.showMessageDialog(null, "The selected file is not a valid image.", "Invalid File", JOptionPane.ERROR_MESSAGE);
-                                return;
-                            }
-
-                            currentUser.setProfilePictrue(uploadedImage);
-                            refreshButton.doClick();
-                            System.out.println("Image loaded successfully: " + imagePath);
-
-                        } 
-                        catch (IOException ex) {
-                            JOptionPane.showMessageDialog(null, "An error occurred while loading the image: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                            ex.printStackTrace();
-                        }
-                    }     
-                    } 
-                    else if (choice == 1) {
-                        try {
-                            currentUser.setProfilePictrue(ImageIO.read(new File("icons\\profile-picture.png")));
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                            JOptionPane.showMessageDialog(null, "Error Happened", "Error", JOptionPane.ERROR_MESSAGE);
-                        }
-                        refreshButton.doClick();
-                    }
-                    
-                }
-            });
-            this.add(editProfilePictureButton);            
             //Viewed Adverts 
 
             JButton viewedAdvertsButton = new JButton("Viewed Adverts");
@@ -736,7 +689,7 @@ public class ProfilePanel extends JPanel{
                         deleteAdvertButton.setBorder(new LineBorder(Color.black,1));
                         deleteAdvertButton.setBounds(640,40,100,40);
                         deleteAdvertButton.setFocusable(false);
-                        deleteAdvertButton.setBackground(new Color(151,12,16));
+                        deleteAdvertButton.setBackground(Color.red);
                         deleteAdvertButton.setForeground(Color.white);
                         deleteAdvertButton.addActionListener(new ActionListener() {
 
@@ -772,7 +725,7 @@ public class ProfilePanel extends JPanel{
 
                     JScrollPane viewedAdvertsScrollPane = new JScrollPane(advertsPanel);
                     viewedAdvertsScrollPane.setBackground(Color.white);
-                    viewedAdvertsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+                    viewedAdvertsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
                    
                     JPanel returnButtonPanel = new JPanel();
                     returnButtonPanel.setPreferredSize(new Dimension(800,100));
@@ -782,7 +735,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(new Color(151,12,16));
+                    returnButton.setBackground(Color.red);
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -801,7 +754,11 @@ public class ProfilePanel extends JPanel{
                     viewedAdvertsFrame.setResizable(false);
                     viewedAdvertsFrame.pack();
                     viewedAdvertsFrame.setVisible(true);
+
+
+
                 }
+                
             });
 
             //Logout Button
@@ -811,7 +768,7 @@ public class ProfilePanel extends JPanel{
             logoutButton.setBounds(800,650,150,40);
             logoutButton.setFont(new Font("Arial", Font.BOLD, 20));
             logoutButton.setFocusable(false);  
-            logoutButton.setBackground(new Color(151,12,16));
+            logoutButton.setBackground(Color.red);
             logoutButton.setForeground(Color.white);
             logoutButton.addActionListener(new ActionListener() {
 
@@ -861,22 +818,22 @@ public class ProfilePanel extends JPanel{
             //---------------------------------
             
             JLabel emailLabel = new JLabel(email); 
-            emailLabel.setBounds(280,125,10,20);
+            emailLabel.setBounds(280,125,300,20);
             emailLabel.setFont(new Font("Arias", Font.BOLD, 15));
 
             //Username Label
             JLabel usernameLabel = new JLabel(username);
-            usernameLabel.setBounds(135,195,250,30);
+            usernameLabel.setBounds(150,210,300,30);
             usernameLabel.setFont(new Font("Arias", Font.BOLD, 18));
 
             //Status Pic
 
-            ImageIcon homeIcon = new ImageIcon("icons\\homeIcon.png");
+            ImageIcon homeIcon = new ImageIcon("homeIcon.png");
             Image homeIconImage = homeIcon.getImage();
             homeIconImage = homeIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newHomeIcon = new ImageIcon(homeIconImage);
 
-            ImageIcon awayIcon = new ImageIcon("icons\\awayIcon.png");
+            ImageIcon awayIcon = new ImageIcon("awayIcon.png");
             Image awayIconImage = awayIcon.getImage();
             awayIconImage = awayIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newAwayIcon = new ImageIcon(awayIconImage);
@@ -977,7 +934,7 @@ public class ProfilePanel extends JPanel{
                         deleteRatingButton.setBorder(new LineBorder(Color.BLACK,1));
                         deleteRatingButton.setFont(new Font("Arial", Font.BOLD, 20));
                         deleteRatingButton.setFocusable(false);  
-                        deleteRatingButton.setBackground(new Color(151,12,16));
+                        deleteRatingButton.setBackground(Color.red);
                         deleteRatingButton.setForeground(Color.white);
                         deleteRatingButton.setBounds(605,80,150,40);
                         deleteRatingButton.addActionListener(new ActionListener() {
@@ -1029,7 +986,7 @@ public class ProfilePanel extends JPanel{
                       
                     }
                     JScrollPane ratingAmountScrollPane = new JScrollPane(ratingsPanel);
-                    ratingAmountScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+                    ratingAmountScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
                    
                     JPanel returnButtonPanel = new JPanel();
                     returnButtonPanel.setPreferredSize(new Dimension(800,100));
@@ -1039,7 +996,7 @@ public class ProfilePanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(new Color(151,12,16));
+                    returnButton.setBackground(Color.red);
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -1150,7 +1107,7 @@ public class ProfilePanel extends JPanel{
                             JButton resetButton = new JButton("Reset");
                             resetButton.setFocusable(false);
                             resetButton.setBorder(new LineBorder(Color.black,1));
-                            resetButton.setBackground(new Color(151,12,16));
+                            resetButton.setBackground(Color.red);
                             resetButton.setForeground(Color.white);
                             resetButton.addActionListener(new ActionListener() {
 
@@ -1167,7 +1124,7 @@ public class ProfilePanel extends JPanel{
                             JButton sendRating = new JButton("Send Rating");
                             sendRating.setFocusable(false);
                             sendRating.setBorder(new LineBorder(Color.black,1));
-                            sendRating.setBackground(new Color(151,12,16));
+                            sendRating.setBackground(Color.red);
                             sendRating.setForeground(Color.white);
                             sendRating.addActionListener(new ActionListener() {
 
@@ -1232,7 +1189,7 @@ public class ProfilePanel extends JPanel{
             reviewArea.setCaretPosition(0);
 
             JScrollPane scrollPaneForReviewArea = new JScrollPane(reviewArea);
-            scrollPaneForReviewArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            scrollPaneForReviewArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
             scrollPaneForReviewArea.setBorder(new LineBorder(Color.BLACK,1));
             scrollPaneForReviewArea.setBounds(30,380,500,300);
             scrollPaneForReviewArea.setBackground(Color.white);
@@ -1291,6 +1248,8 @@ public class ProfilePanel extends JPanel{
 
             //Adverts Found
 
+    
+
             JButton advertsFoundButton = new JButton(getAdvertsCountForOtherProfile() + " Adverts Found");
             advertsFoundButton.addActionListener(new ActionListener() {
 
@@ -1300,7 +1259,13 @@ public class ProfilePanel extends JPanel{
                         JOptionPane.showMessageDialog(null, "No Adverts Found", "ERROR", JOptionPane.ERROR_MESSAGE);
                     }
                     else{
-                        //HomeScreen.hm.changePanel(new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", username, currentUser)); // from my sample, may change 
+                        
+                        Main.frame.getContentPane().remove(Main.currentPanel);
+                        Main.currentPanel = new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", username, currentUser); // From my sample, may change
+                        Main.frame.getContentPane().add(Main.currentPanel);
+                        Main.frame.revalidate();
+                        Main.frame.repaint();
+                        
                     }
                 }
                 
@@ -1432,14 +1397,14 @@ public class ProfilePanel extends JPanel{
         
         
         this.add(refreshButton);
-        this.setPreferredSize(new Dimension(1024,768));      
+        this.setPreferredSize(new Dimension(1024,720));      
         this.setVisible(true); 
         
     }
 
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
-        g.drawImage(currentUser.getProfilePicture(), 120, 50, 150,150, this);
+        g.drawImage(profilePicture, 120, 50, 150,150, this);
         for (int i = 0; i < 5; i++){
             g.drawImage(emptyStar, 60 + 45*i, 260, 45, 45, this);
         }
@@ -1554,10 +1519,26 @@ public class ProfilePanel extends JPanel{
             getAdvertsListStatement.setString(1, otherProfileUsername);
             ResultSet advertsListRs = getAdvertsListStatement.executeQuery();
             while ( advertsListRs.next() ){
+            
 
-                advertsCount++;
+                if ( advertsListRs.getBoolean("availability")){
+                    advertsCount++;
+                }
+                
 
             }
+            PreparedStatement getUserAvailability = Database.databaseConnection.prepareStatement("SELECT available FROM users WHERE username = ?");
+            getUserAvailability.setString(1, otherProfileUsername);
+            ResultSet getUserAvailabilityRs = getUserAvailability.executeQuery();
+            boolean userAvailability = false;
+            if ( getUserAvailabilityRs.next() ){
+                userAvailability = getUserAvailabilityRs.getBoolean("available");
+            }
+            if ( !userAvailability){
+                advertsCount = 0;
+            }
+
+
         } catch (SQLException e) {
             e.printStackTrace();
         } 
