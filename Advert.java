@@ -4,14 +4,14 @@ import java.awt.image.BufferedImage;
 public class Advert {
 
     private String title;
-    private String price;
+    private int price;
     private BufferedImage image;
     private String detailedInformation;
     private String sellerUsername;
     private boolean isAvailable;
     private String type;
 
-    public Advert(BufferedImage image, String title, String price, String detailedInformation, String sellerUsername, boolean isAvailable, String type){
+    public Advert(BufferedImage image, String title, int price, String detailedInformation, String sellerUsername, boolean isAvailable, String type){
         this.image = image;
         this.title = title;
         this.price = price;
@@ -31,7 +31,7 @@ public class Advert {
 
 
 
-    public String getPrice() {
+    public int getPrice() {
         return price;
     }
 
