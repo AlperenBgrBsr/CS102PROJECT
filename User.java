@@ -346,7 +346,32 @@ public class User {
         return isAvailable;
     }
     public BufferedImage getProfilePicture() {
-        return profilePicture;
+        BufferedImage currentProfilePicture = null;
+        
+        try {
+            PreparedStatement getProfilePictureStatement = Database.databaseConnection.prepareStatement("SELECT profilePicture FROM users WHERE username = ?");
+            getProfilePictureStatement.setString(1, username);
+            ResultSet getProfilePictureRs = getProfilePictureStatement.executeQuery();
+            
+            if ( getProfilePictureRs.next()){
+                
+                byte[] imageBytes = getProfilePictureRs.getBytes("profilePicture");
+                if (imageBytes != null) {
+                    ByteArrayInputStream byteInputStream = new ByteArrayInputStream(imageBytes);
+                    try {
+                        profilePicture = ImageIO.read(byteInputStream);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } 
+                }
+            }
+
+               
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return currentProfilePicture;
     }
     public void setProfilePictrue(Image image) {
         profilePicture = toBufferedImage(image);
