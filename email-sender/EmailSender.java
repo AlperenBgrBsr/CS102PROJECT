@@ -6,9 +6,9 @@ import java.util.*;
 public class EmailSender {
     private final String USERNAME = "bilmartsystem@gmail.com"; 
     private final String PASSWORD = "tkuqozkfpajskspw"; 
-    private Random random = new Random();
+    private static Random random = new Random();
 
-    public void sendInformationEmail(User from, User to, Advert advert) {
+    public static void sendInformationEmail(User from, User to, Advert advert) {
         String fromName = from.getUsername();
         String toName = to.getUsername();
         int advertID = advert.getId();
@@ -23,13 +23,13 @@ public class EmailSender {
 
         Session session = Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(USERNAME, PASSWORD);
+                return new PasswordAuthentication("bilmartsystem@gmail.com", "tkuqozkfpajskspw");
             }
         });
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(USERNAME));
+            message.setFrom(new InternetAddress("bilmartsystem@gmail.com"));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to.getEmail()));
             message.setSubject("Information mail");
             message.setText("User " + fromName + " with ID "+ fromID + " has added your advert with ID " + advertID);
@@ -41,7 +41,7 @@ public class EmailSender {
         }
     }
 
-    public void sendVerificationEmail(User to) {
+    public static void sendVerificationEmail(User to) {
         Properties props = new Properties();
         int code = random.nextInt(100000,1000001);
         props.put("mail.smtp.host", "smtp.gmail.com");
@@ -51,13 +51,13 @@ public class EmailSender {
 
         Session session = Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(USERNAME, PASSWORD);
+                return new PasswordAuthentication("bilmartsystem@gmail.com", "tkuqozkfpajskspw");
             }
         });
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(USERNAME));
+            message.setFrom(new InternetAddress("bilmartsystem@gmail.com"));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to.getEmail()));
             message.setSubject("Verification email");
             message.setText("Your verification code for registration: " + code);
