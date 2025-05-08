@@ -55,6 +55,7 @@ public class ProfilePanel extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 HomeScreen.hm.changePanel(new ProfilePanel(username, currentUser));
+                HomeScreen.hm.items.refreshProfilePicture();
             }
             
         });
@@ -68,7 +69,6 @@ public class ProfilePanel extends JPanel{
         } catch (IOException e){
             JOptionPane.showMessageDialog(null, "Image is not loaded", "ERROR!",JOptionPane.ERROR_MESSAGE);
         }
-
         
         
 
@@ -608,7 +608,6 @@ public class ProfilePanel extends JPanel{
                     selectToDeleteAdvertsFrame.setResizable(false);
                     selectToDeleteAdvertsFrame.pack();
                     selectToDeleteAdvertsFrame.setVisible(true); 
-                    
 
 
                 }
