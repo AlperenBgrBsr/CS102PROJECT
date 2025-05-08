@@ -113,6 +113,19 @@ public class Database {
             e.printStackTrace();
         }
     }
+
+    public static void addToDatabase(Message message){
+        try {
+            PreparedStatement addToDatabaseStatement = databaseConnection.prepareStatement("INSERT INTO messages VALUES (?,?,?)");
+            addToDatabaseStatement.setString(1, message.getSenderUsername());
+            addToDatabaseStatement.setString(2, message.getRecieverUsername());
+            addToDatabaseStatement.setString(3, message.getMessageContent());
+            addToDatabaseStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void addToDatabase(Advert advert){
         try {
 
