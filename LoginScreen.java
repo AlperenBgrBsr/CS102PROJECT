@@ -72,7 +72,7 @@ public class LoginScreen extends JFrame {
                         currentUser = user;
                         HomeScreen homepageFrame = new HomeScreen();
                         homepageFrame.setVisible(true);
-                        LoginScreen.this.dispose();
+                        LoginScreen.this.setVisible(false);//later for logout button
                         usernameField.setText("");
                         passwordField.setText("");
                         return;
