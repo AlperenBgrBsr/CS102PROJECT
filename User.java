@@ -1,15 +1,13 @@
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 
 
 
@@ -28,7 +26,10 @@ public class User {
     private ArrayList<Advert> bookmarkedAdverts;
     private ArrayList<Advert> viewedAdverts;
     private BufferedImage profilePicture;
+    private ArrayList<Advert> availableAdvertsList;
     
+
+
     public User(String username, String email, String password, boolean isAvailable) {
         this(username,password);
         this.email = email;
@@ -43,16 +44,12 @@ public class User {
         viewedAdverts = new ArrayList<>();
         bookmarkedAdverts = new ArrayList<>();
         ratingsList = new ArrayList<>();
-
-        try { //When first instantited automically default profile picture
-            if (profilePicture == null)
-            profilePicture = toBufferedImage(ImageIO.read(new File("icons\\profile-picture.png")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        availableAdvertsList = new ArrayList<>();
+        
     }
 
     public User(String username, String email, String password) {
+
         this(username,password);
         this.email = email;
         this.rating = 0;
@@ -66,13 +63,8 @@ public class User {
         viewedAdverts = new ArrayList<>();
         bookmarkedAdverts = new ArrayList<>();
         ratingsList = new ArrayList<>();
-
-        try { //When first instantited automically default profile picture
-            if (profilePicture == null)
-            profilePicture = toBufferedImage(ImageIO.read(new File("icons\\profile-picture.png")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        availableAdvertsList = new ArrayList<>();
+        
     }
 
     public ArrayList<Advert> getViewedAdverts() {
@@ -96,7 +88,7 @@ public class User {
                         advertImage = ImageIO.read(byteInputStream); 
                     }
 
-                    viewedAdverts.add(new Advert(advertImage, advertsListRs.getString("advertTitle"), advertsListRs.getString("advertPrice"), advertsListRs.getString("advertDetails"), advertsListRs.getString("sellerUsername"), advertsListRs.getBoolean("availability"), advertsListRs.getString("type")));
+                    viewedAdverts.add(new Advert(advertImage, advertsListRs.getString("advertTitle"), advertsListRs.getInt("advertPrice"), advertsListRs.getString("advertDetails"), advertsListRs.getString("sellerUsername"), advertsListRs.getBoolean("availability"), advertsListRs.getString("type")));
 
                     
                 }
@@ -109,7 +101,6 @@ public class User {
         }
         return viewedAdverts;
     }
-
     public ArrayList<Advert> getBookmarkedAdverts() {
         bookmarkedAdverts = new ArrayList<>();
         try {
@@ -131,7 +122,7 @@ public class User {
                         advertImage = ImageIO.read(byteInputStream); 
                     }
 
-                    bookmarkedAdverts.add(new Advert(advertImage, advertsListRs.getString("advertTitle"), advertsListRs.getString("advertPrice"), advertsListRs.getString("advertDetails"), advertsListRs.getString("sellerUsername"), advertsListRs.getBoolean("availability"), advertsListRs.getString("type")));
+                    bookmarkedAdverts.add(new Advert(advertImage, advertsListRs.getString("advertTitle"), advertsListRs.getInt("advertPrice"), advertsListRs.getString("advertDetails"), advertsListRs.getString("sellerUsername"), advertsListRs.getBoolean("availability"), advertsListRs.getString("type")));
 
 
                 }
@@ -142,6 +133,7 @@ public class User {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Collections.reverse(bookmarkedAdverts);
         return bookmarkedAdverts;
     }
     public int getAdvertsCount() {
@@ -164,11 +156,14 @@ public class User {
     public ArrayList<Advert> getAdvertsList() {
     
         try {
+            
             advertsList = new ArrayList<>();
             PreparedStatement getAdvertsListStatement = Database.databaseConnection.prepareStatement("SELECT * FROM adverts WHERE sellerUsername = ?");
             getAdvertsListStatement.setString(1, username);
             ResultSet advertsListRs = getAdvertsListStatement.executeQuery();
+
             while ( advertsListRs.next() ){
+                
                 BufferedImage advertImage = null;
                 byte[] imageBytes = advertsListRs.getBytes("advertPicture");
                 if (imageBytes != null) {
@@ -179,7 +174,7 @@ public class User {
                         e.printStackTrace();
                     } 
                 }
-                advertsList.add(new Advert(advertImage, advertsListRs.getString("advertTitle"), advertsListRs.getString("advertPrice"), advertsListRs.getString("advertDetails"), advertsListRs.getString("sellerUsername"), advertsListRs.getBoolean("availability"), advertsListRs.getString("type")));
+                advertsList.add(new Advert(advertImage, advertsListRs.getString("advertTitle"), advertsListRs.getInt("advertPrice"), advertsListRs.getString("advertDetails"), advertsListRs.getString("sellerUsername"), advertsListRs.getBoolean("availability"), advertsListRs.getString("type")));
 
             }
 
@@ -244,14 +239,6 @@ public class User {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
-    }
-
-    public void setProfilePictrue(Image image) {
-        profilePicture = toBufferedImage(image);
-    }
-
-    public BufferedImage getProfilePicture() {
-        return profilePicture;
     }
 
     public String getEmail() {
@@ -340,26 +327,12 @@ public class User {
     public boolean checkAvailability(){
         return isAvailable;
     }
+    public BufferedImage getProfilePicture() {
+        return profilePicture;
+    }
+
     public void updateAvailability(boolean isAvailable){
         this.isAvailable = isAvailable;
     }
-    private BufferedImage toBufferedImage(Image img) {
-        if (img instanceof BufferedImage bufferedImage) {
-            return bufferedImage;
-        }
 
-        // Make sure the image is fully loaded
-        img = new ImageIcon(img).getImage();
-
-        // Create a buffered image with transparency
-        BufferedImage bimage = new BufferedImage(
-                img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-
-        // Draw the image on to the buffered image
-        Graphics2D bGr = bimage.createGraphics();
-        bGr.drawImage(img, 0, 0, null);
-        bGr.dispose();
-
-        return bimage;
-    }     
 }
