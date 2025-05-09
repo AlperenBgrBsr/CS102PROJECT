@@ -71,13 +71,34 @@ public class RegisterScreen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (isValidEmail(emailField.getText())) {
-                    JOptionPane.showMessageDialog(null,
-                            "We have sent a confirmation code to your email",
-                            "Confirmation Code",
+                    String validity = isValidUsernameAndEmail (usernameField.getText(), emailField.getText());
+                    if ( validity.equalsIgnoreCase("EmailAndUsername")){
+                        JOptionPane.showMessageDialog(null,
+                            "There is already an account registered with that username and email!",
+                            "Input Error",
                             JOptionPane.WARNING_MESSAGE);
-                    codeLabel.setVisible(true);
-                    codeField.setVisible(true);
-                    confirmCodeButton.setVisible(true);
+                    }
+                    else if ( validity.equalsIgnoreCase("Username")){
+                        JOptionPane.showMessageDialog(null,
+                            "There is already an account registered with that username!",
+                            "Input Error",
+                            JOptionPane.WARNING_MESSAGE);
+                    }
+                    else if (validity.equalsIgnoreCase("Email")){
+                        JOptionPane.showMessageDialog(null,
+                            "There is already an account registered with that email!",
+                            "Input Error",
+                            JOptionPane.WARNING_MESSAGE);
+                    }
+                    else if ( validity.equalsIgnoreCase("Okay")){
+                        JOptionPane.showMessageDialog(null,
+                                "We have sent a confirmation code to your email",
+                                "Confirmation Code",
+                                JOptionPane.WARNING_MESSAGE);
+                        codeLabel.setVisible(true);
+                        codeField.setVisible(true);
+                        confirmCodeButton.setVisible(true);
+                    }
                 } else {
                     JOptionPane.showMessageDialog(null,
                             "Invalid email!",
@@ -116,6 +137,43 @@ public class RegisterScreen extends JFrame {
 
     public boolean isValidEmail(String email) {
         return email.endsWith("@ug.bilkent.edu.tr");
+    }
+
+    public String isValidUsernameAndEmail(String username, String email){ // checks if the username and the email has registered before
+
+        String validity = "";// 4 Types --> Both email and username is not valid, only email is not valid, only username is not valid, and okay
+        boolean isValid = true;
+        ArrayList<User> allUsers = Database.getAllUsersForRegisterAndLogin();
+        for (int i = 0; i < allUsers.size() && isValid ; i++){
+
+            if ( allUsers.get(i).getUsername().equalsIgnoreCase(username) && allUsers.get(i).getEmail().equalsIgnoreCase(email)){
+
+                isValid = false;
+                validity = "EmailAndUsername";
+
+            }
+            else if ( allUsers.get(i).getUsername().equalsIgnoreCase(username) ){
+
+                isValid = false;
+                validity = "Username";
+
+            }
+            else if ( allUsers.get(i).getEmail().equalsIgnoreCase(email) ){
+
+                isValid = false;
+                validity = "Email";
+
+            }
+
+
+        }
+
+        if ( isValid ){
+            validity = "Okay";
+        }
+
+        return validity;
+
     }
 
    
