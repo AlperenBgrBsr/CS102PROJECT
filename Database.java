@@ -191,6 +191,24 @@ public class Database {
         
 
     }
+    public static ArrayList<User> getAllUsersForRegisterAndLogin(){
+
+        //this will only return the emails, passwords and the usernames of the all of the users, other parameters will be set to default but they wont be needed
+        ArrayList<User> allUsers = new ArrayList<>();
+
+        try {
+            PreparedStatement getAllUsersStatement = databaseConnection.prepareStatement("SELECT * FROM users");
+            ResultSet getAllUsersRs = getAllUsersStatement.executeQuery();
+            while ( getAllUsersRs.next() ){
+                allUsers.add(new User(getAllUsersRs.getString("username"), getAllUsersRs.getString("user_email"), getAllUsersRs.getString("user_password")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return allUsers;
+
+    }
 
 
 }
