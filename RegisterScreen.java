@@ -116,7 +116,8 @@ public class RegisterScreen extends JFrame {
                     String username = usernameField.getText();
                     String password = passwordField.getText();
                     User newUser = new User(username, email, password);
-                    LoginScreen.database.addUser(newUser);
+                    // LoginScreen.database.addUser(newUser);
+                    Database.addToDatabase(newUser); // şimdilik comment atıyorum ama doğru hali bu
 
                     JOptionPane.showMessageDialog(null,
                             "You have been successfully registered, redirecting to login screen",
