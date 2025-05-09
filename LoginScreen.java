@@ -66,12 +66,11 @@ public class LoginScreen extends JFrame {
                         JOptionPane.WARNING_MESSAGE);
                     return; 
                 }
-                for (User user : database.getUsers()) {
-                    if ((user.getEmail().equals(usernameField.getText()) || user.getUsername().equals(usernameField.getText())) 
+                for (User user : Database.getAllUsersForRegisterAndLogin()) {
+                    if ((  user.getUsername().equals(usernameField.getText())) 
                          && user.getPassword().equals(passwordField.getText())) {
-                        currentUser = user;
-                        HomeScreen homepageFrame = new HomeScreen();
-                        homepageFrame.setVisible(true);
+                        MainFile.currentUserForAll = getUserWithUsername(usernameField.getText());
+                        HomeScreen.hm = new HomeScreen();
                         LoginScreen.this.setVisible(false);//later for logout button
                         usernameField.setText("");
                         passwordField.setText("");
