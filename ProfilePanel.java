@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.awt.geom.QuadCurve2D;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
@@ -33,7 +34,6 @@ public class ProfilePanel extends JPanel{
     private static Rating currentUsersRating;
     
     
-
   
 
     public ProfilePanel(String username, User currentUser){ // These parameters are to see if the user is looking at their own profile or other's profile.
@@ -88,9 +88,9 @@ public class ProfilePanel extends JPanel{
             emailLabel.setFont(new Font("Arias", Font.BOLD, 15));
 
             //Username Label
-            JLabel  = new JLabel(currentUser.getUsername());
-            .setBounds(136,195,300,30);
-            .setFont(new Font("Arias", Font.BOLD, 18));
+            JLabel usernameLabel = new JLabel(currentUser.getUsername());
+            usernameLabel.setBounds(136,205,300,30);
+            usernameLabel.setFont(new Font("Arias", Font.BOLD, 18));
 
             //Select Status
             ButtonGroup buttonGroup = new ButtonGroup();
@@ -192,11 +192,11 @@ public class ProfilePanel extends JPanel{
             String formattedRating = String.format("%.2f",currentUser.getRating());
             ratingLabel.setText(formattedRating);
             ratingLabel.setFont(new Font("Arial Black",Font.BOLD, 35));
-            ratingLabel.setBounds(300,232,100,100);
+            ratingLabel.setBounds(300,212,100,100);
 
             JButton ratingCountButton = new JButton(currentUser.getRatingAmount() + " Ratings");
             ratingCountButton.setBorder(new LineBorder(Color.BLACK,1));
-            ratingCountButton.setBounds(170,330,130,40);
+            ratingCountButton.setBounds(170,310,130,40);
             ratingCountButton.setFont(new Font("Arial", Font.BOLD, 20));
             ratingCountButton.setFocusable(false);  
             ratingCountButton.setBackground(Color.white);
@@ -300,12 +300,12 @@ public class ProfilePanel extends JPanel{
             JScrollPane scrollPaneForReviewArea = new JScrollPane(reviewArea);
             scrollPaneForReviewArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
             scrollPaneForReviewArea.setBorder(new LineBorder(Color.BLACK,1));
-            scrollPaneForReviewArea.setBounds(30,390,500,300);
+            scrollPaneForReviewArea.setBounds(30,370,500,300);
             scrollPaneForReviewArea.setBackground(Color.white);
             
             JLabel reviewLabel = new JLabel("  " + currentUser.getReviewsCount() +" Reviews");
             reviewLabel.setBorder(new LineBorder(Color.BLACK,1));
-            reviewLabel.setBounds(30,330,130,40);
+            reviewLabel.setBounds(30,310,130,40);
             reviewLabel.setFont(new Font("Arial", Font.BOLD, 20));
             
             //Adverts Found
@@ -318,7 +318,7 @@ public class ProfilePanel extends JPanel{
                 public void actionPerformed(ActionEvent e) {
                   
                         
-                   HomeScreen.hm.changePanel(new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", currentUser.getUsername(), currentUser)); // from my sample, may change
+                //    HomeScreen.hm.changePanel(new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", currentUser.getUsername(), currentUser)); // from my sample, may change
                     
 
                     
@@ -330,7 +330,7 @@ public class ProfilePanel extends JPanel{
             advertsFoundButton.setBorder(new LineBorder(Color.BLACK,1));
             advertsFoundButton.setBackground(Color.white);
             advertsFoundButton.setFont(new Font("Arial",Font.BOLD,17));
-            advertsFoundButton.setBounds(310,330,220,40);
+            advertsFoundButton.setBounds(310,310,220,40);
 
             //Select to Edit Advert
 
@@ -672,7 +672,7 @@ public class ProfilePanel extends JPanel{
                     if (userSelection == JFileChooser.APPROVE_OPTION) {
                         File selectedFile = fileChooser.getSelectedFile();
                         String imagePath = selectedFile.getAbsolutePath();
-
+                        
                         try {
                             Image uploadedImage = ImageIO.read(selectedFile);
                             if (uploadedImage == null) {
@@ -694,9 +694,12 @@ public class ProfilePanel extends JPanel{
                     }     
                     } 
                     else if (choice == 1) {
+                        
                         try {
-                            currentUser.setProfilePictrue(ImageIO.read(new File("icons\\profile-picture.png")));
+                            Image uploadedImage = ImageIO.read(new File("icons\\profile-picture.png"));
+                            currentUser.setProfilePictrue(uploadedImage);
                             Database.setProfilePictureInDatabase(uploadedImage, currentUser.getUsername());
+
                         } catch (IOException e1) {
                             e1.printStackTrace();
                             JOptionPane.showMessageDialog(null, "Error Happened", "Error", JOptionPane.ERROR_MESSAGE);
@@ -859,7 +862,7 @@ public class ProfilePanel extends JPanel{
             this.add(scrollPaneForReviewArea);
             this.add(selectStatusLabel);
             this.add(emailLabel);
-            this.add();
+            this.add(usernameLabel);
             this.add(homeButton);
             this.add(awayButton);
             this.add(ratingLabel);
@@ -891,8 +894,8 @@ public class ProfilePanel extends JPanel{
             emailLabel.setFont(new Font("Arias", Font.BOLD, 15));
 
             //Username Label
-            JLabel  = new JLabel(username);
-            usernameLabel.setBounds(136,195,300,30);
+            JLabel usernameLabel = new JLabel(username);
+            usernameLabel.setBounds(136,205,300,30);
             usernameLabel.setFont(new Font("Arias", Font.BOLD, 18));
 
             //Status Pic
@@ -943,11 +946,11 @@ public class ProfilePanel extends JPanel{
             String formattedRating = String.format("%.2f",getRatingsForOtherProfile());
             ratingLabel.setText(formattedRating);
             ratingLabel.setFont(new Font("Arial Black",Font.BOLD, 35));
-            ratingLabel.setBounds(300,232,100,100);
+            ratingLabel.setBounds(300,212,100,100);
 
             JButton ratingCountButton = new JButton( getTotalNumberOfRatingsForOtherProfile() + " Ratings"); 
             ratingCountButton.setBorder(new LineBorder(Color.BLACK,1));
-            ratingCountButton.setBounds(170,330,130,40);
+            ratingCountButton.setBounds(170,310,130,40);
             ratingCountButton.setFont(new Font("Arial", Font.BOLD, 20));
             ratingCountButton.setFocusable(false);  
             ratingCountButton.setBackground(Color.white);
@@ -1091,7 +1094,7 @@ public class ProfilePanel extends JPanel{
 
             JButton addRatingButton = new JButton("Add Rating");
             addRatingButton.setBorder(new LineBorder(Color.BLACK,1));
-            addRatingButton.setBounds(310,330,120,40);
+            addRatingButton.setBounds(310,310,120,40);
             addRatingButton.setFont(new Font("Arial", Font.BOLD, 20));
             addRatingButton.setFocusable(false);  
             addRatingButton.setBackground(Color.white);
@@ -1260,7 +1263,7 @@ public class ProfilePanel extends JPanel{
             JScrollPane scrollPaneForReviewArea = new JScrollPane(reviewArea);
             scrollPaneForReviewArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
             scrollPaneForReviewArea.setBorder(new LineBorder(Color.BLACK,1));
-            scrollPaneForReviewArea.setBounds(30,380,500,300);
+            scrollPaneForReviewArea.setBounds(30,360,500,300);
             scrollPaneForReviewArea.setBackground(Color.white);
             
 
@@ -1268,7 +1271,7 @@ public class ProfilePanel extends JPanel{
             JTextField reviewTextField = new JTextField(" Add Review");
             reviewTextField.setFont(new Font("Arial",Font.ITALIC,15));
             reviewTextField.setBorder(new LineBorder(Color.BLACK,1));
-            reviewTextField.setBounds(30,680,440,30);
+            reviewTextField.setBounds(30,660,440,30);
             reviewTextField.setPreferredSize(new Dimension(440,30));
             reviewTextField.setBackground(Color.white);
             reviewTextField.addMouseListener(new MouseListener() { //To Empty The Text Field
@@ -1292,7 +1295,7 @@ public class ProfilePanel extends JPanel{
             JButton reviewSendButton = new JButton("Send");
             reviewSendButton.setFont(new Font("Arial",Font.ITALIC + Font.BOLD,15));
             reviewSendButton.setBorder(new LineBorder(Color.BLACK,1));
-            reviewSendButton.setBounds(470,680,60,30);
+            reviewSendButton.setBounds(470,660,60,30);
             reviewSendButton.setPreferredSize(new Dimension(60,30));
             reviewSendButton.setBackground(Color.white);
             reviewSendButton.setFocusable(false);
@@ -1312,7 +1315,7 @@ public class ProfilePanel extends JPanel{
 
             JLabel reviewLabel = new JLabel("  " + currentReviews.size()  +" Reviews");
             reviewLabel.setBorder(new LineBorder(Color.BLACK,1));
-            reviewLabel.setBounds(30,330,130,40);
+            reviewLabel.setBounds(30,310,130,40);
             reviewLabel.setFont(new Font("Arial", Font.BOLD, 20));
 
             //Adverts Found
@@ -1329,7 +1332,7 @@ public class ProfilePanel extends JPanel{
                     }
                     else{
                         
-                        HomeScreen.hm.changePanel(new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", username, currentUser));
+                        // HomeScreen.hm.changePanel(new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", username, currentUser));
                         
                     }
                 }
@@ -1471,7 +1474,7 @@ public class ProfilePanel extends JPanel{
         super.paintComponent(g);
         g.drawImage(getCurrentProfilePicture(otherProfileUsername, currentUser), 120, 50, 150,150, this);
         for (int i = 0; i < 5; i++){
-            g.drawImage(emptyStar, 60 + 45*i, 260, 45, 45, this);
+            g.drawImage(emptyStar, 60 + 45*i, 240, 45, 45, this);
         }
 
         double rating = 0;
@@ -1486,18 +1489,18 @@ public class ProfilePanel extends JPanel{
 
         while ( rating >= 1 ){
 
-            g.drawImage(fullStar, 60 + 45*drawnStarAmount, 260, 45, 45, this);
+            g.drawImage(fullStar, 60 + 45*drawnStarAmount, 240, 45, 45, this);
             rating--;
             drawnStarAmount++;
         }
         if ( rating >= 0.75 && rating < 1){
-            g.drawImage(threeQuarterStar, 60 + 45*drawnStarAmount, 260, 45, 45, this);
+            g.drawImage(threeQuarterStar, 60 + 45*drawnStarAmount, 240, 45, 45, this);
         }
         else if (rating >= 0.5){
-            g.drawImage(halfStar, 60 + 45*drawnStarAmount, 260, 45, 45, this);
+            g.drawImage(halfStar, 60 + 45*drawnStarAmount, 240, 45, 45, this);
         }
         else if ( rating >= 0.25 ){
-            g.drawImage(oneQuarterStar, 60 + 45*drawnStarAmount, 260, 45, 45, this);
+            g.drawImage(oneQuarterStar, 60 + 45*drawnStarAmount, 240, 45, 45, this);
         }
     }   
 

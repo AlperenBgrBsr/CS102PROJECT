@@ -9,13 +9,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.chrono.IsoChronology;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -222,10 +227,30 @@ public class ItemsBar extends JPanel implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bookmarkButton) {
-            System.out.println("aaa");
+            HomeScreen.hm.changePanel(new BookmarksPanel(MainFile.currentUserForAll));
         }
         if (e.getSource() == searchButton) {
-            System.out.println("b");
+
+            ArrayList<String> allUsernames = new ArrayList<>();
+            try {
+                PreparedStatement allUsernamesStatement = Database.databaseConnection.prepareStatement("SELECT username FROM users");
+                ResultSet allUsernamesRs = allUsernamesStatement.executeQuery();
+                while (allUsernamesRs.next()){
+
+                    allUsernames.add(allUsernamesRs.getString("username"));
+
+                }
+
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            if ( allUsernames.indexOf(searchField.getText()) < 0){
+                JOptionPane.showMessageDialog(null, "There is no users wih that username", "User Not Found", JOptionPane.ERROR_MESSAGE);
+            }
+            else{
+                HomeScreen.hm.changePanel(new ProfilePanel(searchField.getText(), MainFile.currentUserForAll));
+            }
+            
         }
         if (e.getSource() == helpButton) {
             createHelpScreen();

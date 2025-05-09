@@ -52,7 +52,7 @@ public class User {
         try { //When first instantited automically default profile picture
             if (profilePicture == null)
             profilePicture = toBufferedImage(ImageIO.read(new File("icons\\profile-picture.png")));
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         
@@ -76,9 +76,9 @@ public class User {
         ratingsList = new ArrayList<>();
 
         try { //When first instantited automically default profile picture
-            if (profilePicture == null)
             profilePicture = toBufferedImage(ImageIO.read(new File("icons\\profile-picture.png")));
-        } catch (IOException e) {
+            System.out.println("sdsd");
+        } catch (Exception e) {
             e.printStackTrace();
         }
   
@@ -359,7 +359,7 @@ public class User {
                 if (imageBytes != null) {
                     ByteArrayInputStream byteInputStream = new ByteArrayInputStream(imageBytes);
                     try {
-                        profilePicture = ImageIO.read(byteInputStream);
+                        currentProfilePicture = ImageIO.read(byteInputStream);
                     } catch (IOException e) {
                         e.printStackTrace();
                     } 
@@ -372,6 +372,7 @@ public class User {
         }
 
         return currentProfilePicture;
+
     }
     public void setProfilePictrue(Image image) {
         profilePicture = toBufferedImage(image);

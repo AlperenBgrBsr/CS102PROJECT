@@ -19,7 +19,7 @@ public class Database {
     public static void createConnection()  {
         
         try {
-            databaseConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bilmartdb", "root", "uhcGEFT!*oad194");
+            databaseConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bilmartdb", "root", "Efe1mete2");
             System.out.println("Connection complete");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -164,6 +164,9 @@ public class Database {
             Graphics2D bGr = bimage.createGraphics();
             bGr.drawImage(img, 0, 0, null);
             bGr.dispose();
+        }
+        else {
+            bimage = (BufferedImage) img;
         }
 
         ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();

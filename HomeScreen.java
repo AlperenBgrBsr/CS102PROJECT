@@ -199,13 +199,13 @@ public class HomeScreen extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == searchButton) {
-            System.out.println(searchField.getText());
+            // hm.changePanel(new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", searchField.getText(), "", MainFile.currentUserForAll));
         }
         if (e.getSource() == clothesButton) {
-            System.out.println("as");
+            // hm.changePanel(new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "Cloth", "", "", MainFile.currentUserForAll));
         }
         if (e.getSource() == booksButton) {
-            System.out.println("nn");
+            // hm.changePanel(new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "Lecture Material", "", "", MainFile.currentUserForAll));
         }
     }
 

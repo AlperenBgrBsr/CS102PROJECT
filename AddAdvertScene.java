@@ -313,7 +313,7 @@ public class AddAdvertScene extends JFrame implements ActionListener{
             }
 
             //Price is integer instead of double 
-            Advert advert = new Advert(toBufferedImage(uploadedImage), titleField.getText(), (int) price, informationArea.getText(), LoginScreen.getCurrentUser().getUsername(), true , selectedType); 
+            Advert advert = new Advert(toBufferedImage(uploadedImage), titleField.getText(), (int) price, informationArea.getText(), MainFile.currentUserForAll.getUsername(), true , selectedType); 
             JOptionPane.showMessageDialog(null, "You have successfully added the advert", "", JOptionPane.INFORMATION_MESSAGE);
             Database.addToDatabase(advert);
             this.dispose();
