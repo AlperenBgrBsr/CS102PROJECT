@@ -41,8 +41,8 @@ public class AdvertViewPanel extends JPanel{
        
         try {
 
-            emptyBookmarkImage = ImageIO.read(new File("emptyBookmark.png"));
-            filledBookmarkImage = ImageIO.read(new File("filledBookmark.png"));
+            emptyBookmarkImage = ImageIO.read(new File("icons\\emptyBookmark.png"));
+            filledBookmarkImage = ImageIO.read(new File("icons\\filledBookmark.png"));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -71,12 +71,8 @@ public class AdvertViewPanel extends JPanel{
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                //Main.frame and Main.currentPanel will change (the names)!!
-                Main.frame.getContentPane().remove(Main.currentPanel);
-                Main.currentPanel = new AdvertViewPanel(minPrice, maxPrice, type, wordFilter, usernameFilter, currentUser);
-                Main.frame.getContentPane().add(Main.currentPanel);
-                Main.frame.revalidate();
-                Main.frame.repaint();
+                HomeScreen hm.changePanel( new AdvertViewPanel(minPrice, maxPrice, type, wordFilter, usernameFilter, currentUser);
+              
             }
             
         });
