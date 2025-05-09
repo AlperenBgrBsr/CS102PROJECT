@@ -89,12 +89,11 @@ public class AdvertViewPanel extends JPanel{
         JPanel advertsPanel = new JPanel();
 
         if ( allAdvertsList.size() == 0){
-            JLabel noAdvertsLabel = new JLabel("                 NO FITTING ADVERTS");
+            JLabel noAdvertsLabel = new JLabel("                 NO ADVERTS FOUND");
             noAdvertsLabel.setFont(new Font("Arial",Font.BOLD,40));
             noAdvertsLabel.setBackground(Color.white);
             advertsPanel.setLayout(new GridLayout(1,1));
             advertsPanel.add(noAdvertsLabel);
-            JOptionPane.showMessageDialog(null, "There are no adverts fitting these filters!","No Adverts",JOptionPane.ERROR_MESSAGE);
         }  
         else{
             advertsPanel.setLayout(new GridLayout(allAdvertsList.size(),1));
@@ -590,41 +589,31 @@ public class AdvertViewPanel extends JPanel{
                 int searchButtonMin = 0;
                 boolean isFullDigitsMinText = true;
 
-                if ( minTextField.getText().equals("")){
-                    searchButtonMin = 0;             
-                }
-                else{
-                    String minTextFieldString = minTextField.getText();  
-                    for (int j = 0; j < minTextFieldString.length() && isFullDigitsMinText ; j++){
+               
+                String minTextFieldString = minTextField.getText();  
+                for (int j = 0; j < minTextFieldString.length() && isFullDigitsMinText ; j++){
 
-                        if ( !Character.isDigit(minTextFieldString.charAt(j))){
-                            isFullDigitsMinText = false;
-                        }
-
+                    if ( !Character.isDigit(minTextFieldString.charAt(j))){
+                    isFullDigitsMinText = false;
                     }
-                    
                 }
+                    
+                
                 
                 int searchButtonMax = 0;
                 boolean isFullDigitsMaxText = true;
 
-                if ( maxTextField.getText().equals("")){
-                    searchButtonMax = 0;             
-                }
-                else{
 
-                    String maxTextFieldString = maxTextField.getText();
-                    
-                    for (int j = 0; j < maxTextFieldString.length() && isFullDigitsMaxText ; j++){
+               
 
-                        if ( !Character.isDigit(maxTextFieldString.charAt(j))){
-                            isFullDigitsMaxText = false;
-                        }
-
+                String maxTextFieldString = maxTextField.getText();
+                
+                for (int j = 0; j < maxTextFieldString.length() && isFullDigitsMaxText ; j++){
+                    if ( !Character.isDigit(maxTextFieldString.charAt(j))){
+                        isFullDigitsMaxText = false;
                     }
-
-                    
                 }
+                
                
                 if (!isFullDigitsMaxText && !isFullDigitsMinText){
                     JOptionPane.showMessageDialog(null, "Please enter a nonnegative integer value in the minimum and the maximum price field!","Incorrect Type",JOptionPane.ERROR_MESSAGE);
@@ -639,8 +628,18 @@ public class AdvertViewPanel extends JPanel{
                     return;
                 }
                 else{
-                    searchButtonMin = Integer.parseInt(minTextField.getText());
-                    searchButtonMax = Integer.parseInt(maxTextField.getText());
+                    if ( minTextField.getText().equals("")){
+                        searchButtonMin = Integer.MIN_VALUE;             
+                    }
+                    else{
+                        searchButtonMin = Integer.parseInt(minTextField.getText());
+                    }
+                    if ( maxTextField.getText().equals("")){
+                        searchButtonMax = Integer.MAX_VALUE;             
+                    }
+                    else{
+                        searchButtonMax = Integer.parseInt(maxTextField.getText());
+                    }
                 }
 
                 
