@@ -210,5 +210,25 @@ public class Database {
 
     }
 
+    public static User getUserWithUsername(String username){
+        User user = null;
+        try {
+            
+            PreparedStatement getUserStatement = databaseConnection.prepareStatement("SELECT * FROM users WHERE username = ?");
+            getUserStatement.setString(1, username);
+            ResultSet getUserRs = getUserStatement.executeQuery();
+            if ( getUserRs.next()){
+                user = new User(getUserRs.getString("username"), getUserRs.getString("user_email"), getUserRs.getString("user_password"), getUserRs.getBoolean("available"));
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return user;
+
+    }
+
 
 }
