@@ -102,7 +102,7 @@ public class AdvertViewPanel extends JPanel{
             
             JPanel sampleAdvertPanel = new JPanel(){
                 protected void paintComponent(Graphics g) {
-                    g.drawImage(currentAdvert.getImage(), 20, 20, 80,80,null );
+                    g.drawImage(currentAdvert.getImage(), 20 * HomeScreen.hm.getWidth() / 1024, 20, 80,80,null );
                 };
             };
                 
@@ -285,7 +285,6 @@ public class AdvertViewPanel extends JPanel{
                     advertDetailsFrame.setBackground(Color.white);
                     advertDetailsFrame.setPreferredSize(new Dimension(600,600));
                     advertDetailsFrame.pack();
-                    advertDetailsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                     advertDetailsFrame.setResizable(false);
                     advertDetailsFrame.setVisible(true);
 
@@ -767,14 +766,13 @@ public class AdvertViewPanel extends JPanel{
         for (int i = 0; i <allAdvertsList.size(); i++){
 
             Advert currentAdvert = allAdvertsList.get(i);
-        
             if ( type.equals("") ){
-                if ( currentAdvert.getPrice() >= minPrice && currentAdvert.getPrice() <= maxPrice && currentAdvert.getSellerUsername().toLowerCase().indexOf(usernameFilter.toLowerCase()) >= 0 && currentAdvert.getTitle().toLowerCase().indexOf(wordFilter.toLowerCase()) >= 0 ){
+                if ( currentAdvert.getPrice() >= minPrice && currentAdvert.getPrice() <= maxPrice && currentAdvert.getSellerUsername().indexOf(usernameFilter) >= 0 && currentAdvert.getTitle().indexOf(wordFilter) >= 0 ){
                     filteredAdvertsList.add(currentAdvert);
                 }
             }
             else{
-                if ( currentAdvert.getPrice() >= minPrice && currentAdvert.getPrice() <= maxPrice && currentAdvert.getType().equalsIgnoreCase(type) && currentAdvert.getSellerUsername().toLowerCase().indexOf(usernameFilter.toLowerCase()) >= 0 && currentAdvert.getTitle().toLowerCase().indexOf(wordFilter.toLowerCase()) >= 0){
+                if ( currentAdvert.getPrice() >= minPrice && currentAdvert.getPrice() <= maxPrice && currentAdvert.getType().equalsIgnoreCase(type) && currentAdvert.getSellerUsername().indexOf(usernameFilter) >= 0 && currentAdvert.getTitle().indexOf(wordFilter) >= 0){
                     filteredAdvertsList.add(currentAdvert);
                 }
             }

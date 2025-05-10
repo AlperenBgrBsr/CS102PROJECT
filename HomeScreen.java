@@ -1,20 +1,29 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagLayout;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
 
 public class HomeScreen extends JFrame implements ActionListener{
@@ -38,7 +47,6 @@ public class HomeScreen extends JFrame implements ActionListener{
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(1024,1080);
         this.setIconImage(new ImageIcon("icons\\BilMartIcon.png").getImage());
-
         //ItemsBar
         items = new ItemsBar(false);
         items.setBounds(0, 0, 1024, 90);
@@ -54,14 +62,98 @@ public class HomeScreen extends JFrame implements ActionListener{
         homePagePanel.add(categories());
         currentPanel = homePagePanel;
         this.add(currentPanel);
-        
         this.setVisible(true);
+        JFrame frame = this;    
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                scaleComponentWidths(currentPanel, frame.getWidth() / 1024.0);
+            }
+        });
     }
 
+    public static void scaleComponentWidths(Container container, double scaleFactor) {
+        if (container.getLayout() == null) {
+            for (Component comp : container.getComponents()) {
+                if (comp instanceof JSlider || comp instanceof JScrollBar || comp instanceof JComboBox) {
+                    continue;
+                }
+
+                if (comp instanceof JComponent jComp) {
+                    if (jComp.getClientProperty("originalBounds") == null) {
+                        jComp.putClientProperty("originalBounds", jComp.getBounds());
+                    }
+
+                    Rectangle original = (Rectangle) jComp.getClientProperty("originalBounds");
+                    int newWidth = (int) (original.width * scaleFactor);
+                    int newX = (int) (original.x * scaleFactor);
+                    jComp.setBounds(newX, original.y, newWidth, original.height);
+                }
+
+                // If component is a container, recurse
+                if (comp instanceof Container childContainer) {
+                    scaleComponentWidths(childContainer, scaleFactor);
+                }
+            }
+        }
+        else if (!(container.getLayout() instanceof BorderLayout || container.getLayout() instanceof GridBagLayout)){ 
+            for (Component comp : container.getComponents()) {
+                if (comp instanceof JSlider || comp instanceof JScrollBar || comp instanceof JComboBox) {
+                    continue;
+                }
+
+
+                if (comp instanceof JComponent jComp) {
+                    if (jComp.getClientProperty("originalBounds") == null) {
+                        jComp.putClientProperty("originalBounds", jComp.getBounds());
+                    }
+
+                    Rectangle original = (Rectangle) jComp.getClientProperty("originalBounds");
+                    int newWidth = (int) (original.width * scaleFactor);
+                    int newX = (int) (original.x * scaleFactor);
+                    comp.setPreferredSize(new Dimension((int)(newWidth), original.height));
+
+                }
+
+                if (comp instanceof Container childContainer) {
+                    scaleComponentWidths(childContainer, scaleFactor);
+                }
+            }
+        }
+        else if (container.getLayout() instanceof BorderLayout) {
+            for (Component comp : container.getComponents()) {
+                if (comp instanceof JSlider || comp instanceof JScrollBar || comp instanceof JComboBox) {
+                    continue;
+                }
+
+                if (comp instanceof JComponent jComp) {
+                    if (jComp.getClientProperty("originalPreferredSize") == null) {
+                        jComp.putClientProperty("originalPreferredSize", jComp.getPreferredSize());
+                    }
+
+                    Dimension original = (Dimension) jComp.getClientProperty("originalPreferredSize");
+                    int newWidth = (int) (original.width * scaleFactor);
+                    jComp.setPreferredSize(new Dimension(newWidth, original.height));
+                }
+
+                if (comp instanceof Container childContainer) {
+                    scaleComponentWidths(childContainer, scaleFactor);
+                }
+            }
+
+            container.revalidate();
+            container.repaint();
+        }
+    }
+
+
+
+    
     public void changePanel(JPanel panelToChange) {
         this.remove(currentPanel);             
         currentPanel = panelToChange;           
         this.add(currentPanel);                 
+        scaleComponentWidths(currentPanel, this.getWidth() / 1024.0);
         this.revalidate();                      
         this.repaint();                         
     }

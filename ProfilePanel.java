@@ -32,7 +32,7 @@ public class ProfilePanel extends JPanel{
     private static String otherProfileUsername;
     private static Rating currentUsersRating;
     
-    
+    int scale = 1024;
   
 
     public ProfilePanel(String username, User currentUser){ // These parameters are to see if the user is looking at their own profile or other's profile.
@@ -50,7 +50,7 @@ public class ProfilePanel extends JPanel{
         ImageIcon newRefreshIcon = new ImageIcon(refreshIconImage);
         refreshButton.setIcon(newRefreshIcon);
         refreshButton.setFocusable(false);
-        refreshButton.setBounds(10,10,50,50);//CHANGE THIS PLACE LATER!
+        refreshButton.setBounds(10 ,10,50,50);//CHANGE THIS PLACE LATER!
         refreshButton.setContentAreaFilled(false);
         refreshButton.setBorderPainted(false);
         refreshButton.setFocusPainted(false);
@@ -100,6 +100,9 @@ public class ProfilePanel extends JPanel{
             homeIconImage = homeIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newHomeIcon = new ImageIcon(homeIconImage);
             homeButton.setIcon(newHomeIcon);
+            homeButton.setContentAreaFilled(false);
+            homeButton.setBorderPainted(false);
+            homeButton.setFocusPainted(false);
             homeButton.addActionListener(new ActionListener() {
 
                 @Override
@@ -129,6 +132,9 @@ public class ProfilePanel extends JPanel{
             awayIconImage = awayIconImage.getScaledInstance(60, 40, java.awt.Image.SCALE_SMOOTH);
             ImageIcon newAwayIcon = new ImageIcon(awayIconImage);
             awayButton.setIcon(newAwayIcon);
+            awayButton.setContentAreaFilled(false);
+            awayButton.setBorderPainted(false);
+            awayButton.setFocusPainted(false);
             awayButton.addActionListener(new ActionListener() {
 
                 @Override
@@ -172,9 +178,11 @@ public class ProfilePanel extends JPanel{
 
             if ( currentUserAvailability ){ 
                 statusPicture = new JLabel(newHomeIcon);
+                statusPicture.setBackground(Color.white);
             }
             else{
                 statusPicture = new JLabel(newAwayIcon);
+                statusPicture.setBackground(Color.white);
             }
             statusPicture.setOpaque(true);
             
@@ -459,8 +467,9 @@ public class ProfilePanel extends JPanel{
                         JLabel statusLabel = new JLabel("STATUS");
                         statusLabel.setFont(new Font("Arial", Font.BOLD, 12));
                         statusLabel.setBounds(680,10,50,40);
+                        statusLabel.setBackground(Color.white);
                         
-                        sampleAdvertPanel.add(homeButtonForAdvert);
+                        sampleAdvertPanel.add(homeButtonForAdvert); 
                         sampleAdvertPanel.add(awayButtonForAdvert);
                         sampleAdvertPanel.add(statusLabel);
                         sampleAdvertPanel.add(titleLabel);
@@ -929,9 +938,11 @@ public class ProfilePanel extends JPanel{
 
             if ( availability ){ 
                 statusPicture = new JLabel(newHomeIcon);
+                statusPicture.setBackground(Color.white);
             }
             else{
                 statusPicture = new JLabel(newAwayIcon);
+                statusPicture.setBackground(Color.white);
             }
             statusPicture.setOpaque(true);
             
@@ -1474,7 +1485,7 @@ public class ProfilePanel extends JPanel{
 
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
-        g.drawImage(getCurrentProfilePicture(otherProfileUsername, currentUser), 120, 50, 150,150, this);
+        g.drawImage(getCurrentProfilePicture(otherProfileUsername , currentUser), 120 * HomeScreen.hm.getWidth() / 1024, 50, 150 ,150, this);
         for (int i = 0; i < 5; i++){
             g.drawImage(emptyStar, 60 + 45*i, 240, 45, 45, this);
         }
