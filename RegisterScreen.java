@@ -2,9 +2,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-
+import java.util.Random;
 public class RegisterScreen extends JFrame {
+    private User currUser = new User("Alperen", "bugra.basar@ug.bilkent.edu.tr","Apsdlfapd");
+    private Random rand = new Random();
+    private final Color BLUE_COLOR = new Color(21,50,80);
+    private JButton forgotPasswordButton;
+    private JButton loginButton;
+    private JTextField newPasswordField;
+    private JTextField confirmCodeFieldPassword;
+    private ImageIcon bilmartIcon;
+    private ImageIcon bilmartTitle;
+    private JLabel bilmartLogo;
     private JLabel welcomeLabel;
     private JLabel emailLabel;
     private JLabel usernameLabel;
@@ -19,19 +28,81 @@ public class RegisterScreen extends JFrame {
     private String code = "123";
     
     public RegisterScreen() {
+        bilmartIcon = new ImageIcon("icons/BilMartIcon.png");
+        bilmartTitle = new ImageIcon("icons/BilMart.png");
         this.setTitle("Register");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.add(this.createLabelsAndFields());
+        this.add(createTopPanel());
+        /*this.add(createForgotPasswordButton());
+        this.add(createLoginRegisterButtons());
         this.handleListeners();
-        this.pack();
+        */
+
+        this.setSize(new Dimension(1000,1000));
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+
+        String email = emailField.getText();
+        String username = usernameField.getText();
+        String password = passwordField.getText();
+        currUser = new User(username, email,password);
+        
+    }
+
+    
+    public JPanel createTopPanel() {
+        JPanel panel = new JPanel();
+        panel.setBackground(BLUE_COLOR);
+        bilmartLogo = new JLabel();
+        welcomeLabel = new JLabel();
+        bilmartLogo.setPreferredSize(new Dimension(100,100));
+        bilmartLogo.setIcon(bilmartIcon);
+        welcomeLabel.setIcon(bilmartTitle);
+        panel.add(bilmartLogo);
+        panel.add(welcomeLabel);
+
+        return panel;
+    }
+
+    public JButton createForgotPasswordButton() {
+        forgotPasswordButton = new JButton("Forgot your password?  ");
+        return forgotPasswordButton;
+    }
+
+    public JPanel createLoginRegisterButtons() {
+        JPanel panel = new JPanel(new GridLayout(1, 2));
+        panel.setPreferredSize(new Dimension(300, 50));
+
+        // Create buttons
+        loginButton = new JButton("Login");
+        registerButton = new JButton("Register");
+
+        // Style buttons to look unified
+        Color bgColor = new Color(220, 220, 220);
+        loginButton.setBackground(bgColor);
+        registerButton.setBackground(bgColor);
+        loginButton.setOpaque(true);
+        registerButton.setOpaque(true);
+        loginButton.setBorder(BorderFactory.createEmptyBorder());
+        registerButton.setBorder(BorderFactory.createEmptyBorder());
+
+        // Create a vertical divider
+        
+
+        // Add components to the panel
+        panel.add(loginButton);
+       
+        panel.add(registerButton);
+
+        return panel;
     }
 
     public JPanel createLabelsAndFields() {
         JPanel panel = new JPanel(new GridLayout(6, 5, 10, 10));
 
-        welcomeLabel = new JLabel("Welcome to BILMART! Register Below");
+        welcomeLabel = new JLabel("Bilmart");
+        welcomeLabel.
 
         emailLabel = new JLabel("Email: ");
         emailField = new JTextField(15);
@@ -51,6 +122,10 @@ public class RegisterScreen extends JFrame {
         codeField.setVisible(false);
         confirmCodeButton.setVisible(false);
 
+
+        confirmCodeFieldPassword = new JTextField("Enter your code here",15);
+        confirmCodeFieldPassword.setVisible(false);
+
         panel.add(welcomeLabel);
         panel.add(new JLabel());
         panel.add(emailLabel);
@@ -67,39 +142,41 @@ public class RegisterScreen extends JFrame {
         return panel;
     }
 
+    public User getUser() {
+        return currUser;
+    }
+
     public void handleListeners() {
-        registerButton.addActionListener(new ActionListener() {
+        forgotPasswordButton.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+                if (e.getSource()==forgotPasswordButton) {
+                    JOptionPane.showMessageDialog(null,
+                            "We have sent a reset code to your email",
+                            "Password Reset Code",
+                            JOptionPane.WARNING_MESSAGE);
+                triggerForgotPasswordFrame();
+                setVisibility(false);
+                }
+            }
+
+        });
+        registerButton.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                registerButton.setBackground(BLUE_COLOR);
                 if (isValidEmail(emailField.getText())) {
-                    String validity = isValidUsernameAndEmail (usernameField.getText(), emailField.getText());
-                    if ( validity.equalsIgnoreCase("EmailAndUsername")){
-                        JOptionPane.showMessageDialog(null,
-                            "There is already an account registered with that username and email!",
-                            "Input Error",
+                    JOptionPane.showMessageDialog(null,
+                            "We have sent a confirmation code to your email",
+                            "Confirmation Code",
                             JOptionPane.WARNING_MESSAGE);
-                    }
-                    else if ( validity.equalsIgnoreCase("Username")){
-                        JOptionPane.showMessageDialog(null,
-                            "There is already an account registered with that username!",
-                            "Input Error",
-                            JOptionPane.WARNING_MESSAGE);
-                    }
-                    else if (validity.equalsIgnoreCase("Email")){
-                        JOptionPane.showMessageDialog(null,
-                            "There is already an account registered with that email!",
-                            "Input Error",
-                            JOptionPane.WARNING_MESSAGE);
-                    }
-                    else if ( validity.equalsIgnoreCase("Okay")){
-                        JOptionPane.showMessageDialog(null,
-                                "We have sent a confirmation code to your email",
-                                "Confirmation Code",
-                                JOptionPane.WARNING_MESSAGE);
-                        codeLabel.setVisible(true);
-                        codeField.setVisible(true);
-                        confirmCodeButton.setVisible(true);
-                    }
+                    EmailSender.sendVerificationEmail(currUser);
+                    codeLabel.setVisible(true);
+                    codeField.setVisible(true);
+                    confirmCodeButton.setVisible(true);
                 } else {
                     JOptionPane.showMessageDialog(null,
                             "Invalid email!",
@@ -113,13 +190,7 @@ public class RegisterScreen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (codeField.getText().equals(code)) {
-                    String email = emailField.getText();
-                    String username = usernameField.getText();
-                    String password = passwordField.getText();
-                    User newUser = new User(username, email, password);
-                    // LoginScreen.database.addUser(newUser);
-                    Database.addToDatabase(newUser); // şimdilik comment atıyorum ama doğru hali bu
-
+                    LoginScreen.database.addUser(currUser);
                     JOptionPane.showMessageDialog(null,
                             "You have been successfully registered, redirecting to login screen",
                             "Successful Registration",
@@ -136,46 +207,33 @@ public class RegisterScreen extends JFrame {
             }
         });
     }
+    
+    public void setVisibility(boolean flag) {
+        this.setVisible(flag);
+    }
+    
+   
+        
+    public void triggerForgotPasswordFrame() {
+    currUser.setUsername("Alperen");
+    currUser.setEmail("bugra.basar@ug.bilkent.edu.tr");
+    currUser.setPassword("Alperewn"); // Optional
 
-    public boolean isValidEmail(String email) {
-        return email.endsWith("@ug.bilkent.edu.tr");
+    // Make sure email is not empty or invalid
+    if (currUser.getEmail() == null || currUser.getEmail().isEmpty() || !isValidEmail(currUser.getEmail())) {
+        JOptionPane.showMessageDialog(null,
+                "Please enter a valid email before resetting your password.",
+                "Invalid Email",
+                JOptionPane.ERROR_MESSAGE);
+               
+        return;
     }
 
-    public String isValidUsernameAndEmail(String username, String email){ // checks if the username and the email has registered before
-
-        String validity = "";// 4 Types --> Both email and username is not valid, only email is not valid, only username is not valid, and okay
-        boolean isValid = true;
-        ArrayList<User> allUsers = Database.getAllUsersForRegisterAndLogin();
-        for (int i = 0; i < allUsers.size() && isValid ; i++){
-
-            if ( allUsers.get(i).getUsername().equalsIgnoreCase(username) && allUsers.get(i).getEmail().equalsIgnoreCase(email)){
-
-                isValid = false;
-                validity = "EmailAndUsername";
-
-            }
-            else if ( allUsers.get(i).getUsername().equalsIgnoreCase(username) ){
-
-                isValid = false;
-                validity = "Username";
-
-            }
-            else if ( allUsers.get(i).getEmail().equalsIgnoreCase(email) ){
-
-                isValid = false;
-                validity = "Email";
-
-            }
-
-
-        }
-
-        if ( isValid ){
-            validity = "Okay";
-        }
-
-        return validity;
-
+    ForgotPasswordFrame frame = new ForgotPasswordFrame(this);
+    frame.setVisible(true);
+    }
+    public boolean isValidEmail(String email) {
+        return email.endsWith("@ug.bilkent.edu.tr");
     }
 
    
