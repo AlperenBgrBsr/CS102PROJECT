@@ -69,7 +69,7 @@ public class LoginScreen extends JFrame {
                 for (User user : Database.getAllUsersForRegisterAndLogin()) {
                     if ((  user.getUsername().equals(usernameField.getText())) 
                          && user.getPassword().equals(passwordField.getText())) {
-                        MainFile.currentUserForAll = getUserWithUsername(usernameField.getText());
+                        MainFile.currentUserForAll = Database.getUserWithUsername(usernameField.getText());
                         HomeScreen.hm = new HomeScreen();
                         LoginScreen.this.setVisible(false);//later for logout button
                         usernameField.setText("");
