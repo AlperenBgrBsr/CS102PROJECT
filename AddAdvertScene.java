@@ -302,7 +302,7 @@ public class AddAdvertScene extends JFrame implements ActionListener{
             }
 
             if (informationArea.getText().length() > 500) { //Database gives error
-                JOptionPane.showMessageDialog(null, "Details text cannot be longer than 500 characters", "Long Details Texts Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Details text cannot be longer than 500 characters", "Long Details Text Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -317,12 +317,13 @@ public class AddAdvertScene extends JFrame implements ActionListener{
             } catch (SQLException exception) {
                 exception.printStackTrace();
             }
-            if ( advertTitlesList.indexOf(titleField.getText()) >= 0){
+
+            if (advertTitlesList.indexOf(titleField.getText()) >= 0){
                 JOptionPane.showMessageDialog(null, "Cannot create another advert with the same title", "Same Title", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            if (informationArea.getText().trim().equalsIgnoreCase("enter detailed imformation about the advert")) {
+            if (informationArea.getText().trim().equalsIgnoreCase("enter detailed imformation about the advert") || informationArea.getText().trim().isEmpty()) {
                 informationArea.setText("No information entered");
             }
             
