@@ -767,7 +767,7 @@ public class AdvertViewPanel extends JPanel{
 
             Advert currentAdvert = allAdvertsList.get(i);
             if ( type.equals("") ){
-                if ( currentAdvert.getPrice() >= minPrice && currentAdvert.getPrice() <= maxPrice && currentAdvert.getSellerUsername().toLowerCase().indexOf(usernameFilter.toLoweCase() >= 0 && currentAdvert.getTitle().toLowerCase().indexOf(wordFilter.toLowerCase()) >= 0 ){
+                if ( currentAdvert.getPrice() >= minPrice && currentAdvert.getPrice() <= maxPrice && currentAdvert.getSellerUsername().toLowerCase().indexOf(usernameFilter.toLowerCase()) >= 0 && currentAdvert.getTitle().toLowerCase().indexOf(wordFilter.toLowerCase()) >= 0 ){
                     filteredAdvertsList.add(currentAdvert);
                 }
             }
