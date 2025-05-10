@@ -4,7 +4,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.awt.geom.QuadCurve2D;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +20,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class ProfilePanel extends JPanel{
 
-    private Image profilePicture;
+
     private Image emptyStar;
     private Image oneQuarterStar;
     private Image halfStar;
@@ -66,7 +65,7 @@ public class ProfilePanel extends JPanel{
         });
 
         try{
-            profilePicture = ImageIO.read(new File("icons\\profile-picture.png")); 
+            
             emptyStar = ImageIO.read(new File("icons\\emptystar.png")); 
             oneQuarterStar = ImageIO.read(new File("icons\\onequarterstar.png")); 
             halfStar = ImageIO.read(new File("icons\\halfstar.png"));
@@ -318,7 +317,7 @@ public class ProfilePanel extends JPanel{
                 public void actionPerformed(ActionEvent e) {
                   
                         
-                //    HomeScreen.hm.changePanel(new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", currentUser.getUsername(), currentUser)); // from my sample, may change
+                   HomeScreen.hm.changePanel(new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", currentUser.getUsername(), currentUser)); // from my sample, may change
                     
 
                     
@@ -491,9 +490,9 @@ public class ProfilePanel extends JPanel{
         
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            
+                           
                             selectToEditAdvertsFrame.dispose();
-                            refreshButton.doClick();
+                            
                             
                         }
                         
@@ -574,8 +573,8 @@ public class ProfilePanel extends JPanel{
                                     deleteAdvertStatement.setString(1, currentTitle);
                                     deleteAdvertStatement.setString(2, currentUser.getUsername());
                                     deleteAdvertStatement.executeUpdate();
-                                    JOptionPane.showMessageDialog(null, "Advert has been deleted from the application!", "Advert Deleted", JOptionPane.INFORMATION_MESSAGE);
                                     refreshButton.doClick();
+                                    JOptionPane.showMessageDialog(null, "Advert has been deleted from the application!", "Advert Deleted", JOptionPane.INFORMATION_MESSAGE);
                                     selectToDeleteAdvertsFrame.dispose();
                                 } catch (SQLException e1) {
                                     e1.printStackTrace();
@@ -671,7 +670,6 @@ public class ProfilePanel extends JPanel{
 
                     if (userSelection == JFileChooser.APPROVE_OPTION) {
                         File selectedFile = fileChooser.getSelectedFile();
-                        String imagePath = selectedFile.getAbsolutePath();
                         
                         try {
                             Image uploadedImage = ImageIO.read(selectedFile);
@@ -684,7 +682,7 @@ public class ProfilePanel extends JPanel{
                             currentUser.setProfilePictrue(uploadedImage);
                             Database.setProfilePictureInDatabase(uploadedImage, currentUser.getUsername());
                             refreshButton.doClick();
-                            System.out.println("Image loaded successfully: " + imagePath);
+                            JOptionPane.showMessageDialog(null, "Profile picture has been updated!", "Profile Picture Update",JOptionPane.INFORMATION_MESSAGE);
 
                         } 
                         catch (IOException ex) {
@@ -699,12 +697,14 @@ public class ProfilePanel extends JPanel{
                             Image uploadedImage = ImageIO.read(new File("icons\\profile-picture.png"));
                             currentUser.setProfilePictrue(uploadedImage);
                             Database.setProfilePictureInDatabase(uploadedImage, currentUser.getUsername());
+                            refreshButton.doClick();
+                            JOptionPane.showMessageDialog(null, "Profile picture has been updated!", "Profile Picture Update",JOptionPane.INFORMATION_MESSAGE);
 
                         } catch (IOException e1) {
                             e1.printStackTrace();
                             JOptionPane.showMessageDialog(null, "Error Happened", "Error", JOptionPane.ERROR_MESSAGE);
                         }
-                        refreshButton.doClick();
+                        
                     }
                     
                 }
@@ -772,8 +772,8 @@ public class ProfilePanel extends JPanel{
                                     deleteAdvertStatement.setString(1, currentTitle);
                                     deleteAdvertStatement.setString(2, currentUser.getUsername());
                                     deleteAdvertStatement.executeUpdate();
-                                    JOptionPane.showMessageDialog(null, "Advert has been deleted from viewed adverts!", "Advert Deleted", JOptionPane.INFORMATION_MESSAGE);
                                     refreshButton.doClick();
+                                    JOptionPane.showMessageDialog(null, "Advert has been deleted from viewed adverts!", "Advert Deleted", JOptionPane.INFORMATION_MESSAGE);
                                     viewedAdvertsFrame.dispose();
                                 } catch (SQLException e1) {
                                     e1.printStackTrace();
@@ -1014,9 +1014,10 @@ public class ProfilePanel extends JPanel{
                             public void actionPerformed(ActionEvent e) {
 
                                 Database.deleteFromDatabase(currentUsersRating);
+                                
+                                refreshButton.doClick();
                                 JOptionPane.showMessageDialog(null, "You have deleted your rating of " + currentUsersRating.getRating() + " from " + currentUsersRating.getRecieverUsername(),"Deleted Rating",JOptionPane.INFORMATION_MESSAGE);
                                 ratingAmountFrame.dispose();
-                                refreshButton.doClick();
                                     
                             }
                                 
@@ -1206,9 +1207,10 @@ public class ProfilePanel extends JPanel{
                                     Rating addedRating = new Rating(currentUser.getUsername(), username, ratingForAddRatingFrame);
                                     Database.addToDatabase(addedRating);
                                     ImageIcon fullstarIcon = new ImageIcon(fullStar);
-                                    addRatingFrame.dispose();
-                                    JOptionPane.showMessageDialog(null, "You have rated " + username + " " + ratingForAddRatingFrame + " stars!", "USER RATING", JOptionPane.INFORMATION_MESSAGE, fullstarIcon);
+                                    
                                     refreshButton.doClick();
+                                    JOptionPane.showMessageDialog(null, "You have rated " + username + " " + ratingForAddRatingFrame + " stars!", "USER RATING", JOptionPane.INFORMATION_MESSAGE, fullstarIcon);
+                                    addRatingFrame.dispose();
 
                                 }
                                 
@@ -1332,7 +1334,7 @@ public class ProfilePanel extends JPanel{
                     }
                     else{
                         
-                        // HomeScreen.hm.changePanel(new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", username, currentUser));
+                        HomeScreen.hm.changePanel(new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", "", username, currentUser));
                         
                     }
                 }
@@ -1374,7 +1376,7 @@ public class ProfilePanel extends JPanel{
                             addToContactsStatement.setString(2, username);
                             addToContactsStatement.executeUpdate();
                             JOptionPane.showMessageDialog(null, username + " has been added to your contacts list!", "Added To Contacts", JOptionPane.INFORMATION_MESSAGE);
-                            refreshButton.doClick();
+                            
                         }   
 
 

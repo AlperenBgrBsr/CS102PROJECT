@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -19,7 +20,6 @@ public class Database {
     public static void createConnection()  {
         
         try {
-            // databaseConnection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bilmartdb", "root", "Efe1mete2");
             databaseConnection = DriverManager.getConnection("jdbc:mysql://bilmartserver.mysql.database.azure.com/bilmartdb", "bilmartdbuser", "uhcGEFT!*oad194");
             System.out.println("Connection complete");
         } catch (SQLException e) {

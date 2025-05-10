@@ -219,7 +219,7 @@ public class BookmarksPanel extends JPanel {
         
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            refreshButton.doClick();
+                            
                             advertDetailsFrame.dispose();
                             
                         }
@@ -291,7 +291,7 @@ public class BookmarksPanel extends JPanel {
             });
 
             sampleAdvertPanel.add(deleteBookmarkButton);
-            sampleAdvertPanel.setPreferredSize(new Dimension(1000,200));
+            sampleAdvertPanel.setPreferredSize(new Dimension(970,200));
             sampleAdvertPanel.add(priceLabel);
             sampleAdvertPanel.add(titleButton);
 
@@ -307,7 +307,7 @@ public class BookmarksPanel extends JPanel {
         this.setLayout(new BorderLayout());
         this.add(bookmarkedAdvertsScrollPane,BorderLayout.CENTER);
         this.setBackground(Color.white);
-        this.setPreferredSize(new Dimension(1024,720));
+        this.setPreferredSize(new Dimension(970,720));
         this.setVisible(true);
         
 

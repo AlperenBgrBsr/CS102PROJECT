@@ -71,7 +71,8 @@ public class AdvertViewPanel extends JPanel{
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                HomeScreen hm.changePanel( new AdvertViewPanel(minPrice, maxPrice, type, wordFilter, usernameFilter, currentUser);
+
+                HomeScreen.hm.changePanel(new AdvertViewPanel(minPrice, maxPrice, type, wordFilter, usernameFilter, currentUser));
               
             }
             
@@ -268,7 +269,7 @@ public class AdvertViewPanel extends JPanel{
         
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            refreshButton.doClick();
+                            
                             advertDetailsFrame.dispose();
                             
                         }
@@ -655,11 +656,9 @@ public class AdvertViewPanel extends JPanel{
                 }
 
 
-                Main.frame.getContentPane().remove(Main.currentPanel);
-                Main.currentPanel = new AdvertViewPanel(searchButtonMin, searchButtonMax, searchButtonType, searchButtonWordFilter, searchButtonUsernameFilter, currentUser);
-                Main.frame.getContentPane().add(Main.currentPanel);
-                Main.frame.revalidate();
-                Main.frame.repaint();
+
+                HomeScreen.hm.changePanel(new AdvertViewPanel(searchButtonMin, searchButtonMax, searchButtonType, searchButtonWordFilter, searchButtonUsernameFilter, currentUser));
+                
                 
             }
             

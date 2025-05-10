@@ -12,7 +12,6 @@ import java.awt.event.FocusEvent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.chrono.IsoChronology;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -263,7 +262,7 @@ public class ItemsBar extends JPanel implements ActionListener{
         }
         if (e.getSource() == addButton) {
             if (isOnlyAddScreen) {
-                AddAdvertScene addScene =  new AddAdvertScene();
+                new AddAdvertScene();
                 isOnlyAddScreen = false;
             }
             
