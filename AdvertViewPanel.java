@@ -263,7 +263,7 @@ public class AdvertViewPanel extends JPanel{
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
                     returnButton.setFont(new Font("Arial", Font.BOLD, 20));
                     returnButton.setFocusable(false);  
-                    returnButton.setBackground(Color.red);
+                    returnButton.setBackground(new Color(151,12,16));
                     returnButton.setForeground(Color.white);
                     returnButton.addActionListener(new ActionListener() {
         
@@ -414,7 +414,7 @@ public class AdvertViewPanel extends JPanel{
             reachSellerButton.setBorder(new LineBorder(Color.black,1));
             reachSellerButton.setBounds(670,40,100,40);
             reachSellerButton.setFocusable(false);
-            reachSellerButton.setBackground(Color.red);
+            reachSellerButton.setBackground(new Color(151,12,16));
             reachSellerButton.setForeground(Color.white);
             reachSellerButton.addActionListener(new ActionListener() {
 
@@ -574,7 +574,7 @@ public class AdvertViewPanel extends JPanel{
 
         JButton searchButton = new JButton("Search");
         searchButton.setFont(new Font("Arial",Font.BOLD,20));
-        searchButton.setBackground(Color.red);
+        searchButton.setBackground(new Color(151,12,16));
         searchButton.setForeground(Color.white);
         searchButton.setFocusable(false);
         searchButton.setBounds(25,440,150,40);

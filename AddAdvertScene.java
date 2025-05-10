@@ -135,7 +135,7 @@ public class AddAdvertScene extends JFrame implements ActionListener{
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 30, 0, 30);
 
-        JLabel itemLabel = new JLabel("Choose item type:");
+        JLabel itemLabel = new JLabel("Choose advert type:");
         itemLabel.setFont(new Font("Arial", 0, fontSize));
 
         lectureMaterial = new JRadioButton("Lecture Material");
@@ -197,15 +197,15 @@ public class AddAdvertScene extends JFrame implements ActionListener{
         JPanel wrapper = new JPanel();
         wrapper.setPreferredSize(new Dimension(1024, 170));
 
-        informationArea = new JTextArea("Enter detailed information about the item");
-        informationArea.setFont(new Font("Arial", Font.ITALIC, fontSize - 5));
+        informationArea = new JTextArea("Enter detailed information about the advert");
+        informationArea.setFont(new Font("Arial", Font.ITALIC, fontSize - 2));
         informationArea.setOpaque(true);
         informationArea.setLineWrap(true);
         informationArea.setBorder(blackBorder);
         informationArea.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (informationArea.getText().equals("Enter detailed information about the item")) {
+                if (informationArea.getText().equals("Enter detailed information about the advert")) {
                     informationArea.setText("");
                 }
             }
@@ -213,7 +213,7 @@ public class AddAdvertScene extends JFrame implements ActionListener{
             @Override
             public void focusLost(FocusEvent e) {
                 if (informationArea.getText().trim().isEmpty()) {
-                    informationArea.setText("Enter detailed information about the item");
+                    informationArea.setText("Enter detailed information about the advert");
                 }
             }
         });
@@ -291,11 +291,21 @@ public class AddAdvertScene extends JFrame implements ActionListener{
                 return;
             }
 
-            if (titleField.getText().trim().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Title cannot be empty", "Missing Title", JOptionPane.ERROR_MESSAGE);
+            if (titleField.getText().trim().isEmpty() || titleField.getText().trim().equalsIgnoreCase("Enter the title of the advert")) {
+                JOptionPane.showMessageDialog(null, "Enter a valid title", "Missing Title", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
+            if (titleField.getText().length() > 50) {
+                JOptionPane.showMessageDialog(null, "Title cannot be longer than 50 characters", "Long Title Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (informationArea.getText().length() > 500) { //Database gives error
+                JOptionPane.showMessageDialog(null, "Details text cannot be longer than 500 characters", "Long Details Texts Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             //checks for duplicate titles  
             ArrayList<String> advertTitlesList = new ArrayList<>();
             try {
@@ -312,10 +322,15 @@ public class AddAdvertScene extends JFrame implements ActionListener{
                 return;
             }
 
+            if (informationArea.getText().trim().equalsIgnoreCase("enter detailed imformation about the advert")) {
+                informationArea.setText("No information entered");
+            }
+            
             //Price is integer instead of double 
             Advert advert = new Advert(toBufferedImage(uploadedImage), titleField.getText(), (int) price, informationArea.getText(), MainFile.currentUserForAll.getUsername(), true , selectedType); 
             Database.addToDatabase(advert);
             JOptionPane.showMessageDialog(null, "You have successfully added the advert", "", JOptionPane.INFORMATION_MESSAGE);
+            HomeScreen.hm.items.setIsOnlyAddScene(true);
             this.dispose();
         }
         if (e.getSource() == imageUploadButton) {
