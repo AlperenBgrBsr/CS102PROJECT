@@ -37,6 +37,12 @@ public class HelpScreen extends JFrame {
         
         setLocationRelativeTo(null);
         setVisible(true);
+
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                HomeScreen.hm.items.setIsOnlyHelpScene(true);
+            }
+        });
     }
     
     private JPanel createTopPanel() {

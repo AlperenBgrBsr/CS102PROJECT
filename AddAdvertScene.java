@@ -185,7 +185,6 @@ public class AddAdvertScene extends JFrame implements ActionListener{
         JLabel currencies = new JLabel("₺");
         currencies.setFont(new Font("Arial", Font.BOLD, fontSize));
         currencies.setOpaque(true);
-        currencies.setBackground(Color.white);
         currencies.setFocusable(false);
 
         wrapper.add(itemLabel, gbc);
@@ -197,17 +196,17 @@ public class AddAdvertScene extends JFrame implements ActionListener{
 
     private JPanel addInfoPanel() {
         JPanel wrapper = new JPanel();
-        wrapper.setPreferredSize(new Dimension(1024, 170));
+        wrapper.setPreferredSize(new Dimension(1024, 180));
 
         informationArea = new JTextArea("Enter detailed information about the advert");
-        informationArea.setFont(new Font("Arial", Font.ITALIC, fontSize - 2));
+        informationArea.setFont(new Font("Arial", Font.ITALIC, fontSize));
         informationArea.setOpaque(true);
         informationArea.setLineWrap(true);
         informationArea.setBorder(blackBorder);
         informationArea.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (informationArea.getText().equals("Enter detailed information about the advert")) {
+                if (informationArea.getText().equalsIgnoreCase("Enter detailed information about the advert")) {
                     informationArea.setText("");
                 }
             }
@@ -224,6 +223,38 @@ public class AddAdvertScene extends JFrame implements ActionListener{
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         wrapper.add(scroll);
 
+        JPanel panel = new JPanel();
+        panel.setPreferredSize(new Dimension(1024,30));
+        JLabel charCounterLabel = new JLabel("500 characters remaining");
+        charCounterLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        charCounterLabel.setAlignmentX(JLabel.RIGHT_ALIGNMENT);
+        charCounterLabel.setForeground(Color.black);
+
+        // DocumentListener for updating character count
+        informationArea.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            private void updateCounter() {
+                if (!(informationArea.getText().equalsIgnoreCase("Enter detailed information about the advert"))) {
+                    int remaining = 500 - informationArea.getText().length();
+                    remaining = Math.max(remaining, 0); // Avoid negative display
+                    charCounterLabel.setText(remaining + " characters remaining");
+    
+                    if (remaining == 0) {
+                        charCounterLabel.setForeground(new Color(151,12,16));
+                    }
+                    else {
+                        charCounterLabel.setForeground(Color.black);
+                    }
+                }
+                else {
+                    charCounterLabel.setText( "500 characters remaining");
+                }
+            }
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { updateCounter(); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { updateCounter(); }
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { updateCounter(); }
+        });
+        panel.add(charCounterLabel);
+        wrapper.add(panel);
         return wrapper;
     }
 
@@ -298,7 +329,7 @@ public class AddAdvertScene extends JFrame implements ActionListener{
                 return;
             }
 
-            if (titleField.getText().length() > 50) {
+            if (titleField.getText().length() > 80) {
                 JOptionPane.showMessageDialog(null, "Title cannot be longer than 50 characters", "Long Title Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }

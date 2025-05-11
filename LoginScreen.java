@@ -21,6 +21,7 @@ public class LoginScreen extends JFrame {
     
     public LoginScreen() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setPreferredSize(new Dimension(400, 480));
         this.setTitle("Login");
         this.initializeIcons();
         this.setLayout(new BorderLayout());

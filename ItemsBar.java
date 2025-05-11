@@ -57,13 +57,15 @@ public class ItemsBar extends JPanel implements ActionListener{
 
     boolean hasSearchBar;
     boolean isOnlyAddScreen;
- 
+    boolean isOnlyHelpScreen;
+
     public ItemsBar(boolean hasSearchBar /*If true has a username searchbar*/ ) {
         this.setPreferredSize(new Dimension(1024, 100));
         this.setBackground(BLUE_COLOR);
         this.setLayout(new BorderLayout());
         this.isOnlyAddScreen = true;
         this.hasSearchBar = hasSearchBar;
+        this.isOnlyHelpScreen = true;
 
         leftPart = new JPanel();
         leftPart.setBackground(BLUE_COLOR);
@@ -223,6 +225,11 @@ public class ItemsBar extends JPanel implements ActionListener{
         isOnlyAddScreen = a;
     }
 
+      public void setIsOnlyHelpScene(boolean a) {
+        isOnlyHelpScreen = a;
+    }
+
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == bookmarkButton) {
@@ -252,7 +259,10 @@ public class ItemsBar extends JPanel implements ActionListener{
             
         }
         if (e.getSource() == helpButton) {
-            createHelpScreen();
+            if(isOnlyHelpScreen) {
+                createHelpScreen();
+                isOnlyHelpScreen = false;
+            }
         }
 
         if (e.getSource() == profileButton) {
