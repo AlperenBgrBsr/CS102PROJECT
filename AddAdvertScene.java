@@ -67,7 +67,9 @@ public class AddAdvertScene extends JFrame implements ActionListener{
         this.setSize(1024, 768);
         this.setIconImage(new ImageIcon("icons\\BilMartIcon.png").getImage());
         this.setVisible(true);
-
+        this.setLocationRelativeTo(null);
+        this.setResizable(false);
+        
         JPanel topPanel = new JPanel(new GridBagLayout());
         topPanel.setPreferredSize(new Dimension(1024, 100));
         topPanel.setBackground( new Color(21,50,80));
