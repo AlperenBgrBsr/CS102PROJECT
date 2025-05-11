@@ -16,7 +16,7 @@ public class HelpScreen extends JFrame {
     public HelpScreen() {
         setTitle("BilMart Help Center");
         setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
         setIconImage(new ImageIcon("icons\\BilMartIcon.png").getImage());
         
         JPanel topPanel = createTopPanel();
