@@ -213,10 +213,10 @@ public class ItemsBar extends JPanel implements ActionListener{
     }
 
     private void createHelpScreen() {
-        JFrame helpFrame = new JFrame();
-        helpFrame.setTitle("Help Screen");
-        helpFrame.pack();
-        helpFrame.setVisible(true);
+        HelpScreen helpScreen = new HelpScreen();
+        helpScreen.setTitle("Help Screen");
+        helpScreen.pack();
+        helpScreen.setVisible(true);
     }
 
     public void setIsOnlyAddScene(boolean a) {
@@ -254,6 +254,7 @@ public class ItemsBar extends JPanel implements ActionListener{
         if (e.getSource() == helpButton) {
             createHelpScreen();
         }
+
         if (e.getSource() == profileButton) {
             //ProfilePanel profilePage = new ProfilePanel(LoginScreen.getCurrentUser().getUsername(), LoginScreen.getCurrentUser()); //if started by loginscreen main method
             ProfilePanel profilePage = new ProfilePanel("Hyper10nBtw", MainFile.currentUserForAll); //if started by homescreen main method
@@ -271,5 +272,9 @@ public class ItemsBar extends JPanel implements ActionListener{
             HomeScreen.hm.items.removeSearchBar();
             HomeScreen.hm.reloadHomeScreenPanel();
         }
+
+        
     }
+
 }
+
