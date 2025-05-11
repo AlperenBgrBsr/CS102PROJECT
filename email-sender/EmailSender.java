@@ -1,4 +1,7 @@
 import javax.mail.*;
+import javax.mail.Message.RecipientType;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.mail.internet.*;
 
 import java.util.*;
@@ -27,9 +30,9 @@ public class EmailSender {
         });
 
         try {
-            Message message = new MimeMessage(session);
+            MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress("bilmartsystem@gmail.com"));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+            message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject("Information mail");
             message.setText("User " + fromName + " with email "+ fromEmail + " has added your advert with the title " + advertTitle);
             Transport.send(message);
@@ -57,9 +60,9 @@ public class EmailSender {
         });
 
         try {
-            Message message = new MimeMessage(session);
+            MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress("bilmartsystem@gmail.com"));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+            message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject("Information mail");
             message.setText("User " + fromName + " with email "+ fromEmail + " has added you to contacts");
             Transport.send(message);
@@ -84,9 +87,9 @@ public class EmailSender {
         });
 
         try {
-            Message message = new MimeMessage(session);
+            MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress("bilmartsystem@gmail.com"));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to.getEmail()));
+            message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(to.getEmail()));
             message.setSubject("Verification email");
             message.setText("Your verification code for registration: " + code);
             Transport.send(message);
@@ -111,9 +114,9 @@ public class EmailSender {
         });
 
         try {
-            Message message = new MimeMessage(session);
+            MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress("bilmartsystem@gmail.com"));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to.getEmail()));
+            message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(to.getEmail()));
             message.setSubject("Verification email");
             message.setText("Your reset code for your password:  " + code);
             Transport.send(message);
