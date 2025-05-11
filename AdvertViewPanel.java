@@ -31,6 +31,7 @@ public class AdvertViewPanel extends JPanel{
     private JTextField usernameFilterTextField;
     private JRadioButton allTypesButton;
     private BufferedImage advertImageForUserDetails;
+    private String userDetailsEmail;
     
 
     public AdvertViewPanel(int minPrice,int maxPrice,String type,String wordFilter,String usernameFilter, User currentUser){
@@ -168,7 +169,7 @@ public class AdvertViewPanel extends JPanel{
                     userDetailsPanel.setLayout(null);
                     userDetailsPanel.setBackground(Color.white);
                     userDetailsPanel.setPreferredSize(new Dimension(200,500));
-                    String userDetailsEmail = "";
+                    userDetailsEmail = "";
 
 
                     JLabel userDetailUsernameLabel = new JLabel(currentAdvert.getSellerUsername());
@@ -445,7 +446,7 @@ public class AdvertViewPanel extends JPanel{
                                 reachSellerStatement.setInt(1, advertId);
                                 reachSellerStatement.setString(2, currentUser.getUsername());
                                 reachSellerStatement.executeUpdate();
-                                //SEND EMAIL!!
+                                EmailSender.sendInformationEmailForAdvert(currentUser, currentAdvert.getSellerUsername(), userDetailsEmail, currentAdvert);
                                 JOptionPane.showMessageDialog(null, "The seller have been sent an email with your information!","Reached Seller",JOptionPane.INFORMATION_MESSAGE);
                             }
                             else{

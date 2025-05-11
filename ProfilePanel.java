@@ -31,6 +31,7 @@ public class ProfilePanel extends JPanel{
     private int ratingForAddRatingFrame;
     private static String otherProfileUsername;
     private static Rating currentUsersRating;
+    private String emailForOtherProfile;
     
     int scale = 1024;
   
@@ -884,13 +885,13 @@ public class ProfilePanel extends JPanel{
 
             //GETTING EMAIL FROM DATABASE
             //---------------------------------
-            String email = "";
+            emailForOtherProfile = "";
             try {   
                 PreparedStatement emailStatement = Database.databaseConnection.prepareStatement("SELECT user_email FROM users WHERE username = ?");
                 emailStatement.setString(1, username);
                 ResultSet rs = emailStatement.executeQuery();
                 while ( rs.next() ){
-                    email = rs.getString("user_email");
+                    emailForOtherProfile = rs.getString("user_email");
                 }
                 
             } catch (SQLException e) {
@@ -898,7 +899,7 @@ public class ProfilePanel extends JPanel{
             }
             //---------------------------------
             
-            JLabel emailLabel = new JLabel(email); 
+            JLabel emailLabel = new JLabel(emailForOtherProfile); 
             emailLabel.setBounds(280,125,300,20);
             emailLabel.setFont(new Font("Arias", Font.BOLD, 15));
 
@@ -1386,7 +1387,7 @@ public class ProfilePanel extends JPanel{
                             addToContactsStatement.setString(1, currentUser.getUsername());
                             addToContactsStatement.setString(2, username);
                             addToContactsStatement.executeUpdate();
-                            
+                            EmailSender.sendInformationEmailForContact(currentUser, username, emailForOtherProfile);
                             JOptionPane.showMessageDialog(null, username + " has been added to your contacts list!", "Added To Contacts", JOptionPane.INFORMATION_MESSAGE);
 
                             
