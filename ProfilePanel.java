@@ -1386,7 +1386,9 @@ public class ProfilePanel extends JPanel{
                             addToContactsStatement.setString(1, currentUser.getUsername());
                             addToContactsStatement.setString(2, username);
                             addToContactsStatement.executeUpdate();
+                            
                             JOptionPane.showMessageDialog(null, username + " has been added to your contacts list!", "Added To Contacts", JOptionPane.INFORMATION_MESSAGE);
+
                             
                         }   
 

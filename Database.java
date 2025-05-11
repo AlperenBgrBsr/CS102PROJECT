@@ -2,6 +2,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -69,8 +70,9 @@ public class Database {
     public static void addToDatabase(User user){
         PreparedStatement addToDatabaseStatement;
         try {
+            BufferedImage profilePicture = toBufferedImage(ImageIO.read(new File("icons\\profile-picture.png")));
             ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-            ImageIO.write(user.getProfilePicture(), "png", byteOutputStream);
+            ImageIO.write(profilePicture, "png", byteOutputStream);
             byte[] imageBytes = byteOutputStream.toByteArray();
             addToDatabaseStatement = databaseConnection.prepareStatement("INSERT INTO USERS (user_email,user_password,available,username,profilePicture) VALUES (?,?,?,?,?)");
             addToDatabaseStatement.setString(1, user.getEmail());
@@ -229,6 +231,26 @@ public class Database {
 
         return user;
 
+    }
+
+    private static BufferedImage toBufferedImage(Image img) {
+        if (img instanceof BufferedImage bufferedImage) {
+            return bufferedImage;
+        }
+
+        // Make sure the image is fully loaded
+        img = new ImageIcon(img).getImage();
+
+        // Create a buffered image with transparency
+        BufferedImage bimage = new BufferedImage(
+                img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+        // Draw the image on to the buffered image
+        Graphics2D bGr = bimage.createGraphics();
+        bGr.drawImage(img, 0, 0, null);
+        bGr.dispose();
+
+        return bimage;
     }
 
 

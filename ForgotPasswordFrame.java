@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 import java.util.Random;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.awt.event.FocusAdapter;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -28,6 +30,7 @@ public class ForgotPasswordFrame extends JFrame {
     private ImageIcon bilmartTitle;
     private JTextField enterVerificationCodeField;
     private JButton resetPassword;
+    private JButton verifyCode;
     private JTextField repeatNewPassword;
     private JTextField usernameField;
     private int code;
@@ -37,12 +40,10 @@ public class ForgotPasswordFrame extends JFrame {
         this.loginScreen = log;
         this.setLayout(new BorderLayout());
         this.initializeImages();
-        code = generateCode();
-        EmailSender.sendForgotPasswordEmail(loginScreen.getCurrentUser(), code);
         this.add(createTopPanel(), BorderLayout.NORTH); 
         this.add(createFieldsPanel(), BorderLayout.CENTER); 
         this.handleListeners();
-        this.setSize(new Dimension(400, 400));
+        this.setSize(new Dimension(400, 450));
         this.setLocationRelativeTo(null); 
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(true);
@@ -113,7 +114,7 @@ public class ForgotPasswordFrame extends JFrame {
 
     public JPanel createFieldsPanel() {
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(5, 1, 10, 10)); // 5 rows, vertical stacking
+        panel.setLayout(new GridLayout(6, 1, 10, 10)); // 5 rows, vertical stacking
         panel.setBackground(Color.WHITE);
         panel.setBorder(javax.swing.BorderFactory.createEmptyBorder(30, 30, 30, 30));
     
@@ -128,6 +129,7 @@ public class ForgotPasswordFrame extends JFrame {
     
         enterVerificationCodeField = new JTextField();
         addPlaceholderBehavior(enterVerificationCodeField, "Enter verification code");
+        enterVerificationCodeField.setVisible(false);
     
         resetPassword = new JButton("Update Password");
         resetPassword.setBackground(BLUE_COLOR); 
@@ -136,13 +138,25 @@ public class ForgotPasswordFrame extends JFrame {
         resetPassword.setFont(resetPassword.getFont().deriveFont(14f));
         resetPassword.setOpaque(true);
         resetPassword.setBorderPainted(false);
-        resetPassword.setFocusPainted(false);    
+        resetPassword.setFocusPainted(false);   
+        
+        verifyCode = new JButton("Verify Code");
+        verifyCode.setBackground(BLUE_COLOR); 
+        verifyCode.setForeground(Color.WHITE);
+        verifyCode.setFocusPainted(false);
+        verifyCode.setFont(resetPassword.getFont().deriveFont(14f));
+        verifyCode.setOpaque(true);
+        verifyCode.setBorderPainted(false);
+        verifyCode.setFocusPainted(false); 
+        verifyCode.setVisible(false);
+        
 
         panel.add(usernameField);
         panel.add(newPasswordField);
         panel.add(repeatNewPassword);
         panel.add(enterVerificationCodeField);
         panel.add(resetPassword);
+        panel.add(verifyCode);
     
         return panel;
     }
@@ -152,36 +166,102 @@ public class ForgotPasswordFrame extends JFrame {
         resetPassword.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean passwordSame = repeatNewPassword.getText().equals(newPasswordField.getText());
+
+                User passwordChangeUser = Database.getUserWithUsername(usernameField.getText());
+                if (  passwordChangeUser == null){
+                    JOptionPane.showMessageDialog(null,
+                            "Enter a valid username!",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+                else{
+
+                    boolean passwordSame = repeatNewPassword.getText().equals(newPasswordField.getText());
+                    
+                    if ( passwordSame ){
+                        if ( newPasswordField.getText().length() >= 8){
+                            code = generateCode();
+                            EmailSender.sendForgotPasswordEmail(passwordChangeUser, code);
+                            JOptionPane.showMessageDialog(null,
+                                "You have been sent an email with a code!",
+                                "Error",
+                                JOptionPane.INFORMATION_MESSAGE);
+                            verifyCode.setVisible(true);
+                            enterVerificationCodeField.setVisible(true);
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(null,
+                                "Your password should be at least 8 characters!",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        }
+
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null,
+                            "Repeat your new password correctly!",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+
+                }
+
+
+            
+                
+            }
+        });
+
+        verifyCode.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
                 boolean matchingCode = false;
-                boolean samePassword = newPasswordField.getText().equals(loginScreen.getCurrentUser().getPassword());
                 try {
                     matchingCode = Integer.parseInt(enterVerificationCodeField.getText()) == code;
+                    if ( matchingCode ){
+                        changePassword(usernameField.getText(),newPasswordField.getText());
+                        loginScreen.getCurrentUser().setPassword(newPasswordField.getText());
+                        JOptionPane.showMessageDialog(null,
+                            "Your password has been set, redirecting to login",
+                            "Password Reset",
+                            JOptionPane.INFORMATION_MESSAGE);
+                        loginScreen.setVisibility(true);
+                        disposePasswordFrame();
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null,
+                            "Wrong code!",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    }
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(null,
                             "You haven't entered a number",
                             "Error",
                             JOptionPane.INFORMATION_MESSAGE);
                 }
-                boolean correctUsername = usernameField.getText().equals(loginScreen.getCurrentUser().getUsername());
 
-                if (passwordSame && matchingCode && correctUsername && !samePassword) {
-                    loginScreen.getCurrentUser().setPassword(newPasswordField.getText());
-                    JOptionPane.showMessageDialog(null,
-                            "Your password has been set, redirecting to login",
-                            "Password Reset",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    loginScreen.setVisibility(true);
-                    disposePasswordFrame();
-                    
-                } else {
-                    JOptionPane.showMessageDialog(null,
-                            "Invalid input. Please check your username, verification code, and passwords.",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                }
+
             }
+            
         });
+
+    }
+
+    private void changePassword(String username, String newPassword) {
+        
+        try {
+            PreparedStatement changePasswordStatement = Database.databaseConnection.prepareStatement("UPDATE users SET user_password = ? WHERE username = ?");
+            changePasswordStatement.setString(1, newPassword);
+            changePasswordStatement.setString(2, username);
+            changePasswordStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+
     }
 
     public void disposePasswordFrame() {

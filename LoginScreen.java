@@ -100,7 +100,7 @@ public void styleButton(JButton button) {
     panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 
     usernameField = new JTextField();
-    addPlaceholder(usernameField, "Username or Email");
+    addPlaceholder(usernameField, "Username");
 
     passwordField = new JPasswordField();
     addPlaceholder(passwordField, "Password");
@@ -142,11 +142,11 @@ public void styleButton(JButton button) {
                         JOptionPane.WARNING_MESSAGE);
                     return; 
                 }
-                for (User user : database.getUsers()) {
-                    if ((user.getEmail().equals(usernameField.getText()) || user.getUsername().equals(usernameField.getText())) 
+                for (User user : Database.getAllUsersForRegisterAndLogin()) {
+                    if (user.getUsername().equals(usernameField.getText()) 
                          && user.getPassword().equals(passwordField.getText())) {
-                        MainSystemFrame mainframe = new MainSystemFrame();
-                        mainframe.setVisible(true);
+                        MainFile.currentUserForAll = Database.getUserWithUsername(usernameField.getText());
+                        HomeScreen.hm = new HomeScreen();
                         LoginScreen.this.setVisible(false);
                         usernameField.setText("");
                         passwordField.setText("");
@@ -171,10 +171,6 @@ forgotPasswordButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                
                 if (e.getSource()==forgotPasswordButton) {
-                    JOptionPane.showMessageDialog(null,
-                            "We have sent a reset code to your email",
-                            "Password Reset Code",
-                            JOptionPane.WARNING_MESSAGE);
                 triggerForgotPasswordFrame();
                 setVisibility(false);
                 }

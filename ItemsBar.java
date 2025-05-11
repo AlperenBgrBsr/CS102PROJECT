@@ -257,7 +257,7 @@ public class ItemsBar extends JPanel implements ActionListener{
 
         if (e.getSource() == profileButton) {
             //ProfilePanel profilePage = new ProfilePanel(LoginScreen.getCurrentUser().getUsername(), LoginScreen.getCurrentUser()); //if started by loginscreen main method
-            ProfilePanel profilePage = new ProfilePanel("Hyper10nBtw", MainFile.currentUserForAll); //if started by homescreen main method
+            ProfilePanel profilePage = new ProfilePanel(MainFile.currentUserForAll.getUsername(), MainFile.currentUserForAll); //if started by homescreen main method
             HomeScreen.hm.items.addSearchBar();
             HomeScreen.hm.changePanel(profilePage); //Will change these later
         }

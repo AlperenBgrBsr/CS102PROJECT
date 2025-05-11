@@ -75,12 +75,14 @@ public class User {
         bookmarkedAdverts = new ArrayList<>();
         ratingsList = new ArrayList<>();
 
-        try { //When first instantited automically default profile picture
+        
+        try {
             profilePicture = toBufferedImage(ImageIO.read(new File("icons\\profile-picture.png")));
-            System.out.println("sdsd");
-        } catch (Exception e) {
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        
   
         
     }
@@ -381,7 +383,7 @@ public class User {
     public void updateAvailability(boolean isAvailable){
         this.isAvailable = isAvailable;
     }
-     private BufferedImage toBufferedImage(Image img) {
+    private BufferedImage toBufferedImage(Image img) {
         if (img instanceof BufferedImage bufferedImage) {
             return bufferedImage;
         }

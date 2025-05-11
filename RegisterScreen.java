@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.*;                    
 import java.awt.*;                       
@@ -30,7 +29,7 @@ public class RegisterScreen extends JFrame {
     private JButton confirmCodeButton;
     private JLabel codeLabel;
     private JTextField codeField;
-    private int code =123;
+    private int code;
     
     public RegisterScreen(LoginScreen log) {
     currUser = new User(null,null,null);
@@ -91,36 +90,36 @@ public static ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
 
     
 
-    /*public JPanel createLoginRegisterButtons() {
-        JPanel panel = new JPanel(new GridLayout(1, 2));
-        panel.setPreferredSize(new Dimension(300, 50));
+    // public JPanel createLoginRegisterButtons() {
+    //     JPanel panel = new JPanel(new GridLayout(1, 2));
+    //     panel.setPreferredSize(new Dimension(300, 50));
 
-        // Create buttons
-        loginButton = new JButton("Login");
-        registerButton = new JButton("Register");
+    //     // Create buttons
+    //     loginButton = new JButton("Login");
+    //     registerButton = new JButton("Register");
 
-        // Style buttons to look unified
-        Color bgColor = new Color(220, 220, 220);
-        loginButton.setBackground(bgColor);
-        registerButton.setBackground(bgColor);
-        loginButton.setOpaque(true);
-        registerButton.setOpaque(true);
-        loginButton.setBorder(BorderFactory.createEmptyBorder());
-        registerButton.setBorder(BorderFactory.createEmptyBorder());
+    //     // Style buttons to look unified
+    //     Color bgColor = new Color(220, 220, 220);
+    //     loginButton.setBackground(bgColor);
+    //     registerButton.setBackground(bgColor);
+    //     loginButton.setOpaque(true);
+    //     registerButton.setOpaque(true);
+    //     loginButton.setBorder(BorderFactory.createEmptyBorder());
+    //     registerButton.setBorder(BorderFactory.createEmptyBorder());
 
-        // Create a vertical divider
-        //bugra.basar@ug.bilkent.edu.tr
-        //Alperen
-        //123
+    //     // Create a vertical divider
+    //     //bugra.basar@ug.bilkent.edu.tr
+    //     //Alperen
+    //     //123
 
-        // Add components to the panel
-        panel.add(loginButton);
+    //     // Add components to the panel
+    //     panel.add(loginButton);
        
-        panel.add(registerButton);
+    //     panel.add(registerButton);
 
-        return panel;
-    }
-        /* */
+    //     return panel;
+    // }
+        
     public JPanel createFormPanel() {
     JPanel panel = new JPanel();
     panel.setLayout(new GridLayout(5, 1, 10, 10));
@@ -190,6 +189,7 @@ public void addPlaceholderBehavior(JTextField field, String placeholder) {
         btn.setBorderPainted(false);
     }
 
+    loginButton.setFont(loginButton.getFont().deriveFont(13f));
     confirmCodeButton.setVisible(false);
 
     panel.add(registerButton);
@@ -224,21 +224,56 @@ public void addPlaceholderBehavior(JTextField field, String placeholder) {
             public void actionPerformed(ActionEvent e) {
                 registerButton.setBackground(BLUE_COLOR);
                 if (isValidEmail(emailField.getText())) {
-                    JOptionPane.showMessageDialog(null,
-                            "We have sent a confirmation code to your email",
-                            "Confirmation Code",
+
+
+                    String validity = isValidUsernameAndEmail (usernameField.getText(), emailField.getText());
+                    if ( validity.equalsIgnoreCase("EmailAndUsername")){
+                        JOptionPane.showMessageDialog(null,
+                            "There is already an account registered with that username and email!",
+                            "Input Error",
                             JOptionPane.WARNING_MESSAGE);
-                    code = rand.nextInt(100000,1000000);
-                    currUser.setEmail(emailField.getText());
-                    currUser.setPassword(passwordField.getText());
-                    currUser.setUsername(usernameField.getText());
-                   
-                    EmailSender.sendVerificationEmail(currUser,code);
-                    codeField.setVisible(true);
-                    confirmCodeButton.setVisible(true);
+                    }
+                    else if ( validity.equalsIgnoreCase("Username")){
+                        JOptionPane.showMessageDialog(null,
+                            "There is already an account registered with that username!",
+                            "Input Error",
+                            JOptionPane.WARNING_MESSAGE);
+                    }
+                    else if (validity.equalsIgnoreCase("Email")){
+                        JOptionPane.showMessageDialog(null,
+                            "There is already an account registered with that email!",
+                            "Input Error",
+                            JOptionPane.WARNING_MESSAGE);
+                    }
+                    else if ( validity.equalsIgnoreCase("Okay")){
+                        
+                        if ( passwordField.getText().length()>= 8){
+                            codeField.setVisible(true);
+                            confirmCodeButton.setVisible(true);
+                            currUser.setEmail(emailField.getText());
+                            currUser.setPassword(passwordField.getText());
+                            currUser.setUsername(usernameField.getText());
+                            code = rand.nextInt(100000,1000000);
+                            EmailSender.sendVerificationEmail(currUser,code);
+                            JOptionPane.showMessageDialog(null,
+                                "We have sent a confirmation code to your email",
+                                "Confirmation Code",
+                                JOptionPane.WARNING_MESSAGE);
+                        }
+                        else{
+                           
+                            JOptionPane.showMessageDialog(null,
+                                "Your password should be at least 8 characters!",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        
+                        }
+
+                    }
+
                 } else {
                     JOptionPane.showMessageDialog(null,
-                            "Invalid email!",
+                            "Invalid email type!",
                             "Input Error",
                             JOptionPane.WARNING_MESSAGE);
                 }
@@ -248,9 +283,9 @@ public void addPlaceholderBehavior(JTextField field, String placeholder) {
         confirmCodeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (Integer.parseInt(codeField.getText())==code) {
+                if (Integer.parseInt(codeField.getText()) == code) {
                     
-                    LoginScreen.database.addUser(currUser);
+                    // LoginScreen.database.addUser(currUser);
                     JOptionPane.showMessageDialog(null,
                             "You have been successfully registered, redirecting to login screen",
                             "Successful Registration",
@@ -258,6 +293,8 @@ public void addPlaceholderBehavior(JTextField field, String placeholder) {
 
                     logScreen.setVisibility(true);
                     RegisterScreen.this.setVisibility(false);
+                    Database.addToDatabase(new User(currUser.getUsername(), currUser.getEmail(), currUser.getPassword()));
+
                 } else {
                     JOptionPane.showMessageDialog(null,
                             "Incorrect confirmation code!",
@@ -292,5 +329,42 @@ public void addPlaceholderBehavior(JTextField field, String placeholder) {
         return email.endsWith("@ug.bilkent.edu.tr");
     }
 
+    public String isValidUsernameAndEmail(String username, String email){ // checks if the username and the email has registered before
+
+        String validity = "";// 4 Types --> Both email and username is not valid, only email is not valid, only username is not valid, and okay
+        boolean isValid = true;
+        ArrayList<User> allUsers = Database.getAllUsersForRegisterAndLogin();
+        for (int i = 0; i < allUsers.size() && isValid ; i++){
+
+            if ( allUsers.get(i).getUsername().equalsIgnoreCase(username) && allUsers.get(i).getEmail().equalsIgnoreCase(email)){
+
+                isValid = false;
+                validity = "EmailAndUsername";
+
+            }
+            else if ( allUsers.get(i).getUsername().equalsIgnoreCase(username) ){
+
+                isValid = false;
+                validity = "Username";
+
+            }
+            else if ( allUsers.get(i).getEmail().equalsIgnoreCase(email) ){
+
+                isValid = false;
+                validity = "Email";
+
+            }
+
+
+        }
+
+        if ( isValid ){
+            validity = "Okay";
+        }
+
+        return validity;
+
+    }
+ 
    
 }
