@@ -3,13 +3,18 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
+import javax.swing.*;                    
+import java.awt.*;                       
+import java.awt.event.*;                
+import java.util.Random;                
+
 public class RegisterScreen extends JFrame {
-    private User currUser = new User("Alperen", "bugra.basar@ug.bilkent.edu.tr","Apsdlfapd");
+    private User currUser;
     private Random rand = new Random();
     private final Color BLUE_COLOR = new Color(21,50,80);
-    private JButton forgotPasswordButton;
     private JButton loginButton;
     private JTextField newPasswordField;
+    private LoginScreen logScreen;
     private JTextField confirmCodeFieldPassword;
     private ImageIcon bilmartIcon;
     private ImageIcon bilmartTitle;
@@ -25,52 +30,68 @@ public class RegisterScreen extends JFrame {
     private JButton confirmCodeButton;
     private JLabel codeLabel;
     private JTextField codeField;
-    private String code = "123";
+    private int code =123;
     
-    public RegisterScreen() {
-        bilmartIcon = new ImageIcon("icons/BilMartIcon.png");
-        bilmartTitle = new ImageIcon("icons/BilMart.png");
-        this.setTitle("Register");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.add(this.createLabelsAndFields());
-        this.add(createTopPanel());
-        /*this.add(createForgotPasswordButton());
-        this.add(createLoginRegisterButtons());
-        this.handleListeners();
-        */
+    public RegisterScreen(LoginScreen log) {
+    currUser = new User(null,null,null);
+    this.logScreen = log;
+    this.setTitle("Register");
+    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    this.setLayout(new BorderLayout()); 
 
-        this.setSize(new Dimension(1000,1000));
-        this.setLocationRelativeTo(null);
-        this.setVisible(true);
-
-        String email = emailField.getText();
-        String username = usernameField.getText();
-        String password = passwordField.getText();
-        currUser = new User(username, email,password);
-        
-    }
+    initializeIcons(); 
 
     
+    this.add(createTopPanel(), BorderLayout.NORTH);
+    this.add(createFormPanel(), BorderLayout.CENTER);
+    this.add(createBottomPanel(), BorderLayout.SOUTH);
+
+    this.setSize(new Dimension(500, 600));
+    this.setLocationRelativeTo(null);
+    this.setVisible(true);
+
+    handleListeners(); 
+}
+
+
+     public void initializeIcons() {
+    bilmartIcon = resizeIcon(new ImageIcon("icons/BilMartIcon.png"), 60, 60);
+    bilmartTitle = new ImageIcon("icons/BilMart.png");
+}
+
+public static ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
+    return new ImageIcon(icon.getImage().getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH));
+}
+
     public JPanel createTopPanel() {
-        JPanel panel = new JPanel();
-        panel.setBackground(BLUE_COLOR);
-        bilmartLogo = new JLabel();
-        welcomeLabel = new JLabel();
-        bilmartLogo.setPreferredSize(new Dimension(100,100));
-        bilmartLogo.setIcon(bilmartIcon);
-        welcomeLabel.setIcon(bilmartTitle);
-        panel.add(bilmartLogo);
-        panel.add(welcomeLabel);
+    JPanel panel = new JPanel();
+    panel.setBackground(BLUE_COLOR);
+    panel.setLayout(new BorderLayout());
 
-        return panel;
-    }
+    JPanel contentPanel = new JPanel();
+    contentPanel.setBackground(BLUE_COLOR);
+    contentPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
 
-    public JButton createForgotPasswordButton() {
-        forgotPasswordButton = new JButton("Forgot your password?  ");
-        return forgotPasswordButton;
-    }
+    bilmartLogo = new JLabel();
+    bilmartLogo.setPreferredSize(new Dimension(60, 60));
+    bilmartLogo.setIcon(bilmartIcon);
 
-    public JPanel createLoginRegisterButtons() {
+    welcomeLabel = new JLabel("BILMART");
+    welcomeLabel.setPreferredSize(new Dimension(120, 120));
+    welcomeLabel.setForeground(Color.WHITE);
+    welcomeLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
+
+    contentPanel.add(bilmartLogo);
+    contentPanel.add(welcomeLabel);
+
+    panel.add(contentPanel, BorderLayout.CENTER);
+    return panel;
+}
+
+
+    
+
+    /*public JPanel createLoginRegisterButtons() {
         JPanel panel = new JPanel(new GridLayout(1, 2));
         panel.setPreferredSize(new Dimension(300, 50));
 
@@ -88,7 +109,9 @@ public class RegisterScreen extends JFrame {
         registerButton.setBorder(BorderFactory.createEmptyBorder());
 
         // Create a vertical divider
-        
+        //bugra.basar@ug.bilkent.edu.tr
+        //Alperen
+        //123
 
         // Add components to the panel
         panel.add(loginButton);
@@ -97,72 +120,104 @@ public class RegisterScreen extends JFrame {
 
         return panel;
     }
+        /* */
+    public JPanel createFormPanel() {
+    JPanel panel = new JPanel();
+    panel.setLayout(new GridLayout(5, 1, 10, 10));
+    panel.setBackground(Color.WHITE);
+    panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 
-    public JPanel createLabelsAndFields() {
-        JPanel panel = new JPanel(new GridLayout(6, 5, 10, 10));
+    emailField = new JTextField();
+    usernameField = new JTextField();
+    passwordField = new JPasswordField();
+    codeField = new JTextField();
 
-        welcomeLabel = new JLabel("Bilmart");
-        welcomeLabel.
+    addPlaceholderBehavior(emailField, "Email (@ug.bilkent.edu.tr)");
+    addPlaceholderBehavior(usernameField, "Username");
+    addPlaceholderBehavior(passwordField, "Password");
+    addPlaceholderBehavior(codeField, "Enter verification code");
+    
 
-        emailLabel = new JLabel("Email: ");
-        emailField = new JTextField(15);
+    codeField.setVisible(false); 
 
-        usernameLabel = new JLabel("Username: ");
-        usernameField = new JTextField(15);
+    panel.add(emailField);
+    panel.add(usernameField);
+    panel.add(passwordField);
+    panel.add(codeField);
 
-        passwordLabel = new JLabel("Password: ");
-        passwordField = new JPasswordField(15);
+    return panel;
+}
 
-        registerButton = new JButton("Register");
-        confirmCodeButton = new JButton("Confirm Code");
+public void addPlaceholderBehavior(JTextField field, String placeholder) {
+    field.setText(placeholder);
+    field.setForeground(Color.GRAY);
 
-        codeLabel = new JLabel("Enter your code: ");
-        codeField = new JTextField(15);
-        codeLabel.setVisible(false);
-        codeField.setVisible(false);
-        confirmCodeButton.setVisible(false);
+    field.addFocusListener(new FocusAdapter() {
+        public void focusGained(FocusEvent e) {
+            if (field.getText().equals(placeholder)) {
+                field.setText("");
+                field.setForeground(Color.BLACK);
+            }
+        }
+
+        public void focusLost(FocusEvent e) {
+            if (field.getText().isEmpty()) {
+                field.setText(placeholder);
+                field.setForeground(Color.GRAY);
+            }
+        }
+    });
+}
 
 
-        confirmCodeFieldPassword = new JTextField("Enter your code here",15);
-        confirmCodeFieldPassword.setVisible(false);
+    public JPanel createBottomPanel() {
+    JPanel panel = new JPanel(new GridLayout(1, 3, 20, 0));
+    panel.setBackground(Color.WHITE);
+    panel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
-        panel.add(welcomeLabel);
-        panel.add(new JLabel());
-        panel.add(emailLabel);
-        panel.add(emailField);
-        panel.add(usernameLabel);
-        panel.add(usernameField);
-        panel.add(passwordLabel);
-        panel.add(passwordField);
-        panel.add(registerButton);
-        panel.add(codeLabel);
-        panel.add(codeField);
-        panel.add(confirmCodeButton);
+    registerButton = new JButton("Register");
+    confirmCodeButton = new JButton("Confirm Code");
+    loginButton = new JButton("Back to Login");
 
-        return panel;
+    
+    JButton[] buttons = {registerButton, confirmCodeButton, loginButton};
+    for (JButton btn : buttons) {
+        btn.setBackground(BLUE_COLOR);
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setFont(btn.getFont().deriveFont(14f));
+        btn.setOpaque(true);
+        btn.setBorderPainted(false);
     }
 
-    public User getUser() {
+    confirmCodeButton.setVisible(false);
+
+    panel.add(registerButton);
+    panel.add(confirmCodeButton);
+    panel.add(loginButton);
+    
+
+    return panel;
+    }
+
+    public User getCurrentUser() {
         return currUser;
     }
 
     public void handleListeners() {
-        forgotPasswordButton.addActionListener(new ActionListener() {
+        loginButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
-                if (e.getSource()==forgotPasswordButton) {
-                    JOptionPane.showMessageDialog(null,
-                            "We have sent a reset code to your email",
-                            "Password Reset Code",
-                            JOptionPane.WARNING_MESSAGE);
-                triggerForgotPasswordFrame();
-                setVisibility(false);
-                }
+                JOptionPane.showMessageDialog(null,
+                            "Redirecting to login screen",
+                            "Redirection",
+                            JOptionPane.INFORMATION_MESSAGE);
+                RegisterScreen.this.logScreen.setVisibility(true);
+                RegisterScreen.this.setVisibility(false);
             }
-
         });
+        
         registerButton.addActionListener(new ActionListener() {
             
             @Override
@@ -173,8 +228,12 @@ public class RegisterScreen extends JFrame {
                             "We have sent a confirmation code to your email",
                             "Confirmation Code",
                             JOptionPane.WARNING_MESSAGE);
-                    EmailSender.sendVerificationEmail(currUser);
-                    codeLabel.setVisible(true);
+                    code = rand.nextInt(100000,1000000);
+                    currUser.setEmail(emailField.getText());
+                    currUser.setPassword(passwordField.getText());
+                    currUser.setUsername(usernameField.getText());
+                   
+                    EmailSender.sendVerificationEmail(currUser,code);
                     codeField.setVisible(true);
                     confirmCodeButton.setVisible(true);
                 } else {
@@ -189,15 +248,16 @@ public class RegisterScreen extends JFrame {
         confirmCodeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (codeField.getText().equals(code)) {
+                if (Integer.parseInt(codeField.getText())==code) {
+                    
                     LoginScreen.database.addUser(currUser);
                     JOptionPane.showMessageDialog(null,
                             "You have been successfully registered, redirecting to login screen",
                             "Successful Registration",
                             JOptionPane.INFORMATION_MESSAGE);
 
-                    new LoginScreen();
-                    RegisterScreen.this.dispose();
+                    logScreen.setVisibility(true);
+                    RegisterScreen.this.setVisibility(false);
                 } else {
                     JOptionPane.showMessageDialog(null,
                             "Incorrect confirmation code!",
@@ -215,11 +275,6 @@ public class RegisterScreen extends JFrame {
    
         
     public void triggerForgotPasswordFrame() {
-    currUser.setUsername("Alperen");
-    currUser.setEmail("bugra.basar@ug.bilkent.edu.tr");
-    currUser.setPassword("Alperewn"); // Optional
-
-    // Make sure email is not empty or invalid
     if (currUser.getEmail() == null || currUser.getEmail().isEmpty() || !isValidEmail(currUser.getEmail())) {
         JOptionPane.showMessageDialog(null,
                 "Please enter a valid email before resetting your password.",
@@ -229,9 +284,10 @@ public class RegisterScreen extends JFrame {
         return;
     }
 
-    ForgotPasswordFrame frame = new ForgotPasswordFrame(this);
+    ForgotPasswordFrame frame = new ForgotPasswordFrame(logScreen);
     frame.setVisible(true);
     }
+
     public boolean isValidEmail(String email) {
         return email.endsWith("@ug.bilkent.edu.tr");
     }
