@@ -22,7 +22,7 @@ public class ForgotPasswordFrame extends JFrame {
     private JLabel bilmartLogo;
     private JLabel welcomeLabel;
     private final Color BLUE_COLOR = new Color(21,50,80);
-    private RegisterScreen registerScreen;
+    private LoginScreen loginScreen;
     private JTextField newPasswordField;
     private ImageIcon bilmartIcon;
     private ImageIcon bilmartTitle;
@@ -32,20 +32,13 @@ public class ForgotPasswordFrame extends JFrame {
     private JTextField usernameField;
     private int code;
 
-    public ForgotPasswordFrame(RegisterScreen registerScreen) {
+    public ForgotPasswordFrame(LoginScreen log) {
         rand = new Random();
-        this.registerScreen = registerScreen;
-
-        
+        this.loginScreen = log;
         this.setLayout(new BorderLayout());
-
-        
         this.initializeImages();
-
-        
         code = generateCode();
-        //EmailSender.sendForgotPasswordEmail(registerScreen.getUser(), code);
-
+        EmailSender.sendForgotPasswordEmail(loginScreen.getCurrentUser(), code);
         this.add(createTopPanel(), BorderLayout.NORTH); 
         this.add(createFieldsPanel(), BorderLayout.CENTER); 
         this.handleListeners();
@@ -92,8 +85,8 @@ public class ForgotPasswordFrame extends JFrame {
     }
 
     public void initializeImages() {
-        // FIX: Ensure these paths are valid relative to the working directory or use getClass().getResource() if in resources
-        bilmartIcon = resizeIcon(new ImageIcon("icons/BilMartIcon.png"), 60, 60); // Resize here
+        
+        bilmartIcon = resizeIcon(new ImageIcon("icons/BilMartIcon.png"), 60, 60); 
         bilmartTitle = new ImageIcon("icons/BilMart.png");
     }
     public void addPlaceholderBehavior(JTextField field, String placeholder) {
@@ -161,7 +154,7 @@ public class ForgotPasswordFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 boolean passwordSame = repeatNewPassword.getText().equals(newPasswordField.getText());
                 boolean matchingCode = false;
-                boolean samePassword = newPasswordField.getText().equals(registerScreen.getUser().getPassword());
+                boolean samePassword = newPasswordField.getText().equals(loginScreen.getCurrentUser().getPassword());
                 try {
                     matchingCode = Integer.parseInt(enterVerificationCodeField.getText()) == code;
                 } catch (NumberFormatException ex) {
@@ -170,15 +163,15 @@ public class ForgotPasswordFrame extends JFrame {
                             "Error",
                             JOptionPane.INFORMATION_MESSAGE);
                 }
-                boolean correctUsername = usernameField.getText().equals(registerScreen.getUser().getUsername());
+                boolean correctUsername = usernameField.getText().equals(loginScreen.getCurrentUser().getUsername());
 
                 if (passwordSame && matchingCode && correctUsername && !samePassword) {
-                    registerScreen.getUser().setPassword(newPasswordField.getText());
+                    loginScreen.getCurrentUser().setPassword(newPasswordField.getText());
                     JOptionPane.showMessageDialog(null,
                             "Your password has been set, redirecting to login",
                             "Password Reset",
                             JOptionPane.INFORMATION_MESSAGE);
-                    registerScreen.setVisibility(true);
+                    loginScreen.setVisibility(true);
                     disposePasswordFrame();
                     
                 } else {
