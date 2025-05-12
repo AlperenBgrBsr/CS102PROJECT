@@ -147,9 +147,6 @@ public class HomeScreen extends JFrame implements ActionListener{
             container.repaint();
         }
     }
-
-
-
     
     public void changePanel(JPanel panelToChange) {
         this.remove(currentPanel);             
@@ -293,6 +290,8 @@ public class HomeScreen extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == searchButton) {
+            if (searchField.getText().trim().equalsIgnoreCase("Search for any item"))
+                searchField.setText("");
             hm.changePanel(new AdvertViewPanel(Integer.MIN_VALUE, Integer.MAX_VALUE, "", searchField.getText(), "", MainFile.currentUserForAll));
         }
         if (e.getSource() == clothesButton) {
