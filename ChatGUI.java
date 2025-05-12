@@ -41,80 +41,80 @@ public class ChatGUI extends JPanel
     private Color awayStatusColor = new Color(200, 100, 0);
     
 
-    // private class MessageUpdater extends SwingWorker<ArrayList<Message>, Void > {
+    private class MessageUpdater extends SwingWorker<ArrayList<Message>, Void > {
 
-    //     @Override
-    //     protected ArrayList<Message> doInBackground() throws Exception {
+        @Override
+        protected ArrayList<Message> doInBackground() throws Exception {
 
-    //         ArrayList<Message> messages = new ArrayList<>();
+            ArrayList<Message> messages = new ArrayList<>();
 
-    //         if ( messagesPanel != null && activeContact != null){
+            if ( messagesPanel != null && activeContact != null){
 
-    //             messages = new ArrayList<>();
-    //             try {
-    //                 PreparedStatement getMessagesStatement = Database.databaseConnection.prepareStatement("SELECT * FROM messages WHERE (senderUsername = ?  AND recieverUsername = ?) OR (senderUsername =? AND recieverUsername = ?)");
-    //                 getMessagesStatement.setString(1, activeContact.getName());
-    //                 getMessagesStatement.setString(2, MainFile.currentUserForAll.getUsername());
-    //                 getMessagesStatement.setString(3, MainFile.currentUserForAll.getUsername());
-    //                 getMessagesStatement.setString(4, activeContact.getName());
-    //                 ResultSet getMessagesRs = getMessagesStatement.executeQuery();
-    //                 while ( getMessagesRs.next() ){
-    //                     messages.add(new Message(getMessagesRs.getString("senderUsername"), getMessagesRs.getString("recieverUsername"), getMessagesRs.getString("message"), new Date(getMessagesRs.getTimestamp("date").getTime())));
-    //                 }
+                messages = new ArrayList<>();
+                try {
+                    PreparedStatement getMessagesStatement = Database.databaseConnection.prepareStatement("SELECT * FROM messages WHERE (senderUsername = ?  AND recieverUsername = ?) OR (senderUsername =? AND recieverUsername = ?)");
+                    getMessagesStatement.setString(1, activeContact.getName());
+                    getMessagesStatement.setString(2, MainFile.currentUserForAll.getUsername());
+                    getMessagesStatement.setString(3, MainFile.currentUserForAll.getUsername());
+                    getMessagesStatement.setString(4, activeContact.getName());
+                    ResultSet getMessagesRs = getMessagesStatement.executeQuery();
+                    while ( getMessagesRs.next() ){
+                        messages.add(new Message(getMessagesRs.getString("senderUsername"), getMessagesRs.getString("recieverUsername"), getMessagesRs.getString("message"), new Date(getMessagesRs.getTimestamp("date").getTime())));
+                    }
 
-    //             } catch (SQLException e) {
-    //                 e.printStackTrace();
-    //             }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
 
-    //         }
+            }
 
-    //         return messages;
+            return messages;
            
-    //     }
+        }
         
-    //     @Override
-    //     protected void done(){
+        @Override
+        protected void done(){
             
-    //         ArrayList<Message> messages = new ArrayList<>();
-    //         try {
-    //             messages = get();
-    //         } catch (InterruptedException e) {
-    //             e.printStackTrace();
-    //         } catch (ExecutionException e) {
-    //             e.printStackTrace();
-    //         }
+            ArrayList<Message> messages = new ArrayList<>();
+            try {
+                messages = get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
 
-    //         if (messagesPanel != null && activeContact != null) {
-    //             messagesPanel.removeAll();
+            if (messagesPanel != null && activeContact != null) {
+                messagesPanel.removeAll();
             
-    //             // Use vertical layout for message list
-    //             messagesPanel.setLayout(new BoxLayout(messagesPanel, BoxLayout.Y_AXIS));
-    //             messagesPanel.setBackground(Color.lightGray);
+                // Use vertical layout for message list
+                messagesPanel.setLayout(new BoxLayout(messagesPanel, BoxLayout.Y_AXIS));
+                messagesPanel.setBackground(Color.lightGray);
             
-    //             // Add each message to the display
-    //             for(Message message : messages) {
-    //                 JPanel messageItem = createMessageItem(message);
+                // Add each message to the display
+                for(Message message : messages) {
+                    JPanel messageItem = createMessageItem(message);
                 
-    //                 // Ensure message items span full width
-    //                 messageItem.setMaximumSize(new Dimension(Integer.MAX_VALUE, messageItem.getPreferredSize().height));
-    //                 messageItem.setAlignmentX(Component.LEFT_ALIGNMENT);
+                    // Ensure message items span full width
+                    messageItem.setMaximumSize(new Dimension(Integer.MAX_VALUE, messageItem.getPreferredSize().height));
+                    messageItem.setAlignmentX(Component.LEFT_ALIGNMENT);
                 
-    //                 messagesPanel.add(messageItem);
-    //                 messagesPanel.add(Box.createVerticalStrut(10)); // Space between messages
-    //             }
+                    messagesPanel.add(messageItem);
+                    messagesPanel.add(Box.createVerticalStrut(10)); // Space between messages
+                }
             
-    //             // Push messages to the top if there are few
-    //             messagesPanel.add(Box.createVerticalGlue());
+                // Push messages to the top if there are few
+                messagesPanel.add(Box.createVerticalGlue());
             
-    //             scrollToBottom();
+                scrollToBottom();
             
-    //             messagesPanel.revalidate();
-    //             messagesPanel.repaint();
+                messagesPanel.revalidate();
+                messagesPanel.repaint();
             
-    //         }
-    //     }
+            }
+        }
         
-    // }
+    }
 
     static class Contact 
     {
@@ -240,15 +240,15 @@ public class ChatGUI extends JPanel
         }
         SwingUtilities.updateComponentTreeUI(this);
         
-        // Timer timer = new Timer(5000, new ActionListener() {
+        Timer timer = new Timer(5000, new ActionListener() {
 
-        //     @Override
-        //     public void actionPerformed(ActionEvent e) {
-        //         new MessageUpdater().execute();
-        //     }
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new MessageUpdater().execute();
+            }
             
-        // });
-        // timer.start();
+        });
+        timer.start();
 
         
 
