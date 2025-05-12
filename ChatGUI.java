@@ -1,12 +1,22 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.text.SimpleDateFormat;
 import com.formdev.flatlaf.intellijthemes.FlatCobalt2IJTheme;
 
@@ -31,52 +41,101 @@ public class ChatGUI extends JPanel
     private Color awayStatusColor = new Color(200, 100, 0);
     
 
-    static class Message 
-    {
-        private String messageContent;
-        private boolean sentByUser;
-        private Date messageTime;
+    // private class MessageUpdater extends SwingWorker<ArrayList<Message>, Void > {
+
+    //     @Override
+    //     protected ArrayList<Message> doInBackground() throws Exception {
+
+    //         ArrayList<Message> messages = new ArrayList<>();
+
+    //         if ( messagesPanel != null && activeContact != null){
+
+    //             messages = new ArrayList<>();
+    //             try {
+    //                 PreparedStatement getMessagesStatement = Database.databaseConnection.prepareStatement("SELECT * FROM messages WHERE (senderUsername = ?  AND recieverUsername = ?) OR (senderUsername =? AND recieverUsername = ?)");
+    //                 getMessagesStatement.setString(1, activeContact.getName());
+    //                 getMessagesStatement.setString(2, MainFile.currentUserForAll.getUsername());
+    //                 getMessagesStatement.setString(3, MainFile.currentUserForAll.getUsername());
+    //                 getMessagesStatement.setString(4, activeContact.getName());
+    //                 ResultSet getMessagesRs = getMessagesStatement.executeQuery();
+    //                 while ( getMessagesRs.next() ){
+    //                     messages.add(new Message(getMessagesRs.getString("senderUsername"), getMessagesRs.getString("recieverUsername"), getMessagesRs.getString("message"), new Date(getMessagesRs.getTimestamp("date").getTime())));
+    //                 }
+
+    //             } catch (SQLException e) {
+    //                 e.printStackTrace();
+    //             }
+
+    //         }
+
+    //         return messages;
+           
+    //     }
         
-        public Message(String messageContent, boolean sentByUser) {
-            this.messageContent = messageContent;
-            this.sentByUser = sentByUser;
-            this.messageTime = new Date();
-        }
+    //     @Override
+    //     protected void done(){
+            
+    //         ArrayList<Message> messages = new ArrayList<>();
+    //         try {
+    //             messages = get();
+    //         } catch (InterruptedException e) {
+    //             e.printStackTrace();
+    //         } catch (ExecutionException e) {
+    //             e.printStackTrace();
+    //         }
+
+    //         if (messagesPanel != null && activeContact != null) {
+    //             messagesPanel.removeAll();
+            
+    //             // Use vertical layout for message list
+    //             messagesPanel.setLayout(new BoxLayout(messagesPanel, BoxLayout.Y_AXIS));
+    //             messagesPanel.setBackground(Color.lightGray);
+            
+    //             // Add each message to the display
+    //             for(Message message : messages) {
+    //                 JPanel messageItem = createMessageItem(message);
+                
+    //                 // Ensure message items span full width
+    //                 messageItem.setMaximumSize(new Dimension(Integer.MAX_VALUE, messageItem.getPreferredSize().height));
+    //                 messageItem.setAlignmentX(Component.LEFT_ALIGNMENT);
+                
+    //                 messagesPanel.add(messageItem);
+    //                 messagesPanel.add(Box.createVerticalStrut(10)); // Space between messages
+    //             }
+            
+    //             // Push messages to the top if there are few
+    //             messagesPanel.add(Box.createVerticalGlue());
+            
+    //             scrollToBottom();
+            
+    //             messagesPanel.revalidate();
+    //             messagesPanel.repaint();
+            
+    //         }
+    //     }
         
-        public String getContent() {
-            return messageContent;
-        }
-        
-        public boolean isSentByUser() {
-            return sentByUser;
-        }
-        
-        public Date getTimestamp() {
-            return messageTime;
-        }
-    }
-    
+    // }
+
     static class Contact 
     {
         private String displayName;
         private ArrayList<Message> messageHistory;
         private boolean isSelected;
         private boolean isAvailable;
-        private Color avatarColor;
+        private BufferedImage profilePicture;
 
-        public Contact(String displayName, boolean isAvailable) {
+        public Contact(String displayName, boolean isAvailable, BufferedImage profilePicture) {
             this.displayName = displayName;
             this.messageHistory = new ArrayList<>();
             this.isSelected = false;
             this.isAvailable = isAvailable;
+            this.profilePicture = profilePicture;
             
-            // Generate random avatar color
-            Random random = new Random();
-            this.avatarColor = new Color(
-                100 + random.nextInt(155),
-                100 + random.nextInt(155),
-                100 + random.nextInt(155)
-            );
+            
+        }
+        
+        public BufferedImage getProfilePicture(){
+            return profilePicture;
         }
 
         public String getName() {
@@ -84,11 +143,30 @@ public class ChatGUI extends JPanel
         }
 
         public ArrayList<Message> getMessages() {
+            messageHistory = new ArrayList<>();
+            try {
+                PreparedStatement getMessagesStatement = Database.databaseConnection.prepareStatement("SELECT * FROM messages WHERE (senderUsername = ?  AND recieverUsername = ?) OR (senderUsername =? AND recieverUsername = ?)");
+                getMessagesStatement.setString(1, displayName);
+                getMessagesStatement.setString(2, MainFile.currentUserForAll.getUsername());
+                getMessagesStatement.setString(3, MainFile.currentUserForAll.getUsername());
+                getMessagesStatement.setString(4, displayName);
+                ResultSet getMessagesRs = getMessagesStatement.executeQuery();
+                while ( getMessagesRs.next() ){
+                    messageHistory.add(new Message(getMessagesRs.getString("senderUsername"), getMessagesRs.getString("recieverUsername"), getMessagesRs.getString("message"), new Date(getMessagesRs.getTimestamp("date").getTime())));
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+
             return messageHistory;
         }
 
-        public void addMessage(String content, boolean sentByUser) {
-            this.messageHistory.add(new Message(content, sentByUser));
+        public void addMessage(String senderUsername, String recieverUsername,String content, Date timestamp) {
+            Database.addToDatabase(new Message(senderUsername,recieverUsername,content,timestamp));
+            this.messageHistory.add(new Message(content, recieverUsername, content, timestamp));
         }
 
         public boolean isSelected() {
@@ -107,9 +185,7 @@ public class ChatGUI extends JPanel
             isAvailable = available;
         }
         
-        public Color getAvatarColor() {
-            return avatarColor;
-        }
+       
     }
     
     // Helper method to load and scale an image
@@ -163,6 +239,19 @@ public class ChatGUI extends JPanel
             e.printStackTrace();
         }
         SwingUtilities.updateComponentTreeUI(this);
+        
+        // Timer timer = new Timer(5000, new ActionListener() {
+
+        //     @Override
+        //     public void actionPerformed(ActionEvent e) {
+        //         new MessageUpdater().execute();
+        //     }
+            
+        // });
+        // timer.start();
+
+        
+
     }
     
     /**
@@ -172,13 +261,49 @@ public class ChatGUI extends JPanel
     {
         contactList = new ArrayList<>();
         
-        // Create 10 test contacts with random availability
-        Random random = new Random();
-        for (int i = 1; i <= 10; i++) {
-            boolean isAvailable = random.nextBoolean();
-            Contact contact = new Contact("Contact " + i, isAvailable);
-            contactList.add(contact);
+       
+        try {
+            PreparedStatement getContactsStatement = Database.databaseConnection.prepareStatement("SELECT * FROM contacts WHERE username1 = ? OR username2 = ?");
+            getContactsStatement.setString(1, MainFile.currentUserForAll.getUsername());
+            getContactsStatement.setString(2, MainFile.currentUserForAll.getUsername());
+            ResultSet getContactsRs = getContactsStatement.executeQuery();
+            while ( getContactsRs.next() ){
+
+                String currentContactUsername = "";
+                if ( getContactsRs.getString("username1").equalsIgnoreCase(MainFile.currentUserForAll.getUsername())){
+                    currentContactUsername = getContactsRs.getString("username2");
+                }
+                else{
+                    currentContactUsername = getContactsRs.getString("username1");
+                }
+
+                PreparedStatement getCurrentContactDetailsStatement = Database.databaseConnection.prepareStatement("SELECT * FROM users WHERE username = ?");
+                getCurrentContactDetailsStatement.setString(1, currentContactUsername);
+                ResultSet getCurrentContactDetailsRs = getCurrentContactDetailsStatement.executeQuery();
+                if (getCurrentContactDetailsRs.next()){
+
+                    BufferedImage profilePicture = null;
+
+                    byte[] imageBytes = getCurrentContactDetailsRs.getBytes("profilePicture");
+                    if (imageBytes != null) {
+                        ByteArrayInputStream byteInputStream = new ByteArrayInputStream(imageBytes);
+                        try {
+                            profilePicture = ImageIO.read(byteInputStream);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } 
+                    }
+
+                    contactList.add(new Contact(currentContactUsername, getCurrentContactDetailsRs.getBoolean("available"), profilePicture));
+
+                }
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        
         
         // Select the first contact by default
         if (!contactList.isEmpty()) 
@@ -275,18 +400,8 @@ public class ChatGUI extends JPanel
                 super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g;
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2d.setColor(contact.getAvatarColor());
-                g2d.fillOval(0, 0, getWidth(), getHeight());
+                g2d.drawImage(contact.getProfilePicture(),0, 0, getWidth(), getHeight(),null);
                 
-                // Display first letter of contact name
-                g2d.setColor(Color.WHITE);
-                g2d.setFont(new Font("Arial", Font.BOLD, 16));
-                FontMetrics fm = g2d.getFontMetrics();
-                String letter = contact.getName().substring(0, 1).toUpperCase();
-                int letterWidth = fm.stringWidth(letter);
-                int letterHeight = fm.getAscent();
-                g2d.drawString(letter, (getWidth() - letterWidth) / 2, 
-                              (getHeight() - letterHeight) / 2 + letterHeight);
             }
         };
         avatarCircle.setPreferredSize(new Dimension(size, size));
@@ -484,20 +599,11 @@ public class ChatGUI extends JPanel
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 
                 // Use appropriate avatar color
-                Color avatarColor = message.isSentByUser() ? 
-                    new Color(100, 149, 237) : activeContact.getAvatarColor();
-                g2d.setColor(avatarColor);
-                g2d.fillOval(0, 0, getWidth(), getHeight());
+                BufferedImage profilePicture = message.isSentByUser() ? 
+                    MainFile.currentUserForAll.getProfilePicture() : activeContact.getProfilePicture();
+         
+                g2d.drawImage(profilePicture,0, 0, getWidth(), getHeight(),null);
                 
-                // Draw initial
-                g2d.setColor(Color.WHITE);
-                g2d.setFont(new Font("Arial", Font.BOLD, 14));
-                FontMetrics fm = g2d.getFontMetrics();
-                String letter = message.isSentByUser() ? "M" : activeContact.getName().substring(0, 1).toUpperCase();
-                int letterWidth = fm.stringWidth(letter);
-                int letterHeight = fm.getAscent();
-                g2d.drawString(letter, (getWidth() - letterWidth) / 2, 
-                              (getHeight() - letterHeight) / 2 + letterHeight);
             }
         };
         avatarCircle.setPreferredSize(new Dimension(40, 40));
@@ -513,7 +619,7 @@ public class ChatGUI extends JPanel
         messageHeader.add(senderNameLabel, BorderLayout.CENTER);
         
         // Message text content
-        JTextArea messageText = new JTextArea(message.getContent());
+        JTextArea messageText = new JTextArea(message.getMessageContent());
         messageText.setFont(new Font("Arial", Font.PLAIN, 14));
         messageText.setForeground(Color.WHITE);
         messageText.setLineWrap(true);
@@ -596,7 +702,8 @@ public class ChatGUI extends JPanel
         
         if (isValidMessage && activeContact != null) {
             // Send user's message
-            activeContact.addMessage(messageText, true);
+            
+            activeContact.addMessage(MainFile.currentUserForAll.getUsername(), activeContact.getName(), messageText, new Date());
             updateMessageDisplay();
             
             // Clear input and keep focus
@@ -604,42 +711,9 @@ public class ChatGUI extends JPanel
             messageInputField.requestFocus();
             scrollToBottom();
             
-            // Simulate response after short delay
-            simulateContactResponse();
         }
     }
     
-    /**
-     * Simulates a response from the contact after a delay (PLACEHOLDER, JUST FOR TESTING)
-     */
-    private void simulateContactResponse() {
-        // Create a delayed response to simulate conversation
-        Timer responseTimer = new Timer(1500, e -> 
-        {
-            String[] possibleResponses = {
-                "That's interesting!",
-                "I see what you mean.",
-                "Thanks for sharing that.",
-                "Let me think about that.",
-                "I'll get back to you soon.",
-                "Could you tell me more about that?",
-                "I've been wondering about the same thing lately.",
-                "That's exactly what I was thinking about yesterday when I was walking through the park and noticed how beautiful the sunset was."
-            };
-            
-            // Choose random response
-            Random random = new Random();
-            String responseText = possibleResponses[random.nextInt(possibleResponses.length)];
-            
-            // Add contact's response
-            activeContact.addMessage(responseText, false);
-            updateMessageDisplay();
-            scrollToBottom();
-        });
-        
-        responseTimer.setRepeats(false);
-        responseTimer.start();
-    }//just for test
     
     /**
      * Updates the UI when a different contact is selected
@@ -694,27 +768,4 @@ public class ChatGUI extends JPanel
         repaint();
     }
     
-    /**
-     * Main method to Test
-     */
-    public static void main(String[] args)
-    {  
-        SwingUtilities.invokeLater(() -> {
-            try {
-                UIManager.setLookAndFeel(new FlatCobalt2IJTheme());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            
-            JFrame mainWindow = new JFrame("BILMART Chat");
-            mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            
-            ImprovedChatGUI chatInterface = new ImprovedChatGUI();
-            mainWindow.add(chatInterface);
-            
-            mainWindow.pack();
-            mainWindow.setLocationRelativeTo(null);
-            mainWindow.setVisible(true);
-        });
-    }
 }

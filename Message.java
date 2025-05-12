@@ -1,15 +1,18 @@
+import java.util.Date;
+
 public class Message {
 
     private String senderUsername;
     private String recieverUsername;
     private String messageContent;
+    private Date messageTime;
 
-    public Message ( String senderUsername, String recieverUsername, String messageContent){
+    public Message ( String senderUsername, String recieverUsername, String messageContent, Date messageTime){
 
         this.senderUsername = senderUsername;
         this.recieverUsername = recieverUsername;
         this.messageContent = messageContent;
-        
+        this.messageTime = messageTime;
 
     }
     public String getMessageContent() {
@@ -21,4 +24,14 @@ public class Message {
     public String getSenderUsername() {
         return senderUsername;
     }
+    public Date getTimestamp() {
+        return messageTime;
+    }
+    public boolean isSentByUser() {
+        return MainFile.currentUserForAll.getUsername().equalsIgnoreCase(senderUsername);
+    }
+
+    
+    
+
 }

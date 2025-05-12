@@ -266,10 +266,9 @@ public class ItemsBar extends JPanel implements ActionListener{
         }
 
         if (e.getSource() == profileButton) {
-            //ProfilePanel profilePage = new ProfilePanel(LoginScreen.getCurrentUser().getUsername(), LoginScreen.getCurrentUser()); //if started by loginscreen main method
             ProfilePanel profilePage = new ProfilePanel(MainFile.currentUserForAll.getUsername(), MainFile.currentUserForAll); //if started by homescreen main method
             HomeScreen.hm.items.addSearchBar();
-            HomeScreen.hm.changePanel(profilePage); //Will change these later
+            HomeScreen.hm.changePanel(profilePage); 
         }
         if (e.getSource() == addButton) {
             if (isOnlyAddScreen) {
@@ -281,6 +280,9 @@ public class ItemsBar extends JPanel implements ActionListener{
         if (e.getSource() == bilMartText) {
             HomeScreen.hm.items.removeSearchBar();
             HomeScreen.hm.reloadHomeScreenPanel();
+        }
+        if ( e.getSource() == messageButton ){
+            HomeScreen.hm.changePanel(new ChatGUI());
         }
 
         

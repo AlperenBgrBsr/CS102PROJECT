@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -119,10 +120,11 @@ public class Database {
 
     public static void addToDatabase(Message message){
         try {
-            PreparedStatement addToDatabaseStatement = databaseConnection.prepareStatement("INSERT INTO messages VALUES (?,?,?)");
+            PreparedStatement addToDatabaseStatement = databaseConnection.prepareStatement("INSERT INTO messages VALUES (?,?,?,?)");
             addToDatabaseStatement.setString(1, message.getSenderUsername());
             addToDatabaseStatement.setString(2, message.getRecieverUsername());
             addToDatabaseStatement.setString(3, message.getMessageContent());
+            addToDatabaseStatement.setTimestamp(4, new Timestamp(message.getTimestamp().getTime()));
             addToDatabaseStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
