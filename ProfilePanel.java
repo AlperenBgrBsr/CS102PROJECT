@@ -371,7 +371,7 @@ public class ProfilePanel extends JPanel{
 
                         JPanel sampleAdvertPanel = new JPanel(){
                             protected void paintComponent(Graphics g) {
-                                g.drawImage(currentAdvert.getImage(), 20, 20, 80,80,null );
+                                g.drawImage(currentAdvert.getImage(), 20 , 20, 80,80,null );
                             };
                         };
                    
@@ -553,7 +553,7 @@ public class ProfilePanel extends JPanel{
 
                         JPanel sampleAdvertPanel = new JPanel(){
                             protected void paintComponent(Graphics g) {
-                                g.drawImage(currentAdvertImage, 20, 20, 80,80,null );
+                                g.drawImage(currentAdvertImage, 20 , 20, 80,80,null );
                             };
                         };
                    
@@ -1490,7 +1490,7 @@ public class ProfilePanel extends JPanel{
         super.paintComponent(g);
         g.drawImage(getCurrentProfilePicture(otherProfileUsername , currentUser), 120 * HomeScreen.hm.getWidth() / 1024, 50, 150 ,150, this);
         for (int i = 0; i < 5; i++){
-            g.drawImage(emptyStar, 60 + 45*i, 240, 45, 45, this);
+            g.drawImage(emptyStar, (60 + 45*i) * HomeScreen.hm.getWidth() / 1024, 240, 45, 45, this);
         }
 
         double rating = 0;
@@ -1505,18 +1505,18 @@ public class ProfilePanel extends JPanel{
 
         while ( rating >= 1 ){
 
-            g.drawImage(fullStar, 60 + 45*drawnStarAmount, 240, 45, 45, this);
+            g.drawImage(fullStar, (60 + 45*drawnStarAmount ) * HomeScreen.hm.getWidth() / 1024, 240, 45, 45, this);
             rating--;
             drawnStarAmount++;
         }
         if ( rating >= 0.75 && rating < 1){
-            g.drawImage(threeQuarterStar, 60 + 45*drawnStarAmount, 240, 45, 45, this);
+            g.drawImage(threeQuarterStar, (60 + 45*drawnStarAmount ) * HomeScreen.hm.getWidth() / 1024, 240, 45, 45, this);
         }
         else if (rating >= 0.5){
-            g.drawImage(halfStar, 60 + 45*drawnStarAmount, 240, 45, 45, this);
+            g.drawImage(halfStar, (60 + 45*drawnStarAmount ) * HomeScreen.hm.getWidth() / 1024, 240, 45, 45, this);
         }
         else if ( rating >= 0.25 ){
-            g.drawImage(oneQuarterStar, 60 + 45*drawnStarAmount, 240, 45, 45, this);
+            g.drawImage(oneQuarterStar, (60 + 45*drawnStarAmount ) * HomeScreen.hm.getWidth() / 1024, 240, 45, 45, this);
         }
     }   
 

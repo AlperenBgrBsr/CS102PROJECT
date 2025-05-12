@@ -172,10 +172,22 @@ public class AdvertViewPanel extends JPanel{
                     userDetailsEmail = "";
 
 
-                    JLabel userDetailUsernameLabel = new JLabel(currentAdvert.getSellerUsername());
-                    userDetailUsernameLabel.setFont(new Font("Arial",Font.BOLD,20));
-                    userDetailUsernameLabel.setBounds(35,270,150,50);
+                    JButton userDetailUsernameButton = new JButton(currentAdvert.getSellerUsername());
+                    userDetailUsernameButton.setFont(new Font("Arial",Font.BOLD,18));
+                    userDetailUsernameButton.setBounds(Math.max(18 - currentAdvert.getSellerUsername().length(), 0),270,160,30);
+                    userDetailUsernameButton.addActionListener(new ActionListener() {
 
+						@Override
+						public void actionPerformed(ActionEvent e) {
+                            HomeScreen.hm.items.addSearchBar();
+                            HomeScreen.hm.changePanel(new ProfilePanel(currentAdvert.getSellerUsername(), MainFile.currentUserForAll));
+						}
+                    });
+
+                    userDetailUsernameButton.setContentAreaFilled(false);
+                    userDetailUsernameButton.setBorderPainted(false);
+                    userDetailUsernameButton.setFocusPainted(false);
+                    userDetailUsernameButton.setOpaque(true);
                     try {
 
                         PreparedStatement userDetailsStatement = Database.databaseConnection.prepareStatement("SELECT user_email FROM users WHERE username = ?");
@@ -193,7 +205,7 @@ public class AdvertViewPanel extends JPanel{
                     userDetailsEmailLabel.setFont(new Font("Arial",Font.BOLD, 13));
                     userDetailsEmailLabel.setBounds(15,310,180,50);
 
-                    userDetailsPanel.add(userDetailUsernameLabel);
+                    userDetailsPanel.add(userDetailUsernameButton);
                     userDetailsPanel.add(userDetailsEmailLabel);
                    
                     //Advert Details Panel
@@ -777,13 +789,9 @@ public class AdvertViewPanel extends JPanel{
                     filteredAdvertsList.add(currentAdvert);
                 }
             }
-            
-
-
         }
 
         return filteredAdvertsList;
-
     }
 
 }
