@@ -96,7 +96,7 @@ public class HomeScreen extends JFrame implements ActionListener{
                 }
             }
         }
-        else if (!(container.getLayout() instanceof BorderLayout || container.getLayout() instanceof GridBagLayout)){ 
+        else if (!(container.getLayout() instanceof BorderLayout || container.getLayout() instanceof GridBagLayout || container.getLayout() instanceof BoxLayout)){ 
             for (Component comp : container.getComponents()) {
                 if (comp instanceof JSlider || comp instanceof JScrollBar || comp instanceof JComboBox) {
                     continue;
