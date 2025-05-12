@@ -38,6 +38,7 @@ public class LoginScreen extends JFrame {
     public void initializeIcons() {
         bilmartIcon = new ImageIcon("icons/BilMartIcon.png");
         bilmartTitle = new ImageIcon("icons/BilMart.png");
+        this.setIconImage(bilmartIcon.getImage());
     }
     public JPanel createTopPanel() {
         JPanel panel = new JPanel();
