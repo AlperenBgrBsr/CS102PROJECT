@@ -89,7 +89,7 @@ public class ProfilePanel extends JPanel{
 
             //Username Label
             JLabel usernameLabel = new JLabel(currentUser.getUsername());
-            usernameLabel.setBounds(136,205,300,30);
+            usernameLabel.setBounds(Math.max(Math.max(190 - username.length() * 5, 133),0),205,300,30);
             usernameLabel.setFont(new Font("Arias", Font.BOLD, 18));
 
             //Select Status
@@ -371,7 +371,7 @@ public class ProfilePanel extends JPanel{
 
                         JPanel sampleAdvertPanel = new JPanel(){
                             protected void paintComponent(Graphics g) {
-                                g.drawImage(currentAdvert.getImage(), 20, 20, 80,80,null );
+                                g.drawImage(currentAdvert.getImage(), 20 , 20, 80,80,null );
                             };
                         };
                    
@@ -553,7 +553,7 @@ public class ProfilePanel extends JPanel{
 
                         JPanel sampleAdvertPanel = new JPanel(){
                             protected void paintComponent(Graphics g) {
-                                g.drawImage(currentAdvertImage, 20, 20, 80,80,null );
+                                g.drawImage(currentAdvertImage, 20 , 20, 80,80,null );
                             };
                         };
                    
@@ -857,9 +857,8 @@ public class ProfilePanel extends JPanel{
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     HomeScreen.hm.dispose();
-                    MainFile.log.setVisible(true);
+                    MainFile.log.setVisible(true);                
                 }
-                
             });
 
 
@@ -906,7 +905,7 @@ public class ProfilePanel extends JPanel{
 
             //Username Label
             JLabel usernameLabel = new JLabel(username);
-            usernameLabel.setBounds(136,205,300,30);
+            usernameLabel.setBounds(Math.max(190 - username.length() * 5, 133),205,300,30);
             usernameLabel.setFont(new Font("Arias", Font.BOLD, 18));
 
             //Status Pic
@@ -1491,7 +1490,7 @@ public class ProfilePanel extends JPanel{
         super.paintComponent(g);
         g.drawImage(getCurrentProfilePicture(otherProfileUsername , currentUser), 120 * HomeScreen.hm.getWidth() / 1024, 50, 150 ,150, this);
         for (int i = 0; i < 5; i++){
-            g.drawImage(emptyStar,(60 + 45*i) * HomeScreen.hm.getWidth() / 1024, 240, 45, 45, this);
+            g.drawImage(emptyStar, (60 + 45*i) * HomeScreen.hm.getWidth() / 1024, 240, 45, 45, this);
         }
 
         double rating = 0;
