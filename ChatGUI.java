@@ -599,7 +599,7 @@ public class ChatGUI extends JPanel
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 
                 // Use appropriate avatar color
-                BufferedImage profilePicture = message.isSentByUser() ? 
+                BufferedImage profilePicture = message.isSentByUser(MainFile.currentUserForAll) ? 
                     MainFile.currentUserForAll.getProfilePicture() : activeContact.getProfilePicture();
          
                 g2d.drawImage(profilePicture,0, 0, getWidth(), getHeight(),null);
@@ -612,7 +612,7 @@ public class ChatGUI extends JPanel
         JPanel messageHeader = new JPanel(new BorderLayout(10, 0));
         messageHeader.setBackground(UIManager.getColor("Panel.background"));
         
-        JLabel senderNameLabel = new JLabel(message.isSentByUser() ? "Me" : activeContact.getName());
+        JLabel senderNameLabel = new JLabel(message.isSentByUser(MainFile.currentUserForAll) ? "Me" : activeContact.getName());
         senderNameLabel.setFont(new Font("Arial", Font.BOLD, 14));
         
         messageHeader.add(avatarCircle, BorderLayout.WEST);

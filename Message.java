@@ -27,8 +27,8 @@ public class Message {
     public Date getTimestamp() {
         return messageTime;
     }
-    public boolean isSentByUser() {
-        return MainFile.currentUserForAll.getUsername().equalsIgnoreCase(senderUsername);
+    public boolean isSentByUser(User user) {
+        return user.getUsername().equalsIgnoreCase(senderUsername);
     }
 
     
