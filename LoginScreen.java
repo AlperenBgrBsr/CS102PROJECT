@@ -18,7 +18,8 @@ public class LoginScreen extends JFrame {
     private JButton loginButton;
     private JButton forgotPasswordButton;
     public static Database database = new Database();
-    
+    private int numOfTries;
+
     public LoginScreen() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setPreferredSize(new Dimension(400, 480));
@@ -31,6 +32,7 @@ public class LoginScreen extends JFrame {
         this.pack();
         this.setVisible(true);
         this.setLocationRelativeTo(null);
+        numOfTries = 0;
     }
     public void connect(RegisterScreen reg) {
         this.registerScreen = reg;
@@ -156,7 +158,8 @@ public void styleButton(JButton button) {
                     }
                 }
                 JOptionPane.showMessageDialog(null, "Invalid username/email or password!", "Login Failed", JOptionPane.ERROR_MESSAGE);
-                
+                numOfTries++;
+                checkNumOfTries();
             }
         });
         dontHaveAnAccountButton.addActionListener(new ActionListener() {
@@ -194,5 +197,15 @@ forgotPasswordButton.addActionListener(new ActionListener() {
         return string.contains("@");
     }
 
-    
+    public void resetNumOfTries() {
+        numOfTries = 0;
+    }
+
+    private void checkNumOfTries() {
+        if (numOfTries >= 3) {
+            JOptionPane.showMessageDialog(this, "Too many wrong inputs. Please do the captcha test.", "Captcha Control", JOptionPane.WARNING_MESSAGE);
+            this.setEnabled(false);
+            new Kaptcha(this).setVisible(true);;
+        }
+    }
 }
