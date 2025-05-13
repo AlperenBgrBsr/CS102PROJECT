@@ -35,7 +35,7 @@ public class HelpScreen extends JFrame {
         add(topPanel, BorderLayout.NORTH);
         add(tabbedPane, BorderLayout.CENTER);
         
-        setLocationRelativeTo(null);
+     
         setVisible(true);
 
         this.addWindowListener(new WindowAdapter() {
