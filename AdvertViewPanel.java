@@ -454,11 +454,18 @@ public class AdvertViewPanel extends JPanel{
                                 allAdvertIds.add(checkReachSellerRs.getInt("advertId"));
                             }
                             if ( allAdvertIds.indexOf(advertId) < 0){
+                                String email = "";
+                                PreparedStatement userDetailsStatement2 = Database.databaseConnection.prepareStatement("SELECT user_email FROM users WHERE username = ?");
+                                userDetailsStatement2.setString(1, currentAdvert.getSellerUsername());
+                                ResultSet userDetailsRs2 = userDetailsStatement2.executeQuery();
+                                if ( userDetailsRs2.next() ){
+                                    email = userDetailsRs2.getString("user_email");
+                                }
                                 PreparedStatement reachSellerStatement = Database.databaseConnection.prepareStatement("INSERT INTO viewedadverts VALUES (?,?)");
                                 reachSellerStatement.setInt(1, advertId);
                                 reachSellerStatement.setString(2, currentUser.getUsername());
                                 reachSellerStatement.executeUpdate();
-                                EmailSender.sendInformationEmailForAdvert(currentUser, currentAdvert.getSellerUsername(), userDetailsEmail, currentAdvert);
+                                EmailSender.sendInformationEmailForAdvert(currentUser, currentAdvert.getSellerUsername(), email, currentAdvert);
                                 JOptionPane.showMessageDialog(null, "The seller have been sent an email with your information!","Reached Seller",JOptionPane.INFORMATION_MESSAGE);
                             }
                             else{
