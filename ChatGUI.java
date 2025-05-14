@@ -559,7 +559,7 @@ public class ChatGUI extends JPanel
             statusSection.setBackground(UIManager.getColor("Panel.background"));
             
             // Status icon - home for available, coffee for away
-            String statusIconFile = activeContact.isAvailable() ? "homeIcon.png" : "awayIcon.png";
+            String statusIconFile = activeContact.isAvailable() ? "icons\\homeIcon.png" : "icons\\awayIcon.png";
             ImageIcon statusIcon = loadAndScaleIcon(statusIconFile, 16, 16);
             JLabel iconLabel = new JLabel(statusIcon);
             
