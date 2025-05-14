@@ -30,6 +30,7 @@ public class ForgotPasswordFrame extends JFrame {
     private JTextField enterVerificationCodeField;
     private JButton resetPassword;
     private JButton verifyCode;
+    private JButton returnButton;
     private JTextField repeatNewPassword;
     private JTextField usernameField;
     private int code;
@@ -138,8 +139,15 @@ public class ForgotPasswordFrame extends JFrame {
         resetPassword.setFont(resetPassword.getFont().deriveFont(14f));
         resetPassword.setOpaque(true);
         resetPassword.setBorderPainted(false);
-        resetPassword.setFocusPainted(false);   
+        resetPassword.setFocusPainted(false); 
         
+        returnButton = new JButton("Return");
+        returnButton.setFocusPainted(false);
+        returnButton.setFont(resetPassword.getFont().deriveFont(14f));
+        returnButton.setOpaque(true);
+        returnButton.setBorderPainted(false);
+        returnButton.setFocusPainted(false); 
+
         verifyCode = new JButton("Verify Code");
         verifyCode.setFocusPainted(false);
         verifyCode.setFont(resetPassword.getFont().deriveFont(14f));
@@ -154,8 +162,9 @@ public class ForgotPasswordFrame extends JFrame {
         panel.add(newPasswordField);
         panel.add(repeatNewPassword);
         panel.add(enterVerificationCodeField);
-        panel.add(resetPassword);
         panel.add(verifyCode);
+        panel.add(resetPassword);
+        panel.add(returnButton);
     
         return panel;
     }
@@ -247,6 +256,13 @@ public class ForgotPasswordFrame extends JFrame {
             
         });
 
+        returnButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loginScreen.setVisibility(true);
+                disposePasswordFrame();
+            }
+        });
     }
 
     private void changePassword(String username, String newPassword) {
