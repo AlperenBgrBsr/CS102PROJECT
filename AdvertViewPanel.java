@@ -202,8 +202,8 @@ public class AdvertViewPanel extends JPanel{
                     }
 
                     JLabel userDetailsEmailLabel = new JLabel(userDetailsEmail);
-                    userDetailsEmailLabel.setFont(new Font("Arial",Font.BOLD, 13));
-                    userDetailsEmailLabel.setBounds(15,310,180,50);
+                    userDetailsEmailLabel.setFont(new Font("Arial",Font.BOLD, 10));
+                    userDetailsEmailLabel.setBounds(2,310,180,50);
 
                     userDetailsPanel.add(userDetailUsernameButton);
                     userDetailsPanel.add(userDetailsEmailLabel);
