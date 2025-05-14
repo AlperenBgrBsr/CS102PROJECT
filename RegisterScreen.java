@@ -123,7 +123,6 @@ public static ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
     public JPanel createFormPanel() {
     JPanel panel = new JPanel();
     panel.setLayout(new GridLayout(5, 1, 10, 10));
-    panel.setBackground(Color.WHITE);
     panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 
     emailField = new JTextField();
@@ -149,13 +148,13 @@ public static ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
 
 public void addPlaceholderBehavior(JTextField field, String placeholder) {
     field.setText(placeholder);
-    field.setForeground(Color.GRAY);
+    field.setForeground(Color.WHITE);
 
     field.addFocusListener(new FocusAdapter() {
         public void focusGained(FocusEvent e) {
             if (field.getText().equals(placeholder)) {
                 field.setText("");
-                field.setForeground(Color.BLACK);
+                field.setForeground(Color.WHITE);
             }
         }
 
@@ -171,7 +170,6 @@ public void addPlaceholderBehavior(JTextField field, String placeholder) {
 
     public JPanel createBottomPanel() {
     JPanel panel = new JPanel(new GridLayout(1, 3, 20, 0));
-    panel.setBackground(Color.WHITE);
     panel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
     registerButton = new JButton("Register");

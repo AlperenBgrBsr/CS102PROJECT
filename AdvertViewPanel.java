@@ -38,7 +38,7 @@ public class AdvertViewPanel extends JPanel{
         
 
         this.setLayout(new BorderLayout());
-        this.setBackground(Color.white);
+        //this.setBackground(Color.white);
        
         try {
 
@@ -108,7 +108,7 @@ public class AdvertViewPanel extends JPanel{
             };
                 
             sampleAdvertPanel.setLayout(null);
-            sampleAdvertPanel.setBackground(Color.white);
+            //sampleAdvertPanel.setBackground(Color.white);
 
             //Title
 
@@ -117,7 +117,7 @@ public class AdvertViewPanel extends JPanel{
             titleButton.setBounds(120,20,400,80);
             titleButton.setFont(new Font("Arial", Font.PLAIN, 15));
             titleButton.setFocusable(false);
-            titleButton.setBackground(Color.white);
+            // titleButton.setBackground(Color.white);
             titleButton.addActionListener(new ActionListener() {
 
                 @Override
@@ -155,8 +155,9 @@ public class AdvertViewPanel extends JPanel{
                     }
                     
 
-
-                    JPanel userDetailsPanel = new JPanel(){
+                    // UserDetails Panel
+                    JPanel userDetailsPanel = new JPanel()
+                    {
                         @Override
                         protected void paintComponent(Graphics g) {
                             Graphics2D g2d = (Graphics2D) g;
@@ -167,13 +168,14 @@ public class AdvertViewPanel extends JPanel{
                     };
 
                     userDetailsPanel.setLayout(null);
-                    userDetailsPanel.setBackground(Color.white);
+                    //userDetailsPanel.setBackground(Color.white);
                     userDetailsPanel.setPreferredSize(new Dimension(200,500));
                     userDetailsEmail = "";
 
 
                     JButton userDetailUsernameButton = new JButton(currentAdvert.getSellerUsername());
                     userDetailUsernameButton.setFont(new Font("Arial",Font.BOLD,18));
+                    userDetailUsernameButton.setForeground(Color.white);
                     userDetailUsernameButton.setBounds(Math.max(18 - currentAdvert.getSellerUsername().length(), 0),270,160,30);
                     userDetailUsernameButton.addActionListener(new ActionListener() {
 
@@ -204,6 +206,7 @@ public class AdvertViewPanel extends JPanel{
                     JLabel userDetailsEmailLabel = new JLabel(userDetailsEmail);
                     userDetailsEmailLabel.setFont(new Font("Arial",Font.BOLD, 10));
                     userDetailsEmailLabel.setBounds(2,310,180,50);
+                    userDetailsEmailLabel.setForeground(Color.white);
 
                     userDetailsPanel.add(userDetailUsernameButton);
                     userDetailsPanel.add(userDetailsEmailLabel);
@@ -218,23 +221,28 @@ public class AdvertViewPanel extends JPanel{
                     };
                     advertDetailsPanel.setLayout(null);
                     advertDetailsPanel.setPreferredSize(new Dimension(400,500));
-                    advertDetailsPanel.setBackground(Color.white);
+                    //advertDetailsPanel.setBackground(Color.white);
+                    advertDetailsPanel.setForeground(Color.white);
 
                     JLabel advertTitleLabel = new JLabel("Title: " + currentAdvert.getTitle());
                     advertTitleLabel.setFont(new Font("Arial",Font.BOLD, 20));
                     advertTitleLabel.setBounds(10,170,400,40);
+                    advertTitleLabel.setForeground(Color.white);
 
                     JLabel priceLabel = new JLabel("Price: " + currentAdvert.getPrice());
                     priceLabel.setFont(new Font("Arial",Font.BOLD,20));
                     priceLabel.setBounds(10,200,400,40);
+                    priceLabel.setForeground(Color.white);
 
                     JLabel typeLabel = new JLabel("Type: " + currentAdvert.getType());
                     typeLabel.setFont(new Font("Arial",Font.BOLD,20));
                     typeLabel.setBounds(10,230,400,40);
-                    
+                    typeLabel.setForeground(Color.white);
+
                     JLabel detailedInformationLabel = new JLabel("Detailed Information:");
                     detailedInformationLabel.setFont(new Font("Arial",Font.BOLD,20));
                     detailedInformationLabel.setBounds(10,260,400,40);
+                    detailedInformationLabel.setForeground(Color.white);
 
                     JTextArea detailedInformationArea = new JTextArea();
                     detailedInformationArea.setFont(new Font("Arial",Font.BOLD,15));
@@ -247,7 +255,7 @@ public class AdvertViewPanel extends JPanel{
                     
 
                     JScrollPane detailedInformationScrollPane = new JScrollPane(detailedInformationArea);
-                    detailedInformationScrollPane.setBackground(Color.white);
+                    //detailedInformationScrollPane.setBackground(Color.white);
                     detailedInformationScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
                     detailedInformationScrollPane.setBounds(10,300,360,150);
 
@@ -274,7 +282,7 @@ public class AdvertViewPanel extends JPanel{
 
                     JButton returnButton = new JButton("RETURN");
                     returnButton.setBorder(new LineBorder(Color.BLACK,1));
-                    returnButton.setFont(new Font("Arial", Font.BOLD, 20));
+                    returnButton.setFont(new Font("Arial", Font.BOLD, 18));
                     returnButton.setFocusable(false);  
                     returnButton.setBackground(new Color(151,12,16));
                     returnButton.setForeground(Color.white);
@@ -295,7 +303,7 @@ public class AdvertViewPanel extends JPanel{
                     advertDetailsFrame.add(returnButtonPanel,BorderLayout.SOUTH);
                     advertDetailsFrame.add(userDetailsPanel,BorderLayout.WEST);
                     advertDetailsFrame.add(advertDetailsPanel,BorderLayout.CENTER);
-                    advertDetailsFrame.setBackground(Color.white);
+                    //advertDetailsFrame.setBackground(Color.white);
                     advertDetailsFrame.setPreferredSize(new Dimension(600,600));
                     advertDetailsFrame.pack();
                     advertDetailsFrame.setResizable(false);
@@ -327,7 +335,6 @@ public class AdvertViewPanel extends JPanel{
             
             bookmarkedButton.setIcon(filledBookmarkIcon);
             bookmarkedButton.setFocusable(false);
-            bookmarkedButton.setBackground(Color.white);
             bookmarkedButton.setBorderPainted(false);
             bookmarkedButton.setBounds(605,40,40,40);
             bookmarkedButton.addActionListener(new ActionListener() {
@@ -357,7 +364,7 @@ public class AdvertViewPanel extends JPanel{
                     }
                         
                     bookmarkedButton.setVisible(false);
-                    notBookmarkedButton.setVisible(true);
+                    notBookmarkedButton.setVisible(true);   
 
                 }
                 
@@ -366,7 +373,7 @@ public class AdvertViewPanel extends JPanel{
             
             notBookmarkedButton.setIcon(emptyBookmarkIcon);
             notBookmarkedButton.setFocusable(false);
-            notBookmarkedButton.setBackground(Color.white);
+
             notBookmarkedButton.setBorderPainted(false); 
             notBookmarkedButton.setBounds(605,40,40,40);
             notBookmarkedButton.addActionListener(new ActionListener() {
@@ -454,18 +461,11 @@ public class AdvertViewPanel extends JPanel{
                                 allAdvertIds.add(checkReachSellerRs.getInt("advertId"));
                             }
                             if ( allAdvertIds.indexOf(advertId) < 0){
-                                String email = "";
-                                PreparedStatement userDetailsStatement2 = Database.databaseConnection.prepareStatement("SELECT user_email FROM users WHERE username = ?");
-                                userDetailsStatement2.setString(1, currentAdvert.getSellerUsername());
-                                ResultSet userDetailsRs2 = userDetailsStatement2.executeQuery();
-                                if ( userDetailsRs2.next() ){
-                                    email = userDetailsRs2.getString("user_email");
-                                }
                                 PreparedStatement reachSellerStatement = Database.databaseConnection.prepareStatement("INSERT INTO viewedadverts VALUES (?,?)");
                                 reachSellerStatement.setInt(1, advertId);
                                 reachSellerStatement.setString(2, currentUser.getUsername());
                                 reachSellerStatement.executeUpdate();
-                                EmailSender.sendInformationEmailForAdvert(currentUser, currentAdvert.getSellerUsername(), email, currentAdvert);
+                                EmailSender.sendInformationEmailForAdvert(currentUser, currentAdvert.getSellerUsername(), userDetailsEmail, currentAdvert);
                                 JOptionPane.showMessageDialog(null, "The seller have been sent an email with your information!","Reached Seller",JOptionPane.INFORMATION_MESSAGE);
                             }
                             else{
@@ -495,9 +495,9 @@ public class AdvertViewPanel extends JPanel{
 
 
         }
-        advertsPanel.setBackground(Color.white);
+        //advertsPanel.setBackground(Color.white);
         JScrollPane advertsPanelScrollPane = new JScrollPane(advertsPanel);
-        advertsPanelScrollPane.setBackground(Color.white);
+        //advertsPanelScrollPane.setBackground(Color.white);
         advertsPanelScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         //-------------------------------------------------
@@ -516,18 +516,21 @@ public class AdvertViewPanel extends JPanel{
         
         priceFilterLabel.setFont(new Font("Arial",Font.BOLD+ Font.ITALIC,20));
         priceFilterLabel.setBounds(35,70,130,30);
-        priceFilterLabel.setBackground(Color.white);
+        priceFilterLabel.setForeground(Color.WHITE);
 
         JLabel minLabel = new JLabel("Min");
         minLabel.setFont(new Font("Arial",Font.BOLD, 15));
         minLabel.setBounds(35,100,60,30);
+        minLabel.setForeground(Color.WHITE);
 
         minTextField = new JTextField();
         minTextField.setBounds(25,125,50,30);
         
+        
         JLabel maxLabel = new JLabel("Max");
         maxLabel.setFont(new Font("Arial",Font.BOLD, 15));
         maxLabel.setBounds(130,100,60,30);
+        maxLabel.setForeground(Color.WHITE);
 
         maxTextField = new JTextField();
         maxTextField.setBounds(120,125,50,30);
@@ -538,21 +541,25 @@ public class AdvertViewPanel extends JPanel{
         allTypesButton.setFont(new Font("Arial",Font.BOLD,15));
         allTypesButton.setBounds(10,165,150,20);
         allTypesButton.setFocusable(false);
+        allTypesButton.setForeground(Color.WHITE);
 
         lectureMaterialButton = new JRadioButton("Lecture Material");
         lectureMaterialButton.setFont(new Font("Arial",Font.BOLD,15));
         lectureMaterialButton.setBounds(10,185,150,20);
         lectureMaterialButton.setFocusable(false);
+        lectureMaterialButton.setForeground(Color.WHITE);
         
         clothButton = new JRadioButton("Cloth");
         clothButton.setFont(new Font("Arial",Font.BOLD,15));
         clothButton.setBounds(10,205,150,20);
         clothButton.setFocusable(false);
+        clothButton.setForeground(Color.WHITE);
 
         otherButton = new JRadioButton("Other");
         otherButton.setFont(new Font("Arial",Font.BOLD,15));
         otherButton.setBounds(10,225,150,20);
         otherButton.setFocusable(false);
+        otherButton.setForeground(Color.WHITE);
 
         lectureMaterialButton.setActionCommand("Lecture Material");
         clothButton.setActionCommand("Cloth");
@@ -569,9 +576,10 @@ public class AdvertViewPanel extends JPanel{
 
         JLabel wordFilterLabel = new JLabel("  Word Filter");
         wordFilterLabel.setBorder(new LineBorder(Color.black,1));    
-        wordFilterLabel.setFont(new Font("Arial",Font.BOLD + Font.ITALIC,20));
+        wordFilterLabel.setFont(new Font("Arial",Font.BOLD + Font.ITALIC,16));
         wordFilterLabel.setBounds(35,260,130,30);
         wordFilterLabel.setBackground(Color.white);
+        wordFilterLabel.setForeground(Color.WHITE);
         wordFilterTextField = new JTextField();
         wordFilterTextField.setFont(new Font("Arial",Font.ITALIC,15));
         wordFilterTextField.setBounds(25,300,150,30);
@@ -581,9 +589,10 @@ public class AdvertViewPanel extends JPanel{
 
         JLabel usernameLabel = new JLabel(" Username Filter");
         usernameLabel.setBorder(new LineBorder(Color.black,1));    
-        usernameLabel.setFont(new Font("Arial",Font.BOLD + Font.ITALIC,15));
+        usernameLabel.setFont(new Font("Arial",Font.BOLD + Font.ITALIC,16));
         usernameLabel.setBounds(35,350,130,30);
         usernameLabel.setBackground(Color.white);
+        usernameLabel.setForeground(Color.WHITE);
         usernameFilterTextField = new JTextField();
         usernameFilterTextField.setFont(new Font("Arial",Font.ITALIC,15));
         usernameFilterTextField.setBounds(25,390,150,30);

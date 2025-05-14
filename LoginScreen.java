@@ -78,7 +78,7 @@ public class LoginScreen extends JFrame {
         public void focusGained(java.awt.event.FocusEvent e) {
             if (field.getText().equals(text)) {
                 field.setText("");
-                field.setForeground(Color.BLACK);
+                field.setForeground(Color.WHITE);
             }
         }
         public void focusLost(java.awt.event.FocusEvent e) {
@@ -100,7 +100,7 @@ public void styleButton(JButton button) {
    
     public JPanel createFieldsPanel() {
     JPanel panel = new JPanel(new GridLayout(5, 1, 10, 10));
-    panel.setBackground(Color.WHITE);
+
     panel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 
     usernameField = new JTextField();
@@ -110,7 +110,7 @@ public void styleButton(JButton button) {
     addPlaceholder(passwordField, "Password");
 
     loginButton = new JButton("Login");
-    loginButton.setBackground(BLUE_COLOR);
+    loginButton.setFont(new Font("Sans Serif", Font.BOLD, 14));
     loginButton.setForeground(Color.WHITE);
     loginButton.setOpaque(true);
     styleButton(loginButton);
@@ -134,11 +134,12 @@ public void styleButton(JButton button) {
         this.registerScreen = reg;
     }
     public void handleListeners() {
-        loginButton.addActionListener(new ActionListener() {
+        loginButton.addActionListener(new ActionListener() 
+        {
            
             @Override
             public void actionPerformed(ActionEvent e) {
-                loginButton.setBackground(BLUE_COLOR);
+
                 if (usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, 
                         "Username or password cannot be empty!", 
@@ -157,7 +158,7 @@ public void styleButton(JButton button) {
                         return;
                     }
                 }
-                JOptionPane.showMessageDialog(null, "Invalid username/email or password!", "Login Failed", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Invalid username or password!", "Login Failed", JOptionPane.ERROR_MESSAGE);
                 numOfTries++;
                 checkNumOfTries();
             }

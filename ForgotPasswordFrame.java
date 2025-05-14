@@ -23,7 +23,6 @@ public class ForgotPasswordFrame extends JFrame {
     private Random rand;
     private JLabel bilmartLogo;
     private JLabel welcomeLabel;
-    private final Color BLUE_COLOR = new Color(21,50,80);
     private LoginScreen loginScreen;
     private JTextField newPasswordField;
     private ImageIcon bilmartIcon;
@@ -34,6 +33,7 @@ public class ForgotPasswordFrame extends JFrame {
     private JTextField repeatNewPassword;
     private JTextField usernameField;
     private int code;
+    private final Color BLUE_COLOR = new Color(21, 50, 80);
 
     public ForgotPasswordFrame(LoginScreen log) {
         rand = new Random();
@@ -51,11 +51,9 @@ public class ForgotPasswordFrame extends JFrame {
 
     public JPanel createTopPanel() {
         JPanel panel = new JPanel();
-        panel.setBackground(BLUE_COLOR);
         panel.setLayout(new BorderLayout());
     
         JPanel contentPanel = new JPanel();
-        contentPanel.setBackground(BLUE_COLOR);
         contentPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
 
     
@@ -66,6 +64,7 @@ public class ForgotPasswordFrame extends JFrame {
         welcomeLabel = new JLabel("BILMART");
         welcomeLabel.setPreferredSize(new Dimension(120,120));
         welcomeLabel.setForeground(Color.WHITE);
+        welcomeLabel.setBackground(BLUE_COLOR);
         welcomeLabel.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 20));
 
     
@@ -92,30 +91,32 @@ public class ForgotPasswordFrame extends JFrame {
     }
     public void addPlaceholderBehavior(JTextField field, String placeholder) {
         field.setText(placeholder);
-        field.setForeground(Color.GRAY);
+        field.setForeground(Color.YELLOW);
         
-        field.addFocusListener(new FocusAdapter() {
+        
+        field.addFocusListener(new FocusAdapter() 
+        {
             public void focusGained(FocusEvent e) {
                 if (field.getText().equals(placeholder)) {
                     field.setText("");
-                    field.setForeground(Color.BLACK);
+                    field.setForeground(Color.YELLOW);
                 }
             }
     
             public void focusLost(FocusEvent e) {
                 if (field.getText().isEmpty()) {
                     field.setText(placeholder);
-                    field.setForeground(Color.GRAY);
+                    field.setForeground(Color.YELLOW);
                 }
             }
         });
     }
     
 
-    public JPanel createFieldsPanel() {
+    public JPanel createFieldsPanel() 
+    {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(6, 1, 10, 10)); // 5 rows, vertical stacking
-        panel.setBackground(Color.WHITE);
         panel.setBorder(javax.swing.BorderFactory.createEmptyBorder(30, 30, 30, 30));
     
         usernameField = new JTextField();
@@ -132,8 +133,7 @@ public class ForgotPasswordFrame extends JFrame {
         enterVerificationCodeField.setVisible(false);
     
         resetPassword = new JButton("Update Password");
-        resetPassword.setBackground(BLUE_COLOR); 
-        resetPassword.setForeground(Color.WHITE);
+ 
         resetPassword.setFocusPainted(false);
         resetPassword.setFont(resetPassword.getFont().deriveFont(14f));
         resetPassword.setOpaque(true);
@@ -141,10 +141,9 @@ public class ForgotPasswordFrame extends JFrame {
         resetPassword.setFocusPainted(false);   
         
         verifyCode = new JButton("Verify Code");
-        verifyCode.setBackground(BLUE_COLOR); 
-        verifyCode.setForeground(Color.WHITE);
         verifyCode.setFocusPainted(false);
         verifyCode.setFont(resetPassword.getFont().deriveFont(14f));
+        verifyCode.setForeground(Color.YELLOW);
         verifyCode.setOpaque(true);
         verifyCode.setBorderPainted(false);
         verifyCode.setFocusPainted(false); 

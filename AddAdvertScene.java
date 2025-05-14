@@ -185,6 +185,7 @@ public class AddAdvertScene extends JFrame implements ActionListener{
         JLabel currencies = new JLabel("₺");
         currencies.setFont(new Font("Arial", Font.BOLD, fontSize));
         currencies.setOpaque(true);
+        currencies.setForeground(Color.green);
         currencies.setFocusable(false);
 
         wrapper.add(itemLabel, gbc);
@@ -228,7 +229,7 @@ public class AddAdvertScene extends JFrame implements ActionListener{
         JLabel charCounterLabel = new JLabel("500 characters remaining");
         charCounterLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         charCounterLabel.setAlignmentX(JLabel.RIGHT_ALIGNMENT);
-        charCounterLabel.setForeground(Color.black);
+        charCounterLabel.setForeground(Color.yellow);
 
         // DocumentListener for updating character count
         informationArea.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
@@ -267,11 +268,12 @@ public class AddAdvertScene extends JFrame implements ActionListener{
 
         JLabel itemLabel = new JLabel("Upload Advert Image:");
         itemLabel.setFont(new Font("Arial", Font.BOLD, fontSize + 4));
+        itemLabel.setForeground(Color.WHITE);
 
         imageUploadButton = new JButton("Select a File");
         imageUploadButton.setFont(new Font("Arial", Font.BOLD, fontSize + 4));
         imageUploadButton.setFocusable(false);
-        imageUploadButton.setBackground(Color.lightGray);
+        imageUploadButton.setForeground(Color.WHITE);
         imageUploadButton.setFocusPainted(false);
         imageUploadButton.addActionListener(this);
 

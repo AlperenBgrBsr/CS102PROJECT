@@ -1,6 +1,10 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.intellijthemes.FlatCobalt2IJTheme;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,13 +16,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class BookmarksPanel extends JPanel {
+public class BookmarksPanel extends JPanel 
+{
 
     private BufferedImage advertImageForUserDetails;
 
 
-    public BookmarksPanel(User currentUser){
-
+    public BookmarksPanel(User currentUser)
+    {
+        try {
+            FlatCobalt2IJTheme.setup();
+            FlatLaf.updateUI(); // Force update UI
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         //Refresh Button 
         
@@ -40,7 +51,7 @@ public class BookmarksPanel extends JPanel {
         
 
         JPanel allAdvertsPanel = new JPanel(); // To store every sample advert panel
-        allAdvertsPanel.setBackground(Color.white);
+        //allAdvertsPanel.setBackground(Color.white);
         allAdvertsPanel.setLayout(new GridLayout(bookmarkedAdvertsList.size(),1));
         
 
@@ -56,7 +67,7 @@ public class BookmarksPanel extends JPanel {
             };
                    
             sampleAdvertPanel.setLayout(null);
-            sampleAdvertPanel.setBackground(Color.white);
+            //sampleAdvertPanel.setBackground(Color.white);
 
 
             //Title
@@ -66,7 +77,7 @@ public class BookmarksPanel extends JPanel {
             titleButton.setBounds(180,40,450,80);
             titleButton.setFont(new Font("Arial", Font.PLAIN, 15));
             titleButton.setFocusable(false);
-            titleButton.setBackground(Color.white);
+            //titleButton.setBackground(Color.white);
             titleButton.addActionListener(new ActionListener() {
 
                 @Override
@@ -116,7 +127,7 @@ public class BookmarksPanel extends JPanel {
                     };
 
                     userDetailsPanel.setLayout(null);
-                    userDetailsPanel.setBackground(Color.white);
+                    //userDetailsPanel.setBackground(Color.white);
                     userDetailsPanel.setPreferredSize(new Dimension(200,500));
                     String userDetailsEmail = "";
 
@@ -155,7 +166,7 @@ public class BookmarksPanel extends JPanel {
                     };
                     advertDetailsPanel.setLayout(null);
                     advertDetailsPanel.setPreferredSize(new Dimension(400,500));
-                    advertDetailsPanel.setBackground(Color.white);
+                    //advertDetailsPanel.setBackground(Color.white);
 
                     JLabel advertTitleLabel = new JLabel("Title: " + currentAdvert.getTitle());
                     advertTitleLabel.setFont(new Font("Arial",Font.BOLD, 20));
@@ -184,7 +195,7 @@ public class BookmarksPanel extends JPanel {
                     
 
                     JScrollPane detailedInformationScrollPane = new JScrollPane(detailedInformationArea);
-                    detailedInformationScrollPane.setBackground(Color.white);
+                    //detailedInformationScrollPane.setBackground(Color.white);
                     detailedInformationScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
                     detailedInformationScrollPane.setBounds(10,300,360,150);
 
@@ -232,7 +243,7 @@ public class BookmarksPanel extends JPanel {
                     advertDetailsFrame.add(returnButtonPanel,BorderLayout.SOUTH);
                     advertDetailsFrame.add(userDetailsPanel,BorderLayout.WEST);
                     advertDetailsFrame.add(advertDetailsPanel,BorderLayout.CENTER);
-                    advertDetailsFrame.setBackground(Color.white);
+                    //advertDetailsFrame.setBackground(Color.white);
                     advertDetailsFrame.setPreferredSize(new Dimension(600,600));
                     advertDetailsFrame.pack();
                     advertDetailsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -302,11 +313,11 @@ public class BookmarksPanel extends JPanel {
 
         JScrollPane bookmarkedAdvertsScrollPane = new JScrollPane(allAdvertsPanel);//make it a scroll pane
         bookmarkedAdvertsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        bookmarkedAdvertsScrollPane.setBackground(Color.white);
+        //bookmarkedAdvertsScrollPane.setBackground(Color.white);
 
         this.setLayout(new BorderLayout());
         this.add(bookmarkedAdvertsScrollPane,BorderLayout.CENTER);
-        this.setBackground(Color.white);
+        //this.setBackground(Color.white);
         this.setPreferredSize(new Dimension(970,720));
         this.setVisible(true);
         

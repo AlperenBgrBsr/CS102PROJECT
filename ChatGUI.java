@@ -231,14 +231,6 @@ public class ChatGUI extends JPanel
         
         setPreferredSize(new Dimension(1000, 600));
 
-        // Modern UI theme
-        try {
-            FlatCobalt2IJTheme.setup();
-        } 
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        SwingUtilities.updateComponentTreeUI(this);
         
         Timer timer = new Timer(5000, new ActionListener() {
 

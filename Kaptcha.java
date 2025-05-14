@@ -26,8 +26,8 @@ public class Kaptcha extends JFrame {
         setSize(400, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setForeground(Color.WHITE);
         setLayout(new BorderLayout());
-        setBackground(Color.white);
         this.setResizable(false);
         initializeIcons();
         this.log = log;
@@ -59,7 +59,8 @@ public class Kaptcha extends JFrame {
         verifyButton.setPreferredSize(new Dimension(300, 50));
         refreshButton.setPreferredSize(new Dimension(300,50));
         JLabel label = new JLabel("Enter CAPTCHA: ");
-        label.setFont(new Font("SansSerif", Font.BOLD, 18));
+        label.setFont(new Font("SansSerif", Font.BOLD, 16));
+        label.setForeground(Color.WHITE);
 
         label.setPreferredSize(new Dimension(180,50));
         inputPanel.add(label);
@@ -129,9 +130,10 @@ public class Kaptcha extends JFrame {
 
     public void styleButton(JButton button) {
         button.setFocusPainted(false);
+        button.setForeground(Color.WHITE);
         button.setContentAreaFilled(true);
         button.setBorderPainted(true);
-        button.setFont(new Font("SansSerif", Font.BOLD, 20));
+        button.setFont(new Font("SansSerif", Font.BOLD, 16));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 

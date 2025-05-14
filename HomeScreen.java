@@ -44,7 +44,8 @@ public class HomeScreen extends JFrame implements ActionListener{
     public static HomeScreen hm;
     ItemsBar items;
 
-    public HomeScreen() {
+    public HomeScreen() 
+    {
         this.setTitle("BilMart HomePage");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(1024,1080);
@@ -225,7 +226,8 @@ public class HomeScreen extends JFrame implements ActionListener{
         labelWrapper.setPreferredSize(new Dimension(1980,60));
 
         JLabel expCategoriesText = new JLabel();
-        expCategoriesText.setIcon(resizeIcon(new ImageIcon("icons\\ExploreCategoriesText.png"), 180, 20));        
+        expCategoriesText.setIcon(resizeIcon(new ImageIcon("icons\\ExploreCategoriesText.png"), 180, 20));     
+        expCategoriesText.setForeground(Color.WHITE);  
         labelWrapper.add(expCategoriesText);
 
         return labelWrapper;
@@ -275,6 +277,8 @@ public class HomeScreen extends JFrame implements ActionListener{
         clothesButton.setContentAreaFilled(false);
         clothesButton.setBorderPainted(false);
         clothesButton.setFocusPainted(false);
+        clothesButton.setBackground(new Color(21,50,80));
+        booksButton.setBackground(new Color(21,50,80));
         clothesButton.addActionListener(this); 
 
         buttonsPanel.add(booksButton);
