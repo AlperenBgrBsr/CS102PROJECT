@@ -302,7 +302,7 @@ public class AdvertViewPanel extends JPanel{
                     });
                     returnButton.setBounds(250,25,200,50);
                     JButton downloadButton = new JButton("Download PDF");
-                    downloadButton.setFont(new Font("Arial", Font.BOLD, 20));
+                    downloadButton.setFont(new Font("Arial", Font.BOLD, 16));
                     downloadButton.setFocusable(false);  
                     downloadButton.setBackground(new Color(151,12,16));
                     downloadButton.setForeground(Color.white);
