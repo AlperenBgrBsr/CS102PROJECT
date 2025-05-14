@@ -310,7 +310,13 @@ public class AdvertViewPanel extends JPanel{
                     downloadButton.addActionListener(new ActionListener(){   
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            exportAdvertToPDF(currentAdvert);
+                            try {
+                                
+                                exportAdvertToPDF(currentAdvert);
+                            } catch (IllegalArgumentException ex) {
+                                JOptionPane.showMessageDialog(advertDetailsFrame, "Unavailable character detected.");
+                                ex.printStackTrace();
+                            }
                         } 
                     });
                     
@@ -901,8 +907,10 @@ public class AdvertViewPanel extends JPanel{
                           currentAdvert.getDetailedInformation() : "";
             
             // This will handle all text including the last word and punctuation
-            y = drawWrappedText(contentStream, fontRegular, 12, margin, y, 
-                               maxWidth, lineHeight, details);
+            y = drawWrappedText(document, fontRegular, 12, margin, y, 
+                    maxWidth, lineHeight, details, contentStream, 
+                    page.getMediaBox(), margin);
+
 
             // Insert image (positioned after text with proper spacing)
             if (currentAdvert.getImage() != null && y > 150) {
@@ -940,39 +948,58 @@ private void drawText(PDPageContentStream contentStream, PDFont font, float font
 }
 
 // Helper method to draw wrapped text that handles all words and punctuation
-private float drawWrappedText(PDPageContentStream contentStream, PDFont font, float fontSize,
+private float drawWrappedText(PDDocument document, PDFont font, float fontSize,
                             float startX, float startY, float maxWidth, 
-                            float lineHeight, String text) throws IOException {
-    float x = startX;
-    float y = startY;
+                            float lineHeight, String text, PDPageContentStream contentStream, 
+                            PDRectangle pageSize, float margin) throws IOException {
     
+    float y = startY;
+    float x = startX;
+    float bottomMargin = margin;
+
+    String[] words = text.split(" ");
     contentStream.beginText();
     contentStream.setFont(font, fontSize);
     contentStream.newLineAtOffset(x, y);
-    
-    String[] words = text.split(" ");
+
     for (int i = 0; i < words.length; i++) {
-        String word = words[i];
-        // Add space except for first word
-        String displayWord = (i == 0) ? word : " " + word;
-        float wordWidth = font.getStringWidth(displayWord) / 1000 * fontSize;
-        
+        String word = (i == 0) ? words[i] : " " + words[i];
+        float wordWidth = font.getStringWidth(word) / 1000 * fontSize;
+
         if (x + wordWidth > startX + maxWidth) {
-            // Move to next line
-            contentStream.newLineAtOffset(-(x - startX), -lineHeight);
+            contentStream.endText();
             y -= lineHeight;
+
+            if (y <= bottomMargin) {
+                // New page if out of space
+                contentStream.close();
+                PDPage newPage = new PDPage(pageSize);
+                document.addPage(newPage);
+                contentStream = new PDPageContentStream(document, newPage);
+                y = pageSize.getHeight() - margin;
+            }
+
+            // Start new line
+            contentStream.beginText();
+            contentStream.setFont(font, fontSize);
             x = startX;
-            // Show word without leading space
-            contentStream.showText(word);
-            x += font.getStringWidth(word) / 1000 * fontSize;
-        } else {
-            // Show word with space
-            contentStream.showText(displayWord);
-            x += wordWidth;
+            contentStream.newLineAtOffset(x, y);
         }
+
+        try {
+            contentStream.showText(word);
+        } catch (IllegalArgumentException e) {
+            // Replace unsupported characters with a '?'
+            String cleaned = word.replaceAll("[^\\x00-\\x7F]", "?");
+            contentStream.showText(cleaned);
+        }
+
+        x += wordWidth;
     }
-    
+
     contentStream.endText();
     return y;
 }
+
+
 }

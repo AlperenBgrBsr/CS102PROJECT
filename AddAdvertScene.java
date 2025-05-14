@@ -243,7 +243,7 @@ public class AddAdvertScene extends JFrame implements ActionListener{
                         charCounterLabel.setForeground(new Color(151,12,16));
                     }
                     else {
-                        charCounterLabel.setForeground(Color.black);
+                        charCounterLabel.setForeground(Color.yellow);
                     }
                 }
                 else {
