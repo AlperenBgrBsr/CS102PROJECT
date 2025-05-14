@@ -176,6 +176,7 @@ public class ItemsBar extends JPanel implements ActionListener{
         searchField.setFont(new Font("Arial", Font.PLAIN, 14));
         searchField.setOpaque(false);
         searchField.setCaretColor(Color.BLACK);
+        searchField.setForeground(Color.black);
         searchField.setBorder(BorderFactory.createEmptyBorder());
         searchField.addFocusListener(new FocusAdapter() {
             @Override

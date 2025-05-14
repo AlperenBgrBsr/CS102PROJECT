@@ -188,6 +188,7 @@ public class HomeScreen extends JFrame implements ActionListener{
         searchField.setFont(new Font("Arial", Font.PLAIN, 16));
         searchField.setOpaque(false);
         searchField.setCaretColor(Color.BLACK);
+        searchField.setForeground(Color.black);
         searchField.setBorder(BorderFactory.createEmptyBorder());
         searchField.addFocusListener(new FocusAdapter() {
             @Override

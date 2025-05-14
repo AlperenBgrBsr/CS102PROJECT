@@ -11,6 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Locale;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.Line;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -301,6 +302,7 @@ public class ProfilePanel extends JPanel{
             reviewArea.setFocusable(false);
             reviewArea.setFont(new Font("Arial",Font.PLAIN,16));
             reviewArea.setForeground(Color.WHITE);
+            reviewArea.setBorder(new LineBorder(Color.white,1));
             ArrayList<Review> currentReviews = new ArrayList<>();
             currentReviews = currentUser.getReviewsList();
             for (int i = 0; i < currentReviews.size(); i++){
@@ -315,7 +317,7 @@ public class ProfilePanel extends JPanel{
             //scrollPaneForReviewArea.//color here;
             
             JLabel reviewLabel = new JLabel("  " + currentUser.getReviewsCount() +" Reviews");
-            reviewLabel.setBorder(new LineBorder(Color.BLACK,1));
+            reviewLabel.setBorder(new LineBorder(Color.white,1));
             reviewLabel.setBounds(30,310,130,40);
             reviewLabel.setFont(new Font("Arial", Font.BOLD, 20));
             reviewLabel.setForeground(Color.WHITE);
@@ -1279,6 +1281,7 @@ public class ProfilePanel extends JPanel{
             reviewArea.setFocusable(false);
             reviewArea.setFont(new Font("Arial",Font.PLAIN,15));
             reviewArea.setBackground(new Color(21,50,80));
+            reviewArea.setBorder(new LineBorder(Color.white,1));
             ArrayList<Review> currentReviews = getReviewsListForOtherProfile();
             for (int i = 0; i < currentReviews.size(); i++){
                 reviewArea.setText("\n" + " " + currentReviews.get(i).getSenderUsername() +": " + currentReviews.get(i).getReviewContent() + "\n" + reviewArea.getText());
@@ -1296,7 +1299,7 @@ public class ProfilePanel extends JPanel{
             JTextField reviewTextField = new JTextField(" Add Review");
             reviewTextField.setFont(new Font("Arial",Font.ITALIC,15));
             reviewTextField.setBackground(new Color(21,50,80));
-            reviewTextField.setBorder(new LineBorder(Color.BLACK,1));
+            reviewTextField.setBorder(new LineBorder(Color.white,1));
             reviewTextField.setBounds(30,660,440,30);
             reviewTextField.setPreferredSize(new Dimension(440,30));
             reviewTextField.addMouseListener(new MouseListener() { //To Empty The Text Field
@@ -1339,7 +1342,7 @@ public class ProfilePanel extends JPanel{
             });
 
             JLabel reviewLabel = new JLabel("  " + currentReviews.size()  +" Reviews");
-            reviewLabel.setBorder(new LineBorder(Color.BLACK,1));
+            reviewLabel.setBorder(new LineBorder(Color.white,1));
             reviewLabel.setForeground(Color.WHITE);
             reviewLabel.setBounds(30,310,130,40);
             reviewLabel.setFont(new Font("Arial", Font.BOLD, 20));
