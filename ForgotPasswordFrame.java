@@ -63,7 +63,7 @@ public class ForgotPasswordFrame extends JFrame {
         bilmartLogo.setIcon(bilmartIcon);
     
         welcomeLabel = new JLabel("BILMART");
-        welcomeLabel.setPreferredSize(new Dimension(120,120));
+        welcomeLabel.setPreferredSize(new Dimension(120,70));
         welcomeLabel.setForeground(Color.WHITE);
         welcomeLabel.setBackground(BLUE_COLOR);
         welcomeLabel.setFont(new java.awt.Font("SansSerif", java.awt.Font.BOLD, 20));
@@ -117,7 +117,7 @@ public class ForgotPasswordFrame extends JFrame {
     public JPanel createFieldsPanel() 
     {
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(6, 1, 10, 10)); // 5 rows, vertical stacking
+        panel.setLayout(new GridLayout(7, 1, 10, 10)); // 5 rows, vertical stacking
         panel.setBorder(javax.swing.BorderFactory.createEmptyBorder(30, 30, 30, 30));
     
         usernameField = new JTextField();
