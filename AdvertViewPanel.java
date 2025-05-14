@@ -9,7 +9,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
+import java.io.*;
+import org.apache.pdfbox.pdmodel.*;
+import org.apache.pdfbox.pdmodel.font.*;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.graphics.image.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -296,8 +300,22 @@ public class AdvertViewPanel extends JPanel{
                         }
                         
                     });
-                    returnButton.setBounds(200,25,200,50);
+                    returnButton.setBounds(250,25,200,50);
+                    JButton downloadButton = new JButton("Download PDF");
+                    downloadButton.setFont(new Font("Arial", Font.BOLD, 20));
+                    downloadButton.setFocusable(false);  
+                    downloadButton.setBackground(new Color(151,12,16));
+                    downloadButton.setForeground(Color.white);
+                    downloadButton.setBounds(40,25,150,50);
+                    downloadButton.addActionListener(new ActionListener(){   
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            exportAdvertToPDF(currentAdvert);
+                        } 
+                    });
+                    
                     returnButtonPanel.add(returnButton);
+                    returnButtonPanel.add(downloadButton);
                     
 
                     advertDetailsFrame.add(returnButtonPanel,BorderLayout.SOUTH);
@@ -818,4 +836,143 @@ public class AdvertViewPanel extends JPanel{
         return filteredAdvertsList;
     }
 
+
+
+ public void exportAdvertToPDF(Advert currentAdvert) {
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setDialogTitle("Save PDF");
+    fileChooser.setSelectedFile(new File("advert.pdf"));
+    
+    int userSelection = fileChooser.showSaveDialog(null);
+    if (userSelection == JFileChooser.APPROVE_OPTION) {
+        File pdfFile = fileChooser.getSelectedFile();
+        if (!pdfFile.getName().toLowerCase().endsWith(".pdf")) {
+            pdfFile = new File(pdfFile.getAbsolutePath() + ".pdf");
+        }
+
+        try (PDDocument document = new PDDocument()) {
+            PDPage page = new PDPage(PDRectangle.A4);
+            document.addPage(page);
+            
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+            PDFont fontBold = PDType1Font.HELVETICA_BOLD;
+            PDFont fontRegular = PDType1Font.HELVETICA;
+
+            // Layout parameters
+            float margin = 50;
+            float y = page.getMediaBox().getHeight() - margin;
+            float lineHeight = 20;
+            float sectionSpacing = 25;
+            float maxWidth = page.getMediaBox().getWidth() - 2 * margin;
+
+            // Title
+            drawText(contentStream, fontBold, 16, margin, y, 
+                    currentAdvert.getTitle() != null ? currentAdvert.getTitle() : "No Title");
+            y -= sectionSpacing * 1.5f;
+
+            // Seller
+            drawText(contentStream, fontRegular, 12, margin, y, 
+                    "Seller: " + (currentAdvert.getSellerUsername() != null ? currentAdvert.getSellerUsername() : ""));
+            y -= lineHeight;
+
+            // Email
+            drawText(contentStream, fontRegular, 12, margin, y, 
+                    "Email: " + (userDetailsEmail != null ? userDetailsEmail : ""));
+            y -= sectionSpacing;
+
+            // Price
+            drawText(contentStream, fontBold, 12, margin, y, "Price: ");
+            drawText(contentStream, fontRegular, 12, margin + 50, y, 
+                    (currentAdvert.getPrice()) + "");
+            y -= lineHeight;
+
+            // Type
+            drawText(contentStream, fontBold, 12, margin, y, "Type: ");
+            drawText(contentStream, fontRegular, 12, margin + 50, y, 
+                    currentAdvert.getType() != null ? currentAdvert.getType() : "");
+            y -= sectionSpacing;
+
+            // Detailed Information header
+            drawText(contentStream, fontBold, 14, margin, y, "Detailed Information:");
+            y -= lineHeight;
+
+            // Detailed text - using proper text wrapping method
+            String details = currentAdvert.getDetailedInformation() != null ? 
+                          currentAdvert.getDetailedInformation() : "";
+            
+            // This will handle all text including the last word and punctuation
+            y = drawWrappedText(contentStream, fontRegular, 12, margin, y, 
+                               maxWidth, lineHeight, details);
+
+            // Insert image (positioned after text with proper spacing)
+            if (currentAdvert.getImage() != null && y > 150) {
+                try {
+                    PDImageXObject pdImage = LosslessFactory.createFromImage(document, currentAdvert.getImage());
+                    float imageWidth = 150;
+                    float imageHeight = 150;
+                    float imageY = y - imageHeight - 40;
+                    
+                    contentStream.drawImage(pdImage, margin, imageY, imageWidth, imageHeight);
+                } catch (IOException e) {
+                    System.err.println("Could not add image to PDF: " + e.getMessage());
+                }
+            }
+
+            contentStream.close();
+            document.save(pdfFile);
+            JOptionPane.showMessageDialog(null, "PDF saved to: " + pdfFile.getAbsolutePath());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Failed to save PDF: " + e.getMessage());
+        }
+    }
+}
+
+// Helper method to draw simple text
+private void drawText(PDPageContentStream contentStream, PDFont font, float fontSize, 
+                     float x, float y, String text) throws IOException {
+    contentStream.beginText();
+    contentStream.setFont(font, fontSize);
+    contentStream.newLineAtOffset(x, y);
+    contentStream.showText(text);
+    contentStream.endText();
+}
+
+// Helper method to draw wrapped text that handles all words and punctuation
+private float drawWrappedText(PDPageContentStream contentStream, PDFont font, float fontSize,
+                            float startX, float startY, float maxWidth, 
+                            float lineHeight, String text) throws IOException {
+    float x = startX;
+    float y = startY;
+    
+    contentStream.beginText();
+    contentStream.setFont(font, fontSize);
+    contentStream.newLineAtOffset(x, y);
+    
+    String[] words = text.split(" ");
+    for (int i = 0; i < words.length; i++) {
+        String word = words[i];
+        // Add space except for first word
+        String displayWord = (i == 0) ? word : " " + word;
+        float wordWidth = font.getStringWidth(displayWord) / 1000 * fontSize;
+        
+        if (x + wordWidth > startX + maxWidth) {
+            // Move to next line
+            contentStream.newLineAtOffset(-(x - startX), -lineHeight);
+            y -= lineHeight;
+            x = startX;
+            // Show word without leading space
+            contentStream.showText(word);
+            x += font.getStringWidth(word) / 1000 * fontSize;
+        } else {
+            // Show word with space
+            contentStream.showText(displayWord);
+            x += wordWidth;
+        }
+    }
+    
+    contentStream.endText();
+    return y;
+}
 }
