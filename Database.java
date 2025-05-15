@@ -22,7 +22,7 @@ public class Database {
     public static void createConnection()  {
         
         try {
-            databaseConnection = DriverManager.getConnection("jdbc:mysql://bilmartserver.mysql.database.azure.com/bilmartdb", "bilmartdbuser", "uhcGEFT!*oad194");
+            databaseConnection = DriverManager.getConnection("databaseurl", "username", "password");
             System.out.println("Connection complete");
         } catch (SQLException e) {
             e.printStackTrace();
