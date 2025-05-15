@@ -7,8 +7,7 @@ import javax.mail.internet.*;
 import java.util.*;
 
 public class EmailSender {
-    private final static String USERNAME = "bilmartsystem@gmail.com"; 
-    private final static String PASSWORD = "tkuqozkfpajskspw"; 
+    
     private static Random random = new Random();
 
     public static void sendInformationEmailForAdvert(User from, String toName, String toEmail, Advert advert) { // Bu ve aşağıdaki methodun kullanılacağı yerde ikinci bi user yok o yüzden direkt bunları almak parametre olarak daha iyi olabilir
@@ -25,13 +24,13 @@ public class EmailSender {
 
         Session session = Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("bilmartsystem@gmail.com", "tkuqozkfpajskspw");
+                return new PasswordAuthentication("custommail", "password");
             }
         });
 
         try {
             MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("bilmartsystem@gmail.com"));
+            message.setFrom(new InternetAddress("custommail"));
             message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject("Information mail");
             message.setText("User " + fromName + " with email "+ fromEmail + " has added your advert with the title " + advertTitle);
@@ -55,13 +54,13 @@ public class EmailSender {
 
         Session session = Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("bilmartsystem@gmail.com", "tkuqozkfpajskspw");
+                return new PasswordAuthentication("custommail", "password");
             }
         });
 
         try {
             MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("bilmartsystem@gmail.com"));
+            message.setFrom(new InternetAddress("custommail"));
             message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject("Information mail");
             message.setText("User " + fromName + " with email "+ fromEmail + " has added you to contacts");
@@ -82,13 +81,13 @@ public class EmailSender {
 
         Session session = Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("bilmartsystem@gmail.com", "tkuqozkfpajskspw");
+                return new PasswordAuthentication("custommail", "password");
             }
         });
 
         try {
             MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("bilmartsystem@gmail.com"));
+            message.setFrom(new InternetAddress("custommail"));
             message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(to.getEmail()));
             message.setSubject("Verification email");
             message.setText("Your verification code for registration: " + code);
@@ -109,13 +108,13 @@ public class EmailSender {
 
         Session session = Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("bilmartsystem@gmail.com", "tkuqozkfpajskspw");
+                return new PasswordAuthentication(""custommail", "password"");
             }
         });
 
         try {
             MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("bilmartsystem@gmail.com"));
+            message.setFrom(new InternetAddress("custommail"));
             message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(to.getEmail()));
             message.setSubject("Verification email");
             message.setText("Your reset code for your password:  " + code);
